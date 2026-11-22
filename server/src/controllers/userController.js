@@ -1,4 +1,5 @@
 const User = require('../models/User');
+const Admin = require('../models/Admin');
 const Order = require('../models/Order');
 const jwt = require('jsonwebtoken');
 
@@ -28,7 +29,8 @@ const registerUser = async (req, res) => {
       phone: phone.trim(),
       password,
       address: address || '',
-      city: city || 'Dhaka'
+      city: city || 'Dhaka',
+      role: 'customer'
     });
 
     if (user) {
@@ -39,6 +41,7 @@ const registerUser = async (req, res) => {
         phone: user.phone,
         address: user.address,
         city: user.city,
+        role: user.role || 'customer',
         token: generateToken(user._id)
       });
     }
@@ -49,7 +52,7 @@ const registerUser = async (req, res) => {
   }
 };
 
-// @desc    Customer login
+// @desc    User / Admin unified login
 // @route   POST /api/users/login
 // @access  Public
 const loginUser = async (req, res) => {
@@ -59,16 +62,35 @@ const loginUser = async (req, res) => {
       return res.status(400).json({ message: 'Please provide email and password' });
     }
 
-    const user = await User.findOne({ email: email.toLowerCase().trim() });
+    const cleanEmail = email.toLowerCase().trim();
+
+    // 1. Check User collection
+    const user = await User.findOne({ email: cleanEmail });
     if (user && (await user.matchPassword(password))) {
       return res.json({
         _id: user._id,
         name: user.name,
         email: user.email,
-        phone: user.phone,
-        address: user.address,
-        city: user.city,
+        phone: user.phone || '',
+        address: user.address || '',
+        city: user.city || '',
+        role: user.role || 'customer',
         token: generateToken(user._id)
+      });
+    }
+
+    // 2. Fallback to Admin collection so admins can log in seamlessly
+    const admin = await Admin.findOne({ email: cleanEmail });
+    if (admin && (await admin.matchPassword(password))) {
+      return res.json({
+        _id: admin._id,
+        name: admin.name,
+        email: admin.email,
+        phone: '',
+        address: '',
+        city: '',
+        role: admin.role || 'admin',
+        token: generateToken(admin._id)
       });
     }
 
@@ -120,6 +142,7 @@ const updateUserProfile = async (req, res) => {
       phone: updatedUser.phone,
       address: updatedUser.address,
       city: updatedUser.city,
+      role: updatedUser.role || 'customer',
       token: generateToken(updatedUser._id)
     });
   } catch (error) {
