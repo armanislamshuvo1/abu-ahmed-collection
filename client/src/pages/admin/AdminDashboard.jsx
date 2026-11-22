@@ -730,9 +730,7 @@ export const AdminDashboard = ({ onNavigate }) => {
                             >
                               <option value="Pending Payment">Pending Payment</option>
                               <option value="Verifying Payment">Verifying Payment</option>
-                              <option value="Pending Payment">Pending Payment</option>
-                  <option value="Verifying Payment">Verifying Payment</option>
-                  <option value="Pending">Pending</option>
+                              <option value="Pending">Pending</option>
                               <option value="Confirmed">Confirmed</option>
                               <option value="Processing">Processing</option>
                               <option value="Shipped">Shipped</option>
@@ -1427,6 +1425,8 @@ export const AdminDashboard = ({ onNavigate }) => {
                   onChange={e => handleStatusChange(selectedOrderDetails.order._id, e.target.value)}
                   className="rounded-lg border border-zinc-300 px-3 py-1.5 text-xs font-semibold"
                 >
+                  <option value="Pending Payment">Pending Payment</option>
+                  <option value="Verifying Payment">Verifying Payment</option>
                   <option value="Pending">Pending</option>
                   <option value="Confirmed">Confirmed</option>
                   <option value="Processing">Processing</option>
