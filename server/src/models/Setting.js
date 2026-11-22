@@ -24,6 +24,27 @@ const deliveryZoneSchema = new mongoose.Schema({
   }
 });
 
+const districtOverrideSchema = new mongoose.Schema({
+  district: {
+    type: String,
+    required: true,
+    trim: true
+  },
+  fee: {
+    type: Number,
+    required: true,
+    min: 0
+  },
+  estimatedDays: {
+    type: String,
+    default: '2-3 Days'
+  },
+  isActive: {
+    type: Boolean,
+    default: true
+  }
+});
+
 const settingSchema = new mongoose.Schema(
   {
     storeName: {
@@ -76,6 +97,10 @@ const settingSchema = new mongoose.Schema(
           isActive: true
         }
       ]
+    },
+    districtOverrides: {
+      type: [districtOverrideSchema],
+      default: []
     }
   },
   { timestamps: true }

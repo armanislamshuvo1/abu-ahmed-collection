@@ -48,9 +48,9 @@ export const QuickOrderModal = ({ onNavigate }) => {
 
   // Auto-detect and set delivery zone whenever division, district, or thana changes (LOCKED)
   useEffect(() => {
-    const detectedKey = determineDeliveryZoneKey(division, district, thana);
+    const detectedKey = determineDeliveryZoneKey(division, district, thana, settings?.districtOverrides);
     setDeliveryZoneKey(detectedKey);
-  }, [division, district, thana]);
+  }, [division, district, thana, settings?.districtOverrides]);
 
   // Handle Division Change
   const handleDivisionChange = (newDivision) => {
@@ -94,13 +94,24 @@ export const QuickOrderModal = ({ onNavigate }) => {
   const subtotal = activePrice * quantity;
 
   // Find delivery fee from settings
+  const override = settings?.districtOverrides?.find(
+    d => (d.isActive ?? true) && d.district.toLowerCase() === (district || '').toLowerCase()
+  );
+
   const zones = settings?.deliveryZones || [
     { key: 'inside_dhaka', name: 'Inside Dhaka', fee: 80, estimatedDays: '1-2 Days' },
     { key: 'outside_dhaka', name: 'Outside Dhaka', fee: 150, estimatedDays: '3-5 Days' }
   ];
-  const activeZone = zones.find(z => z.key === deliveryZoneKey) || zones[0];
+  const activeZone = override
+    ? {
+        key: `district_${override.district.toLowerCase().replace(/\s+/g, '_')}`,
+        name: `${override.district} District`,
+        fee: override.fee,
+        estimatedDays: override.estimatedDays || '2-3 Days'
+      }
+    : (zones.find(z => z.key === deliveryZoneKey) || zones[0]);
   const freeThreshold = settings?.freeShippingThreshold || 5000;
-  const deliveryFee = subtotal >= freeThreshold ? 0 : (activeZone?.fee || 80);
+  const deliveryFee = subtotal >= freeThreshold ? 0 : (activeZone?.fee ?? 80);
   const total = subtotal + deliveryFee;
 
   const handleSubmit = async (e) => {
@@ -127,6 +138,9 @@ export const QuickOrderModal = ({ onNavigate }) => {
           email: email.toLowerCase().trim(),
           phone: phone.trim(),
           address: fullAddress,
+          division,
+          district,
+          thana,
           deliveryZoneKey: activeZone.key,
           deliveryZoneName: activeZone.name,
           notes: notes.trim()

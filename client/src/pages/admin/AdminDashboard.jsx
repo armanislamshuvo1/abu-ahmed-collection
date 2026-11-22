@@ -2,8 +2,9 @@ import React, { useState, useEffect, useCallback } from 'react';
 import {
   Crown, LayoutDashboard, ShoppingBag, Layers, Settings, CreditCard,
   Plus, Edit, Trash2, CheckCircle2, Clock, Truck, Eye, RefreshCw,
-  Search, ExternalLink, MessageCircle, AlertTriangle, ChevronRight, X, Upload
+  Search, ExternalLink, MessageCircle, AlertTriangle, ChevronRight, X, Upload, MapPin
 } from 'lucide-react';
+import { getAllDistricts } from '../../data/bangladeshLocations';
 import { useAuth } from '../../context/AuthContext';
 import { useToast } from '../../context/ToastContext';
 import { getAdminStats, getOrdersAdmin, updateOrderStatusAdmin, getOrderByIdAdmin } from '../../services/orderService';
@@ -74,6 +75,10 @@ export const AdminDashboard = ({ onNavigate }) => {
   const [storeAddress, setStoreAddress] = useState('');
   const [facebookUrl, setFacebookUrl] = useState('');
   const [savingDelivery, setSavingDelivery] = useState(false);
+  const [districtOverrides, setDistrictOverrides] = useState([]);
+  const [newDistrictName, setNewDistrictName] = useState('Chattogram');
+  const [newDistrictFee, setNewDistrictFee] = useState('100');
+  const [newDistrictDays, setNewDistrictDays] = useState('2-3 Days');
 
   // Payment Methods Tab State
   const [paymentMethods, setPaymentMethods] = useState([]);
@@ -163,6 +168,7 @@ export const AdminDashboard = ({ onNavigate }) => {
       if (data.storeEmail) setStoreEmail(data.storeEmail);
       if (data.storeAddress) setStoreAddress(data.storeAddress);
       if (data.facebookUrl) setFacebookUrl(data.facebookUrl);
+      if (data.districtOverrides) setDistrictOverrides(data.districtOverrides);
 
       const methods = await getPaymentMethodsAdmin();
       setPaymentMethods(methods);
@@ -295,6 +301,29 @@ export const AdminDashboard = ({ onNavigate }) => {
     }
   };
 
+  const handleAddDistrictOverride = (e) => {
+    e?.preventDefault();
+    if (!newDistrictName) return;
+    if (districtOverrides.some(d => d.district.toLowerCase() === newDistrictName.toLowerCase())) {
+      addToast(`${newDistrictName} is already configured in district overrides.`, 'error');
+      return;
+    }
+    setDistrictOverrides(prev => [
+      ...prev,
+      {
+        district: newDistrictName,
+        fee: Math.max(0, Number(newDistrictFee) || 0),
+        estimatedDays: newDistrictDays || '2-3 Days',
+        isActive: true
+      }
+    ]);
+    addToast(`Added ${newDistrictName} delivery fee (৳${newDistrictFee}). Click "Save All Settings" below to persist.`, 'success');
+  };
+
+  const handleRemoveDistrictOverride = (districtName) => {
+    setDistrictOverrides(prev => prev.filter(d => d.district !== districtName));
+  };
+
   const handleSaveDeliverySettings = async (e) => {
     e.preventDefault();
     setSavingDelivery(true);
@@ -318,6 +347,7 @@ export const AdminDashboard = ({ onNavigate }) => {
 
       await updateDeliverySettings({
         deliveryZones: updatedZones,
+        districtOverrides,
         freeShippingThreshold: Number(freeThreshold)
       });
 
@@ -992,6 +1022,104 @@ export const AdminDashboard = ({ onNavigate }) => {
                   <span className="text-[10px] text-zinc-400">
                     Orders with subtotal at or above this amount receive 100% Free Shipping.
                   </span>
+                </div>
+
+                {/* District-Specific Delivery Rates (e.g. Chattogram) */}
+                <div className="pt-4 border-t border-zinc-200">
+                  <div className="flex items-center gap-2 mb-2">
+                    <MapPin className="w-4 h-4 text-gold-dark" />
+                    <h3 className="text-sm font-bold text-royal-black">
+                      District-Specific Delivery Rates (e.g. Chattogram)
+                    </h3>
+                  </div>
+                  <p className="text-xs text-zinc-500 mb-3">
+                    Add custom delivery charges for specific districts. When customers select this district, this rate applies instead of the generic Outside Dhaka fee.
+                  </p>
+
+                  {/* Add District Override Row */}
+                  <div className="p-3 bg-zinc-50 border border-zinc-200 rounded-xl space-y-3">
+                    <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                      <div>
+                        <label className="block text-[11px] font-semibold text-zinc-600 mb-1">District</label>
+                        <select
+                          value={newDistrictName}
+                          onChange={e => setNewDistrictName(e.target.value)}
+                          className="w-full rounded-lg border border-zinc-300 px-3 py-1.5 text-xs text-royal-black bg-white focus:border-gold focus:outline-none"
+                        >
+                          {getAllDistricts().map(d => (
+                            <option key={d} value={d}>{d}</option>
+                          ))}
+                        </select>
+                      </div>
+
+                      <div>
+                        <label className="block text-[11px] font-semibold text-zinc-600 mb-1">Fee (৳)</label>
+                        <input
+                          type="number"
+                          min={0}
+                          value={newDistrictFee}
+                          onChange={e => setNewDistrictFee(e.target.value)}
+                          placeholder="e.g. 100"
+                          className="w-full rounded-lg border border-zinc-300 px-3 py-1.5 text-xs text-royal-black bg-white focus:border-gold focus:outline-none"
+                        />
+                      </div>
+
+                      <div>
+                        <label className="block text-[11px] font-semibold text-zinc-600 mb-1">Est. Transit Time</label>
+                        <input
+                          type="text"
+                          value={newDistrictDays}
+                          onChange={e => setNewDistrictDays(e.target.value)}
+                          placeholder="e.g. 2-3 Days"
+                          className="w-full rounded-lg border border-zinc-300 px-3 py-1.5 text-xs text-royal-black bg-white focus:border-gold focus:outline-none"
+                        />
+                      </div>
+                    </div>
+
+                    <div className="flex justify-end">
+                      <button
+                        type="button"
+                        onClick={handleAddDistrictOverride}
+                        className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-royal-black text-gold text-xs font-bold rounded-lg hover:bg-zinc-800 transition-colors shadow-sm"
+                      >
+                        <Plus className="w-3.5 h-3.5" />
+                        Add District Rate
+                      </button>
+                    </div>
+                  </div>
+
+                  {/* Configured Overrides List */}
+                  {districtOverrides.length > 0 ? (
+                    <div className="mt-3 space-y-2">
+                      <span className="text-[11px] font-semibold text-zinc-500 uppercase tracking-wider">
+                        Active District Overrides ({districtOverrides.length})
+                      </span>
+                      <div className="divide-y divide-zinc-200 border border-zinc-200 rounded-xl overflow-hidden bg-white">
+                        {districtOverrides.map((item) => (
+                          <div key={item.district} className="flex items-center justify-between px-3 py-2 text-xs">
+                            <div className="flex items-center gap-2">
+                              <span className="font-bold text-royal-black">{item.district}</span>
+                              <span className="text-zinc-400">|</span>
+                              <span className="font-semibold text-emerald-700">৳{item.fee}</span>
+                              <span className="text-zinc-400 text-[11px]">({item.estimatedDays || '2-3 Days'})</span>
+                            </div>
+                            <button
+                              type="button"
+                              onClick={() => handleRemoveDistrictOverride(item.district)}
+                              className="text-rose-600 hover:text-rose-800 p-1 rounded hover:bg-rose-50 transition-colors"
+                              title="Remove override"
+                            >
+                              <Trash2 className="w-3.5 h-3.5" />
+                            </button>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  ) : (
+                    <p className="mt-2 text-[11px] text-zinc-400 italic">
+                      No custom district rates added yet. All districts outside Dhaka will default to ৳{outsideDhakaFee}.
+                    </p>
+                  )}
                 </div>
 
                 <div className="pt-4 border-t border-zinc-200 grid grid-cols-1 sm:grid-cols-2 gap-4">

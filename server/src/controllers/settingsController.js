@@ -29,7 +29,8 @@ const getOrCreateDefaultSettings = async () => {
           estimatedDays: '3-5 Days',
           isActive: true
         }
-      ]
+      ],
+      districtOverrides: []
     });
   }
   return settings;
@@ -53,6 +54,7 @@ const getPublicSettings = async (req, res) => {
       currencySymbol: settings.currencySymbol,
       freeShippingThreshold: settings.freeShippingThreshold,
       deliveryZones: settings.deliveryZones.filter(z => z.isActive),
+      districtOverrides: (settings.districtOverrides || []).filter(d => d.isActive),
       paymentMethods
     });
   } catch (error) {
@@ -77,11 +79,14 @@ const getAdminSettings = async (req, res) => {
 // @access  Private (Admin)
 const updateDeliverySettings = async (req, res) => {
   try {
-    const { deliveryZones, freeShippingThreshold } = req.body;
+    const { deliveryZones, freeShippingThreshold, districtOverrides } = req.body;
     const settings = await getOrCreateDefaultSettings();
 
     if (deliveryZones && Array.isArray(deliveryZones)) {
       settings.deliveryZones = deliveryZones;
+    }
+    if (districtOverrides !== undefined && Array.isArray(districtOverrides)) {
+      settings.districtOverrides = districtOverrides;
     }
     if (freeShippingThreshold !== undefined) {
       settings.freeShippingThreshold = Number(freeShippingThreshold);

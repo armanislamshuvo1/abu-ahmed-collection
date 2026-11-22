@@ -23,16 +23,37 @@ const createOrder = async (req, res) => {
     // Fetch store settings for delivery fee calculation
     let settings = await Setting.findOne();
     
-    // Server-side anti-tamper verification of delivery zone from address
+    // Server-side anti-tamper verification of delivery zone from address & district
     const fullAddr = (customer.address || '').toLowerCase();
-    const isDhakaSuburbs = ['savar', 'ashulia', 'dhamrai', 'keraniganj', 'dohar', 'nawabganj', 'gazipur', 'narayanganj'].some(sub => fullAddr.includes(sub));
+    const customerDistrict = (customer.district || '').toLowerCase();
+
+    // Check if customer matches an active district override
+    const districtOverride = settings?.districtOverrides?.find(
+      d => d.isActive && (
+        (customerDistrict && d.district.toLowerCase() === customerDistrict) ||
+        fullAddr.includes(d.district.toLowerCase())
+      )
+    );
+
     let zoneKey = customer.deliveryZoneKey || 'inside_dhaka';
-    if (!fullAddr.includes('dhaka') || isDhakaSuburbs) {
-      zoneKey = 'outside_dhaka';
+    let deliveryFee = 0;
+    let zoneName = '';
+
+    if (districtOverride) {
+      zoneKey = 'district_' + districtOverride.district.toLowerCase().replace(/\s+/g, '_');
+      zoneName = districtOverride.district + ' District';
+      deliveryFee = districtOverride.fee;
+    } else {
+      const isDhakaSuburbs = ['savar', 'ashulia', 'dhamrai', 'keraniganj', 'dohar', 'nawabganj', 'gazipur', 'narayanganj'].some(sub => fullAddr.includes(sub));
+      if (!fullAddr.includes('dhaka') || isDhakaSuburbs) {
+        zoneKey = 'outside_dhaka';
+      } else {
+        zoneKey = 'inside_dhaka';
+      }
+      const zone = settings?.deliveryZones?.find(z => z.key === zoneKey && z.isActive);
+      deliveryFee = zone ? zone.fee : (zoneKey === 'outside_dhaka' ? 150 : 80);
+      zoneName = zone ? zone.name : (zoneKey === 'outside_dhaka' ? 'Outside Dhaka' : 'Inside Dhaka');
     }
-    const zone = settings?.deliveryZones?.find(z => z.key === zoneKey && z.isActive);
-    let deliveryFee = zone ? zone.fee : (zoneKey === 'outside_dhaka' ? 150 : 80);
-    const zoneName = zone ? zone.name : (zoneKey === 'outside_dhaka' ? 'Outside Dhaka' : 'Inside Dhaka');
 
     // Calculate subtotal and build verified items
     let subtotal = 0;

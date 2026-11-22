@@ -154,13 +154,36 @@ export const BANGLADESH_LOCATIONS = {
 export const DIVISIONS = Object.keys(BANGLADESH_LOCATIONS);
 
 /**
- * Determines whether the given selection qualifies as Inside Dhaka (City) or Outside Dhaka.
+ * Returns a sorted list of all unique districts across all divisions.
+ */
+export const getAllDistricts = () => {
+  const districtSet = new Set();
+  Object.values(BANGLADESH_LOCATIONS).forEach(div => {
+    if (div && div.districts) {
+      Object.keys(div.districts).forEach(d => districtSet.add(d));
+    }
+  });
+  return Array.from(districtSet).sort();
+};
+
+/**
+ * Determines whether the given selection qualifies as Inside Dhaka (City), Outside Dhaka, or a specific District Override.
+ * - Any active district override => 'district_<name>'
  * - Any division other than Dhaka => 'outside_dhaka'
  * - Any district in Dhaka division other than Dhaka (e.g. Gazipur, Narayanganj) => 'outside_dhaka'
  * - Dhaka district suburbs (Savar, Ashulia, Dhamrai, Keraniganj, Dohar, Nawabganj) => 'outside_dhaka'
  * - Dhaka district city areas => 'inside_dhaka'
  */
-export const determineDeliveryZoneKey = (division, district, thana) => {
+export const determineDeliveryZoneKey = (division, district, thana, districtOverrides = []) => {
+  if (district && Array.isArray(districtOverrides)) {
+    const override = districtOverrides.find(
+      d => (d.isActive ?? true) && d.district.toLowerCase() === district.toLowerCase()
+    );
+    if (override) {
+      return `district_${override.district.toLowerCase().replace(/\s+/g, '_')}`;
+    }
+  }
+
   if (!division) return 'inside_dhaka';
   if (division !== 'Dhaka') return 'outside_dhaka';
   if (!district) return 'inside_dhaka';
