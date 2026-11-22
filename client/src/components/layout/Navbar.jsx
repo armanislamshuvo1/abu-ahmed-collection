@@ -1,0 +1,300 @@
+import React, { useState } from 'react';
+import { ShoppingBag, Search, User, Truck, Menu, X, Phone, Crown, LogOut, ChevronDown } from 'lucide-react';
+import { useCart } from '../../context/CartContext';
+import { useAuth } from '../../context/AuthContext';
+
+export const Navbar = ({ onNavigate, currentPath = '/' }) => {
+  const { itemCount, setIsCartOpen } = useCart();
+  const { user, customerLogout, settings, admin } = useAuth();
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [searchQuery, setSearchQuery] = useState('');
+  const [userDropdownOpen, setUserDropdownOpen] = useState(false);
+
+  const categories = [
+    { name: 'All Sarees', slug: 'all' },
+    { name: 'Dhakai Jamdani', slug: 'Dhakai Jamdani' },
+    { name: 'Handloom Silk', slug: 'Handloom Silk' },
+    { name: 'Banarasi Katan', slug: 'Banarasi Katan' },
+    { name: 'Tangail Cotton', slug: 'Tangail Cotton' },
+    { name: 'Royal Muslin', slug: 'Royal Muslin' }
+  ];
+
+  const handleSearchSubmit = (e) => {
+    e.preventDefault();
+    if (searchQuery.trim()) {
+      onNavigate(`/shop?search=${encodeURIComponent(searchQuery.trim())}`);
+      setMobileMenuOpen(false);
+    }
+  };
+
+  return (
+    <header className="sticky top-0 z-40 w-full shadow-md">
+      {/* Top Bar / Announcement */}
+      <div className="bg-royal-black text-gold-light py-2 px-4 text-xs font-medium border-b border-gold/20">
+        <div className="max-w-7xl mx-auto flex items-center justify-between">
+          <div className="flex items-center gap-2">
+            <Crown className="w-3.5 h-3.5 text-gold shrink-0" />
+            <span className="truncate">
+              Free Express Delivery across Bangladesh on orders over ৳{settings?.freeShippingThreshold || 5000}!
+            </span>
+          </div>
+          <div className="hidden sm:flex items-center gap-6">
+            <button
+              onClick={() => onNavigate('/track-order')}
+              className="flex items-center gap-1.5 hover:text-white transition-colors"
+            >
+              <Truck className="w-3.5 h-3.5 text-gold" />
+              <span>Track Order</span>
+            </button>
+            <a
+              href={`https://wa.me/${settings?.whatsappNumber || '8801700000000'}`}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="flex items-center gap-1.5 hover:text-white transition-colors"
+            >
+              <Phone className="w-3.5 h-3.5 text-gold" />
+              <span>Helpline: {settings?.storePhone || '+8801700000000'}</span>
+            </a>
+          </div>
+        </div>
+      </div>
+
+      {/* Main Navigation */}
+      <nav className="bg-royal-dark text-white border-b border-gold/15 backdrop-blur-md">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="flex items-center justify-between h-20 gap-4">
+            {/* Mobile Menu Button */}
+            <div className="flex items-center lg:hidden">
+              <button
+                type="button"
+                onClick={() => setMobileMenuOpen(prev => !prev)}
+                className="p-2 rounded-md text-zinc-300 hover:text-white focus:outline-none"
+              >
+                {mobileMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
+              </button>
+            </div>
+
+            {/* Logo */}
+            <button
+              onClick={() => onNavigate('/')}
+              className="flex items-center gap-3 text-left focus:outline-none group py-2"
+            >
+              <div className="w-12 h-12 rounded-full overflow-hidden border-2 border-gold shadow-gold group-hover:scale-105 transition-transform bg-black flex items-center justify-center">
+                <img
+                  src="/logo.jpg"
+                  alt="Abu Ahmed Collection Logo"
+                  className="w-full h-full object-cover"
+                  onError={(e) => {
+                    e.target.style.display = 'none';
+                  }}
+                />
+              </div>
+              <div className="flex flex-col">
+                <span className="font-serif text-lg sm:text-xl font-bold tracking-wider text-gold-light group-hover:text-gold transition-colors">
+                  Abu Ahmed
+                </span>
+                <span className="text-[10px] sm:text-xs tracking-[0.25em] uppercase text-zinc-400 font-semibold">
+                  Collection
+                </span>
+              </div>
+            </button>
+
+            {/* Desktop Search Bar */}
+            <form onSubmit={handleSearchSubmit} className="hidden md:flex flex-1 max-w-md mx-6">
+              <div className="relative w-full">
+                <input
+                  type="text"
+                  placeholder="Search Jamdani, Katan, Silk sarees..."
+                  value={searchQuery}
+                  onChange={e => setSearchQuery(e.target.value)}
+                  className="w-full bg-royal-card border border-zinc-700/80 rounded-full pl-10 pr-4 py-2 text-sm text-cream placeholder-zinc-400 focus:outline-none focus:border-gold focus:ring-1 focus:ring-gold transition-all"
+                />
+                <Search className="w-4 h-4 text-zinc-400 absolute left-3.5 top-2.5" />
+              </div>
+            </form>
+
+            {/* Actions: Track, Account, Cart */}
+            <div className="flex items-center gap-3 sm:gap-5">
+              {/* Track Order link on desktop */}
+              <button
+                onClick={() => onNavigate('/track-order')}
+                className={`hidden lg:flex items-center gap-1.5 text-xs font-semibold uppercase tracking-wider px-3 py-1.5 rounded-full border transition-all ${
+                  currentPath === '/track-order'
+                    ? 'border-gold text-gold bg-gold/10'
+                    : 'border-zinc-700 text-zinc-300 hover:border-gold hover:text-white'
+                }`}
+              >
+                <Truck className="w-3.5 h-3.5 text-gold" />
+                <span>Track Order</span>
+              </button>
+
+              {/* Customer Account / Profile Dropdown */}
+              <div className="relative">
+                {user ? (
+                  <div>
+                    <button
+                      onClick={() => setUserDropdownOpen(prev => !prev)}
+                      className="flex items-center gap-2 text-xs font-medium text-cream hover:text-gold p-1.5 rounded-lg border border-transparent hover:border-gold/30 transition-colors"
+                    >
+                      <div className="w-8 h-8 rounded-full bg-gold/20 text-gold flex items-center justify-center font-bold border border-gold/40">
+                        {user.name.charAt(0).toUpperCase()}
+                      </div>
+                      <span className="hidden sm:inline-block max-w-[100px] truncate">{user.name}</span>
+                      <ChevronDown className="w-3.5 h-3.5 text-zinc-400" />
+                    </button>
+
+                    {userDropdownOpen && (
+                      <div className="absolute right-0 mt-2 w-48 rounded-xl bg-royal-card border border-gold/20 shadow-2xl py-2 z-50 animate-in fade-in zoom-in-95">
+                        <div className="px-4 py-2 border-b border-zinc-800">
+                          <p className="text-xs text-zinc-400">Signed in as</p>
+                          <p className="text-sm font-semibold text-white truncate">{user.email}</p>
+                        </div>
+                        <button
+                          onClick={() => {
+                            setUserDropdownOpen(false);
+                            onNavigate('/profile');
+                          }}
+                          className="w-full text-left px-4 py-2 text-sm text-zinc-300 hover:text-gold hover:bg-zinc-800/60 flex items-center gap-2"
+                        >
+                          <User className="w-4 h-4 text-gold" />
+                          <span>My Profile & Orders</span>
+                        </button>
+                        <button
+                          onClick={() => {
+                            setUserDropdownOpen(false);
+                            customerLogout();
+                          }}
+                          className="w-full text-left px-4 py-2 text-sm text-red-400 hover:text-red-300 hover:bg-zinc-800/60 flex items-center gap-2"
+                        >
+                          <LogOut className="w-4 h-4" />
+                          <span>Sign Out</span>
+                        </button>
+                      </div>
+                    )}
+                  </div>
+                ) : (
+                  <button
+                    onClick={() => onNavigate('/login')}
+                    className="flex items-center gap-1.5 text-xs font-semibold uppercase tracking-wider text-cream hover:text-gold transition-colors p-2"
+                    title="Sign In / Register"
+                  >
+                    <User className="w-5 h-5 text-gold" />
+                    <span className="hidden sm:inline-block">Account</span>
+                  </button>
+                )}
+              </div>
+
+              {/* Shopping Bag Trigger */}
+              <button
+                onClick={() => setIsCartOpen(true)}
+                className="relative p-2.5 rounded-full bg-royal-card border border-gold/30 hover:border-gold hover:bg-zinc-800 text-gold transition-all duration-200 active:scale-95 shadow-sm"
+                aria-label="Shopping Bag"
+              >
+                <ShoppingBag className="w-5 h-5 text-gold-light" />
+                {itemCount > 0 && (
+                  <span className="absolute -top-1.5 -right-1.5 bg-gradient-to-r from-red-600 to-maroon text-white font-bold text-[10px] w-5 h-5 rounded-full flex items-center justify-center border border-black shadow">
+                    {itemCount}
+                  </span>
+                )}
+              </button>
+
+              {/* Admin Portal Indicator (if logged in) */}
+              {admin && (
+                <button
+                  onClick={() => onNavigate('/admin')}
+                  className="hidden sm:inline-flex items-center gap-1 text-[11px] font-bold text-amber-400 bg-amber-950/60 border border-amber-500/40 px-2.5 py-1 rounded-full hover:bg-amber-900/60 transition-colors"
+                >
+                  <Crown className="w-3 h-3" />
+                  <span>Admin</span>
+                </button>
+              )}
+            </div>
+          </div>
+
+          {/* Desktop Categories Bar */}
+          <div className="hidden lg:flex items-center justify-center gap-8 py-2.5 border-t border-zinc-800/80 text-xs font-medium uppercase tracking-wider text-zinc-300">
+            {categories.map(cat => (
+              <button
+                key={cat.slug}
+                onClick={() => onNavigate(cat.slug === 'all' ? '/shop' : `/shop?category=${encodeURIComponent(cat.slug)}`)}
+                className="hover:text-gold transition-colors py-1 relative group"
+              >
+                <span>{cat.name}</span>
+                <span className="absolute bottom-0 left-0 w-0 h-0.5 bg-gold transition-all duration-300 group-hover:w-full" />
+              </button>
+            ))}
+          </div>
+        </div>
+
+        {/* Mobile Dropdown Menu */}
+        {mobileMenuOpen && (
+          <div className="lg:hidden border-t border-zinc-800 bg-royal-black px-4 pt-4 pb-6 space-y-4">
+            <form onSubmit={handleSearchSubmit}>
+              <div className="relative">
+                <input
+                  type="text"
+                  placeholder="Search sarees..."
+                  value={searchQuery}
+                  onChange={e => setSearchQuery(e.target.value)}
+                  className="w-full bg-royal-card border border-zinc-700 rounded-lg pl-10 pr-4 py-2.5 text-sm text-cream placeholder-zinc-400 focus:outline-none focus:border-gold"
+                />
+                <Search className="w-4 h-4 text-zinc-400 absolute left-3 top-3" />
+              </div>
+            </form>
+
+            <div className="grid grid-cols-2 gap-2 pt-2">
+              {categories.map(cat => (
+                <button
+                  key={cat.slug}
+                  onClick={() => {
+                    setMobileMenuOpen(false);
+                    onNavigate(cat.slug === 'all' ? '/shop' : `/shop?category=${encodeURIComponent(cat.slug)}`)}
+                  }
+                  className="text-left py-2 px-3 text-xs uppercase font-medium text-zinc-300 hover:text-gold hover:bg-zinc-800/50 rounded-lg transition-colors"
+                >
+                  {cat.name}
+                </button>
+              ))}
+            </div>
+
+            <div className="pt-2 border-t border-zinc-800 flex flex-col gap-2">
+              <button
+                onClick={() => {
+                  setMobileMenuOpen(false);
+                  onNavigate('/track-order');
+                }}
+                className="flex items-center gap-2 py-2 text-sm text-gold hover:text-white"
+              >
+                <Truck className="w-4 h-4" />
+                <span>Track Your Order</span>
+              </button>
+              {user ? (
+                <button
+                  onClick={() => {
+                    setMobileMenuOpen(false);
+                    onNavigate('/profile');
+                  }}
+                  className="flex items-center gap-2 py-2 text-sm text-zinc-200 hover:text-gold"
+                >
+                  <User className="w-4 h-4" />
+                  <span>My Profile & Orders ({user.name})</span>
+                </button>
+              ) : (
+                <button
+                  onClick={() => {
+                    setMobileMenuOpen(false);
+                    onNavigate('/login');
+                  }}
+                  className="flex items-center gap-2 py-2 text-sm text-gold"
+                >
+                  <User className="w-4 h-4" />
+                  <span>Customer Login / Register</span>
+                </button>
+              )}
+            </div>
+          </div>
+        )}
+      </nav>
+    </header>
+  );
+};
