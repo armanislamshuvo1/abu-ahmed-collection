@@ -45,9 +45,9 @@ app.all('/api/*', (req, res) => {
   res.status(404).json({ message: 'API route not found' });
 });
 
-// Serve frontend in production
-if (process.env.NODE_ENV === 'production') {
-  const clientDist = path.join(__dirname, '../../client/dist');
+// Serve frontend in production or when built
+const clientDist = path.join(__dirname, '../../client/dist');
+if (process.env.NODE_ENV === 'production' || require('fs').existsSync(clientDist)) {
   app.use(express.static(clientDist));
   app.get('*', (req, res) => {
     res.sendFile(path.join(clientDist, 'index.html'));
