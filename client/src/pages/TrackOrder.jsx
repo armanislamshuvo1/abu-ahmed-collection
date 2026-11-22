@@ -75,28 +75,28 @@ export const TrackOrder = ({ onNavigate, queryParams = {} }) => {
   };
 
   return (
-    <div className="max-w-4xl mx-auto px-4 py-10 sm:py-16 space-y-8">
+    <div className="max-w-5xl mx-auto px-4 py-6 sm:py-10 space-y-6">
       {/* Search Header */}
       <div className="text-center max-w-xl mx-auto">
-        <div className="w-12 h-12 rounded-2xl bg-gold/10 text-gold-deep flex items-center justify-center mx-auto mb-3">
-          <Truck className="w-6 h-6" />
+        <div className="w-10 h-10 rounded-2xl bg-gold/10 text-gold-deep flex items-center justify-center mx-auto mb-2">
+          <Truck className="w-5 h-5" />
         </div>
-        <h1 className="font-serif text-2xl sm:text-3xl font-bold text-royal-black">
+        <h1 className="font-serif text-xl sm:text-2xl font-bold text-royal-black">
           Track Your Artisan Order
         </h1>
-        <p className="text-xs sm:text-sm text-zinc-500 mt-2">
+        <p className="text-xs sm:text-sm text-zinc-500 mt-1">
           Enter your unique Order ID (e.g., <span className="font-mono text-royal-black font-semibold">AAC-2026-1001</span>) to see live status updates.
         </p>
 
         {/* Input box */}
-        <form onSubmit={handleTrackSubmit} className="mt-6 flex gap-2 max-w-md mx-auto">
+        <form onSubmit={handleTrackSubmit} className="mt-4 flex gap-2 max-w-md mx-auto">
           <input
             type="text"
             required
             placeholder="e.g. AAC-2026-1001"
             value={orderIdInput}
             onChange={e => setOrderIdInput(e.target.value)}
-            className="flex-1 rounded-xl border border-zinc-300 px-4 py-2.5 text-sm uppercase font-mono tracking-wider focus:border-gold focus:outline-none focus:ring-1 focus:ring-gold"
+            className="flex-1 rounded-xl border border-zinc-300 px-4 py-2 text-sm uppercase font-mono tracking-wider focus:border-gold focus:outline-none focus:ring-1 focus:ring-gold"
           />
           <Button
             type="submit"
@@ -121,15 +121,15 @@ export const TrackOrder = ({ onNavigate, queryParams = {} }) => {
       {order && (
         <div className="bg-white rounded-3xl border border-zinc-200 shadow-lg overflow-hidden animate-in fade-in">
           {/* Status Ribbon */}
-          <div className="bg-royal-black text-white p-6 sm:p-8 flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-gold/30">
+          <div className="bg-royal-black text-white p-5 sm:p-6 flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-gold/30">
             <div>
               <span className="text-[11px] uppercase tracking-wider text-gold font-bold">
                 Tracking Details
               </span>
-              <h2 className="font-serif text-xl sm:text-2xl font-bold text-white mt-0.5">
+              <h2 className="font-serif text-lg sm:text-xl font-bold text-white mt-0.5">
                 Order #{order.orderId}
               </h2>
-              <p className="text-xs text-zinc-400 mt-1">
+              <p className="text-xs text-zinc-400 mt-0.5">
                 Placed on {new Date(order.createdAt).toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' })}
               </p>
             </div>
@@ -139,7 +139,7 @@ export const TrackOrder = ({ onNavigate, queryParams = {} }) => {
             </div>
           </div>
 
-          <div className="p-6 sm:p-8 space-y-8">
+          <div className="p-5 sm:p-6 space-y-6">
             {/* Pending Payment Form if awaiting TrxID */}
             {isPendingPayment && (
               <div className="bg-amber-50/80 border-2 border-amber-300 rounded-2xl p-5 sm:p-6 text-left space-y-3.5 shadow-sm">
