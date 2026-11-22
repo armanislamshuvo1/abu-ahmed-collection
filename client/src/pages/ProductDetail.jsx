@@ -70,17 +70,17 @@ export const ProductDetail = ({ slug, onNavigate }) => {
   )}`;
 
   return (
-    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-12 space-y-16">
+    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-5 sm:py-8 space-y-10">
       {/* Product Top Grid */}
-      <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12">
+      <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 lg:gap-8 items-start">
         {/* Gallery */}
-        <div className="lg:col-span-7">
+        <div className="lg:col-span-6">
           <ImageGallery images={product.images} productName={product.name} />
         </div>
 
         {/* Product Information */}
-        <div className="lg:col-span-5 space-y-6 flex flex-col justify-between">
-          <div className="space-y-4">
+        <div className="lg:col-span-6 space-y-4">
+          <div className="space-y-3.5">
             {/* Badges */}
             <div className="flex items-center gap-2 flex-wrap">
               <Badge variant="gold">{product.category}</Badge>
@@ -96,7 +96,7 @@ export const ProductDetail = ({ slug, onNavigate }) => {
             </div>
 
             {/* Title */}
-            <h1 className="font-serif text-2xl sm:text-3xl lg:text-4xl font-bold text-royal-black leading-tight">
+            <h1 className="font-serif text-xl sm:text-2xl lg:text-3xl font-bold text-royal-black leading-snug">
               {product.name}
             </h1>
 
@@ -131,7 +131,7 @@ export const ProductDetail = ({ slug, onNavigate }) => {
             )}
 
             {/* Blouse Piece Spec */}
-            <div className="p-3.5 rounded-xl bg-gold/5 border border-gold/20 flex items-center justify-between text-xs">
+            <div className="p-3 rounded-xl bg-gold/5 border border-gold/20 flex flex-col sm:flex-row sm:items-center justify-between gap-1 sm:gap-2 text-xs">
               <div className="flex items-center gap-2">
                 <Sparkles className="w-4 h-4 text-gold shrink-0" />
                 <span className="font-semibold text-royal-black">Blouse Piece:</span>
@@ -201,7 +201,7 @@ export const ProductDetail = ({ slug, onNavigate }) => {
             </div>
 
             {/* Assurance Points */}
-            <div className="grid grid-cols-2 gap-3 pt-4 border-t border-zinc-200 text-xs text-zinc-600">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5 pt-4 border-t border-zinc-200 text-xs text-zinc-600">
               <div className="flex items-center gap-2">
                 <Truck className="w-4 h-4 text-gold shrink-0" />
                 <span>Inside Dhaka: ৳80 | Outside: ৳150</span>
