@@ -22,6 +22,8 @@ import { Profile } from './pages/Profile';
 // Admin Pages
 import { AdminLogin } from './pages/admin/AdminLogin';
 import { AdminDashboard } from './pages/admin/AdminDashboard';
+import { ErrorBoundary } from './components/common/ErrorBoundary';
+import { ErrorPage } from './pages/ErrorPage';
 
 function AppContent() {
   const [currentPath, setCurrentPath] = useState(() => window.location.pathname || '/');
@@ -110,7 +112,18 @@ function AppContent() {
       return <Profile onNavigate={navigate} />;
     }
 
-    return <Home onNavigate={navigate} />;
+    if (currentPath === '/' || currentPath === '') {
+      return <Home onNavigate={navigate} />;
+    }
+
+    return (
+      <ErrorPage
+        code={404}
+        title="Page Not Found"
+        message="The page you requested could not be found. Please check the URL or return to our homepage."
+        onNavigate={navigate}
+      />
+    );
   };
 
   const isAdminSection = currentPath.startsWith('/admin');
@@ -120,7 +133,9 @@ function AppContent() {
       {!isAdminSection && <Navbar onNavigate={navigate} currentPath={currentPath} />}
 
       <main className="flex-1">
-        {renderPage()}
+        <ErrorBoundary key={currentPath} onNavigate={navigate}>
+          {renderPage()}
+        </ErrorBoundary>
       </main>
 
       {!isAdminSection && <Footer onNavigate={navigate} />}
@@ -142,7 +157,9 @@ export default function App() {
     <ToastProvider>
       <AuthProvider>
         <CartProvider>
-          <AppContent />
+          <ErrorBoundary>
+            <AppContent />
+          </ErrorBoundary>
         </CartProvider>
       </AuthProvider>
     </ToastProvider>
