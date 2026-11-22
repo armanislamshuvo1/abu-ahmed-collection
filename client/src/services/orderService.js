@@ -19,8 +19,14 @@ export const submitOrderTransactionId = async (orderId, transactionId) => {
 };
 
 export const getOrdersAdmin = async (params = {}) => {
-  const query = new URLSearchParams(params).toString();
-  return request(`/orders${query ? `?${query}` : ''}`, {
+  const query = new URLSearchParams();
+  Object.entries(params).forEach(([key, val]) => {
+    if (val !== undefined && val !== null && val !== '') {
+      query.append(key, val);
+    }
+  });
+  const qs = query.toString() ? `?${query.toString()}` : '';
+  return request(`/orders${qs}`, {
     isAdmin: true
   });
 };
