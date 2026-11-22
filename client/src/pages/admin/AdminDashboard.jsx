@@ -70,6 +70,9 @@ export const AdminDashboard = ({ onNavigate }) => {
   const [freeThreshold, setFreeThreshold] = useState(5000);
   const [storePhone, setStorePhone] = useState('');
   const [whatsappNumber, setWhatsappNumber] = useState('');
+  const [storeEmail, setStoreEmail] = useState('');
+  const [storeAddress, setStoreAddress] = useState('');
+  const [facebookUrl, setFacebookUrl] = useState('');
   const [savingDelivery, setSavingDelivery] = useState(false);
 
   // Payment Methods Tab State
@@ -157,6 +160,9 @@ export const AdminDashboard = ({ onNavigate }) => {
       if (data.freeShippingThreshold !== undefined) setFreeThreshold(data.freeShippingThreshold);
       if (data.storePhone) setStorePhone(data.storePhone);
       if (data.whatsappNumber) setWhatsappNumber(data.whatsappNumber);
+      if (data.storeEmail) setStoreEmail(data.storeEmail);
+      if (data.storeAddress) setStoreAddress(data.storeAddress);
+      if (data.facebookUrl) setFacebookUrl(data.facebookUrl);
 
       const methods = await getPaymentMethodsAdmin();
       setPaymentMethods(methods);
@@ -317,7 +323,10 @@ export const AdminDashboard = ({ onNavigate }) => {
 
       await updateGeneralSettings({
         storePhone: storePhone.trim(),
-        whatsappNumber: whatsappNumber.trim()
+        whatsappNumber: whatsappNumber.trim(),
+        storeEmail: storeEmail.trim(),
+        storeAddress: storeAddress.trim(),
+        facebookUrl: facebookUrl.trim()
       });
 
       refreshSettings();
@@ -994,18 +1003,59 @@ export const AdminDashboard = ({ onNavigate }) => {
                       type="text"
                       value={storePhone}
                       onChange={e => setStorePhone(e.target.value)}
+                      placeholder="+880 1806-732097"
                       className="w-full rounded-lg border border-zinc-300 px-3.5 py-2 text-sm text-royal-black focus:border-gold focus:outline-none"
                     />
                   </div>
 
                   <div>
                     <label className="block text-xs font-semibold text-royal-black/80 mb-1">
-                      Store Owner WhatsApp Number (e.g. 8801700000000)
+                      Store Owner WhatsApp Number (e.g. 8801806732097)
                     </label>
                     <input
                       type="text"
                       value={whatsappNumber}
                       onChange={e => setWhatsappNumber(e.target.value)}
+                      placeholder="8801806732097"
+                      className="w-full rounded-lg border border-zinc-300 px-3.5 py-2 text-sm text-royal-black focus:border-gold focus:outline-none"
+                    />
+                  </div>
+
+                  <div>
+                    <label className="block text-xs font-semibold text-royal-black/80 mb-1">
+                      Store Email
+                    </label>
+                    <input
+                      type="email"
+                      value={storeEmail}
+                      onChange={e => setStoreEmail(e.target.value)}
+                      placeholder="mabuahmedsons786@gmail.com"
+                      className="w-full rounded-lg border border-zinc-300 px-3.5 py-2 text-sm text-royal-black focus:border-gold focus:outline-none"
+                    />
+                  </div>
+
+                  <div>
+                    <label className="block text-xs font-semibold text-royal-black/80 mb-1">
+                      Official Facebook Page URL
+                    </label>
+                    <input
+                      type="url"
+                      value={facebookUrl}
+                      onChange={e => setFacebookUrl(e.target.value)}
+                      placeholder="https://www.facebook.com/people/Abu-Ahmed-Collection/..."
+                      className="w-full rounded-lg border border-zinc-300 px-3.5 py-2 text-sm text-royal-black focus:border-gold focus:outline-none"
+                    />
+                  </div>
+
+                  <div className="sm:col-span-2">
+                    <label className="block text-xs font-semibold text-royal-black/80 mb-1">
+                      Store Physical Address
+                    </label>
+                    <input
+                      type="text"
+                      value={storeAddress}
+                      onChange={e => setStoreAddress(e.target.value)}
+                      placeholder="Shop No. 106, RS Road, Reazuddin Bazar, Chittagong, Bangladesh"
                       className="w-full rounded-lg border border-zinc-300 px-3.5 py-2 text-sm text-royal-black focus:border-gold focus:outline-none"
                     />
                   </div>

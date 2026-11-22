@@ -32,19 +32,23 @@ const settingSchema = new mongoose.Schema(
     },
     storePhone: {
       type: String,
-      default: '+8801700000000'
+      default: '+880 1806-732097'
     },
     storeEmail: {
       type: String,
-      default: 'support@abuahmedcollection.com'
+      default: 'mabuahmedsons786@gmail.com'
     },
     storeAddress: {
       type: String,
-      default: 'Dhaka, Bangladesh'
+      default: 'Shop No. 106, RS Road, Reazuddin Bazar, Chittagong, Bangladesh'
     },
     whatsappNumber: {
       type: String,
-      default: '8801700000000'
+      default: '8801806732097'
+    },
+    facebookUrl: {
+      type: String,
+      default: 'https://www.facebook.com/people/Abu-Ahmed-Collection/61586448518021/'
     },
     currencySymbol: {
       type: String,

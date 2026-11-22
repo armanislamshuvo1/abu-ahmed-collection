@@ -4,7 +4,7 @@ import { useAuth } from '../../context/AuthContext';
 
 export const WhatsAppFloatingBtn = () => {
   const { settings } = useAuth();
-  const phone = settings?.whatsappNumber || '8801700000000';
+  const phone = settings?.whatsappNumber || '8801806732097';
   const text = encodeURIComponent('Assalamu Alaikum Abu Ahmed Collection! I want to inquire about your saree collections.');
 
   return (

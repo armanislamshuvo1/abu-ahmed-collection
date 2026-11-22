@@ -50,10 +50,11 @@ const seedDatabase = async () => {
     // 3. Create Settings
     const settings = await Setting.create({
       storeName: 'Abu Ahmed Collection',
-      storePhone: '+8801700000000',
-      storeEmail: 'support@abuahmedcollection.com',
-      storeAddress: 'Elephant Road / Banani, Dhaka, Bangladesh',
-      whatsappNumber: '8801700000000',
+      storePhone: '+880 1806-732097',
+      storeEmail: 'mabuahmedsons786@gmail.com',
+      storeAddress: 'Shop No. 106, RS Road, Reazuddin Bazar, Chittagong, Bangladesh',
+      whatsappNumber: '8801806732097',
+      facebookUrl: 'https://www.facebook.com/people/Abu-Ahmed-Collection/61586448518021/',
       currencySymbol: '৳',
       freeShippingThreshold: 5000,
       deliveryZones: [

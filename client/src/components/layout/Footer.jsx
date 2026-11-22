@@ -141,27 +141,41 @@ export const Footer = ({ onNavigate }) => {
             <ul className="space-y-3 text-xs text-zinc-400">
               <li className="flex items-start gap-2.5">
                 <MapPin className="w-4 h-4 text-gold shrink-0 mt-0.5" />
-                <span>{settings?.storeAddress || 'Elephant Road / Banani, Dhaka, Bangladesh'}</span>
+                <span>{settings?.storeAddress || 'Shop No. 106, RS Road, Reazuddin Bazar, Chittagong, Bangladesh'}</span>
               </li>
               <li className="flex items-center gap-2.5">
                 <Phone className="w-4 h-4 text-gold shrink-0" />
-                <span>{settings?.storePhone || '+8801700000000'}</span>
+                <span>{settings?.storePhone || '+880 1806-732097'}</span>
               </li>
               <li className="flex items-center gap-2.5">
                 <Mail className="w-4 h-4 text-gold shrink-0" />
-                <span>{settings?.storeEmail || 'support@abuahmedcollection.com'}</span>
+                <span>{settings?.storeEmail || 'mabuahmedsons786@gmail.com'}</span>
               </li>
             </ul>
 
-            <div className="mt-5 p-3 rounded-lg bg-zinc-900/80 border border-zinc-800 text-[11px] text-zinc-400">
-              <span className="text-gold-light font-medium block mb-1">WhatsApp Fast Order:</span>
+            <div className="mt-4 space-y-2">
+              <div className="p-3 rounded-lg bg-zinc-900/80 border border-zinc-800 text-[11px] text-zinc-400">
+                <span className="text-gold-light font-medium block mb-1">WhatsApp Fast Order:</span>
+                <a
+                  href={`https://wa.me/${settings?.whatsappNumber || '8801806732097'}?text=${encodeURIComponent('Hello Abu Ahmed Collection, I would like to inquire about sarees.')}`}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-emerald-400 hover:text-emerald-300 font-semibold underline"
+                >
+                  Chat on WhatsApp (+{settings?.whatsappNumber || '8801806732097'})
+                </a>
+              </div>
+
               <a
-                href={`https://wa.me/${settings?.whatsappNumber || '8801700000000'}?text=${encodeURIComponent('Hello Abu Ahmed Collection, I would like to inquire about sarees.')}`}
+                href={settings?.facebookUrl || 'https://www.facebook.com/people/Abu-Ahmed-Collection/61586448518021/'}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="text-emerald-400 hover:text-emerald-300 font-semibold underline"
+                className="flex items-center justify-center gap-2 w-full py-2 px-3 rounded-lg bg-blue-600/15 hover:bg-blue-600/25 border border-blue-500/30 text-blue-400 text-xs font-medium transition-colors"
               >
-                Chat on WhatsApp (+{settings?.whatsappNumber || '8801700000000'})
+                <svg className="w-4 h-4 fill-current" viewBox="0 0 24 24">
+                  <path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/>
+                </svg>
+                <span>Visit Facebook Page</span>
               </a>
             </div>
           </div>

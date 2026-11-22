@@ -64,7 +64,7 @@ export const ProductDetail = ({ slug, onNavigate }) => {
     ? Math.round(((product.regularPrice - product.discountPrice) / product.regularPrice) * 100)
     : 0;
 
-  const whatsAppPhone = settings?.whatsappNumber || '8801700000000';
+  const whatsAppPhone = settings?.whatsappNumber || '8801806732097';
   const whatsAppInquiryUrl = `https://wa.me/${whatsAppPhone}?text=${encodeURIComponent(
     `Hello Abu Ahmed Collection, I want to inquire about: ${product.name} (Price: ৳${currentPrice}). Is it available for delivery?`
   )}`;

@@ -7,10 +7,11 @@ const getOrCreateDefaultSettings = async () => {
   if (!settings) {
     settings = await Setting.create({
       storeName: 'Abu Ahmed Collection',
-      storePhone: '+8801700000000',
-      storeEmail: 'support@abuahmedcollection.com',
-      storeAddress: 'Dhaka, Bangladesh',
-      whatsappNumber: '8801700000000',
+      storePhone: '+880 1806-732097',
+      storeEmail: 'mabuahmedsons786@gmail.com',
+      storeAddress: 'Shop No. 106, RS Road, Reazuddin Bazar, Chittagong, Bangladesh',
+      whatsappNumber: '8801806732097',
+      facebookUrl: 'https://www.facebook.com/people/Abu-Ahmed-Collection/61586448518021/',
       currencySymbol: '৳',
       freeShippingThreshold: 5000,
       deliveryZones: [
@@ -48,6 +49,7 @@ const getPublicSettings = async (req, res) => {
       storeEmail: settings.storeEmail,
       storeAddress: settings.storeAddress,
       whatsappNumber: settings.whatsappNumber,
+      facebookUrl: settings.facebookUrl || 'https://www.facebook.com/people/Abu-Ahmed-Collection/61586448518021/',
       currencySymbol: settings.currencySymbol,
       freeShippingThreshold: settings.freeShippingThreshold,
       deliveryZones: settings.deliveryZones.filter(z => z.isActive),
@@ -97,7 +99,7 @@ const updateDeliverySettings = async (req, res) => {
 // @access  Private (Admin)
 const updateGeneralSettings = async (req, res) => {
   try {
-    const { storeName, storePhone, storeEmail, storeAddress, whatsappNumber } = req.body;
+    const { storeName, storePhone, storeEmail, storeAddress, whatsappNumber, facebookUrl } = req.body;
     const settings = await getOrCreateDefaultSettings();
 
     if (storeName) settings.storeName = storeName;
@@ -105,6 +107,7 @@ const updateGeneralSettings = async (req, res) => {
     if (storeEmail) settings.storeEmail = storeEmail;
     if (storeAddress) settings.storeAddress = storeAddress;
     if (whatsappNumber) settings.whatsappNumber = whatsappNumber;
+    if (facebookUrl !== undefined) settings.facebookUrl = facebookUrl;
 
     const updated = await settings.save();
     return res.json(updated);
