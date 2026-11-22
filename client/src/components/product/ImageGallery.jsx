@@ -8,13 +8,13 @@ export const ImageGallery = ({ images = [], productName = 'Saree' }) => {
     <div className="flex flex-col-reverse md:flex-row gap-4">
       {/* Thumbnails list */}
       {displayImages.length > 1 && (
-        <div className="flex md:flex-col gap-3 overflow-x-auto md:overflow-y-auto max-h-[550px] pb-2 md:pb-0 scrollbar-none">
+        <div className="flex md:flex-col gap-2.5 overflow-x-auto md:overflow-y-auto max-h-[460px] lg:max-h-[500px] pb-2 md:pb-0 scrollbar-none">
           {displayImages.map((img, idx) => (
             <button
               key={idx}
               type="button"
               onClick={() => setSelectedImage(img)}
-              className={`relative w-16 h-20 sm:w-20 sm:h-24 shrink-0 rounded-xl overflow-hidden border-2 transition-all ${
+              className={`relative w-14 h-18 sm:w-16 sm:h-20 shrink-0 rounded-xl overflow-hidden border-2 transition-all ${
                 selectedImage === img
                   ? 'border-gold shadow-gold scale-102'
                   : 'border-zinc-200 hover:border-zinc-400 opacity-70 hover:opacity-100'
@@ -34,7 +34,7 @@ export const ImageGallery = ({ images = [], productName = 'Saree' }) => {
       )}
 
       {/* Main Large Image */}
-      <div className="relative flex-1 aspect-[3/4] rounded-2xl overflow-hidden bg-zinc-100 border border-zinc-200/80 shadow-md">
+      <div className="relative flex-1 aspect-[3/4] max-h-[460px] lg:max-h-[500px] rounded-2xl overflow-hidden bg-zinc-100 border border-zinc-200/80 shadow-md">
         <img
           src={selectedImage}
           alt={productName}
