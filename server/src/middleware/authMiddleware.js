@@ -8,7 +8,17 @@ const protectAdmin = async (req, res, next) => {
     try {
       token = req.headers.authorization.split(' ')[1];
       const decoded = jwt.verify(token, process.env.JWT_SECRET || 'secret');
+
+      // Check Admin collection
       req.admin = await Admin.findById(decoded.id).select('-password');
+      // If not in Admin collection, check User collection with role === 'admin'
+      if (!req.admin) {
+        const userAdmin = await User.findById(decoded.id).select('-password');
+        if (userAdmin && userAdmin.role === 'admin') {
+          req.admin = userAdmin;
+        }
+      }
+
       if (!req.admin) {
         return res.status(401).json({ message: 'Not authorized as an admin' });
       }
