@@ -32,6 +32,11 @@ const userSchema = new mongoose.Schema(
     city: {
       type: String,
       default: 'Dhaka'
+    },
+    role: {
+      type: String,
+      enum: ['customer', 'admin'],
+      default: 'customer'
     }
   },
   { timestamps: true }
