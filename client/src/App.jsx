@@ -129,7 +129,7 @@ function AppContent() {
   const isAdminSection = currentPath.startsWith('/admin');
 
   return (
-    <div className="min-h-screen flex flex-col bg-cream text-royal-black">
+    <div className="min-h-screen flex flex-col bg-cream text-royal-black overflow-x-hidden">
       {!isAdminSection && <Navbar onNavigate={navigate} currentPath={currentPath} />}
 
       <main className="flex-1">
