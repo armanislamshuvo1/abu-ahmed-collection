@@ -9,7 +9,7 @@ export const Footer = ({ onNavigate }) => {
     <footer className="bg-royal-black text-white border-t border-gold/20 pt-16 pb-12 mt-20">
       {/* Trust Badges */}
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-12 border-b border-zinc-800">
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-6 text-center sm:text-left">
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-5 sm:gap-6 text-center sm:text-left">
           <div className="flex flex-col sm:flex-row items-center gap-3">
             <div className="w-12 h-12 rounded-full bg-gold/15 flex items-center justify-center text-gold border border-gold/30 shrink-0">
               <Crown className="w-6 h-6" />
