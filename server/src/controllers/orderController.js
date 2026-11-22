@@ -22,7 +22,14 @@ const createOrder = async (req, res) => {
 
     // Fetch store settings for delivery fee calculation
     let settings = await Setting.findOne();
-    const zoneKey = customer.deliveryZoneKey || 'inside_dhaka';
+    
+    // Server-side anti-tamper verification of delivery zone from address
+    const fullAddr = (customer.address || '').toLowerCase();
+    const isDhakaSuburbs = ['savar', 'ashulia', 'dhamrai', 'keraniganj', 'dohar', 'nawabganj', 'gazipur', 'narayanganj'].some(sub => fullAddr.includes(sub));
+    let zoneKey = customer.deliveryZoneKey || 'inside_dhaka';
+    if (!fullAddr.includes('dhaka') || isDhakaSuburbs) {
+      zoneKey = 'outside_dhaka';
+    }
     const zone = settings?.deliveryZones?.find(z => z.key === zoneKey && z.isActive);
     let deliveryFee = zone ? zone.fee : (zoneKey === 'outside_dhaka' ? 150 : 80);
     const zoneName = zone ? zone.name : (zoneKey === 'outside_dhaka' ? 'Outside Dhaka' : 'Inside Dhaka');
@@ -61,11 +68,21 @@ const createOrder = async (req, res) => {
     const total = subtotal + deliveryFee;
     const orderId = await generateOrderId(Order);
 
+    const isCod = (!paymentMethod?.code || paymentMethod.code === 'cod');
+    const hasTrx = Boolean(paymentMethod?.transactionId && paymentMethod.transactionId.trim());
+    const initialStatus = isCod
+      ? 'Pending'
+      : (hasTrx ? 'Verifying Payment' : 'Pending Payment');
+
     const initialTimeline = [
       {
-        status: 'Pending',
+        status: initialStatus,
         timestamp: new Date(),
-        note: 'Order placed by customer via website'
+        note: initialStatus === 'Pending Payment'
+          ? `Order placed. Awaiting ${paymentMethod?.name || 'payment'} Transaction ID (TrxID)`
+          : (initialStatus === 'Verifying Payment'
+              ? `Order placed with ${paymentMethod?.name} TrxID: ${paymentMethod?.transactionId}. Payment verifying.`
+              : 'Order placed by customer via website')
       }
     ];
 
@@ -90,7 +107,7 @@ const createOrder = async (req, res) => {
         name: paymentMethod?.name || 'Cash on Delivery',
         transactionId: paymentMethod?.transactionId || ''
       },
-      status: 'Pending',
+      status: initialStatus,
       timeline: initialTimeline
     });
 
@@ -297,9 +314,49 @@ const getAdminStats = async (req, res) => {
   }
 };
 
+
+// @desc    Customer submits transaction ID for an order
+// @route   PATCH /api/orders/track/:orderId/transaction-id
+// @access  Public
+const submitOrderTransactionId = async (req, res) => {
+  try {
+    const rawId = req.params.orderId.trim().toUpperCase();
+    const { transactionId } = req.body;
+
+    if (!transactionId || !transactionId.trim()) {
+      return res.status(400).json({ message: 'Transaction ID is required.' });
+    }
+
+    const order = await Order.findOne({ orderId: rawId });
+    if (!order) {
+      return res.status(404).json({ message: `No order found with ID: ${rawId}` });
+    }
+
+    order.paymentMethod.transactionId = transactionId.trim();
+    order.status = 'Verifying Payment';
+
+    order.timeline.push({
+      status: 'Verifying Payment',
+      timestamp: new Date(),
+      note: `Customer submitted ${order.paymentMethod.name} Transaction ID: ${transactionId.trim()}. Awaiting verification.`
+    });
+
+    await order.save();
+
+    return res.json({
+      success: true,
+      message: 'Transaction ID recorded successfully!',
+      order
+    });
+  } catch (error) {
+    return res.status(500).json({ message: error.message });
+  }
+};
+
 module.exports = {
   createOrder,
   trackOrder,
+  submitOrderTransactionId,
   getOrdersAdmin,
   getOrderByIdAdmin,
   updateOrderStatusAdmin,

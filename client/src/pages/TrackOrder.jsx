@@ -1,14 +1,18 @@
 import React, { useState, useEffect } from 'react';
-import { Search, Truck, Clock, CheckCircle2, AlertCircle, Package, ArrowRight, MessageCircle } from 'lucide-react';
-import { trackOrder } from '../services/orderService';
+import { Search, Truck, Clock, CheckCircle2, AlertCircle, Package, ArrowRight, MessageCircle, Send } from 'lucide-react';
+import { trackOrder, submitOrderTransactionId } from '../services/orderService';
 import { Button } from '../components/ui/Button';
 import { Badge } from '../components/ui/Badge';
+import { useToast } from '../context/ToastContext';
 
 export const TrackOrder = ({ onNavigate, queryParams = {} }) => {
+  const { addToast } = useToast();
   const [orderIdInput, setOrderIdInput] = useState(queryParams.id || '');
   const [order, setOrder] = useState(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
+  const [trxInput, setTrxInput] = useState('');
+  const [isSubmittingTrx, setIsSubmittingTrx] = useState(false);
 
   const steps = ['Pending', 'Confirmed', 'Processing', 'Shipped', 'Delivered'];
 
@@ -39,43 +43,65 @@ export const TrackOrder = ({ onNavigate, queryParams = {} }) => {
 
   const getStepIndex = (status) => {
     if (status === 'Cancelled') return -1;
+    if (status === 'Pending Payment' || status === 'Verifying Payment') return 0;
     return steps.indexOf(status);
   };
 
   const currentStepIdx = order ? getStepIndex(order.status) : 0;
 
+  const isPendingPayment = order && order.paymentMethod?.code !== 'cod' && (!order.paymentMethod?.transactionId || order.status === 'Pending Payment');
+  const isVerifyingPayment = order && order.status === 'Verifying Payment';
+
+  const handleTrxSubmit = async (e) => {
+    e.preventDefault();
+    if (!trxInput.trim()) {
+      addToast('Please enter your Transaction ID (TrxID).', 'error');
+      return;
+    }
+
+    setIsSubmittingTrx(true);
+    try {
+      await submitOrderTransactionId(order.orderId, trxInput.trim());
+      addToast('Payment Transaction ID submitted! Payment is now verifying.', 'success');
+      // Refresh order details
+      const refreshed = await trackOrder(order.orderId);
+      setOrder(refreshed);
+      setTrxInput('');
+    } catch (err) {
+      addToast(err.message || 'Failed to submit Transaction ID.', 'error');
+    } finally {
+      setIsSubmittingTrx(false);
+    }
+  };
+
   return (
-    <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-10 sm:py-16 space-y-10">
-      {/* Header */}
-      <div className="text-center max-w-xl mx-auto space-y-2">
-        <div className="w-12 h-12 rounded-full bg-gold/15 text-gold flex items-center justify-center mx-auto border border-gold/30">
+    <div className="max-w-4xl mx-auto px-4 py-10 sm:py-16 space-y-8">
+      {/* Search Header */}
+      <div className="text-center max-w-xl mx-auto">
+        <div className="w-12 h-12 rounded-2xl bg-gold/10 text-gold-deep flex items-center justify-center mx-auto mb-3">
           <Truck className="w-6 h-6" />
         </div>
-        <h1 className="font-serif text-2xl sm:text-4xl font-bold text-royal-black">
-          Track Your Saree Order
+        <h1 className="font-serif text-2xl sm:text-3xl font-bold text-royal-black">
+          Track Your Artisan Order
         </h1>
-        <p className="text-xs sm:text-sm text-zinc-500 font-light">
-          Enter your unique Order ID (e.g., <span className="font-mono text-royal-black font-semibold">AAC-2026-1001</span>) provided upon checkout or in your confirmation WhatsApp / SMS.
+        <p className="text-xs sm:text-sm text-zinc-500 mt-2">
+          Enter your unique Order ID (e.g., <span className="font-mono text-royal-black font-semibold">AAC-2026-1001</span>) to see live status updates.
         </p>
-      </div>
 
-      {/* Lookup Form */}
-      <div className="max-w-lg mx-auto bg-white p-4 sm:p-6 rounded-2xl border border-zinc-200 shadow-soft">
-        <form onSubmit={handleTrackSubmit} className="flex gap-2">
-          <div className="relative flex-1">
-            <input
-              type="text"
-              placeholder="Enter Order ID (e.g. AAC-2026-1001)"
-              value={orderIdInput}
-              onChange={e => setOrderIdInput(e.target.value.toUpperCase())}
-              required
-              className="w-full uppercase font-mono tracking-wider rounded-xl border border-zinc-300 pl-10 pr-4 py-3 text-sm text-royal-black placeholder-zinc-400 focus:border-gold focus:outline-none focus:ring-1 focus:ring-gold"
-            />
-            <Search className="w-4 h-4 text-zinc-400 absolute left-3.5 top-3.5" />
-          </div>
+        {/* Input box */}
+        <form onSubmit={handleTrackSubmit} className="mt-6 flex gap-2 max-w-md mx-auto">
+          <input
+            type="text"
+            required
+            placeholder="e.g. AAC-2026-1001"
+            value={orderIdInput}
+            onChange={e => setOrderIdInput(e.target.value)}
+            className="flex-1 rounded-xl border border-zinc-300 px-4 py-2.5 text-sm uppercase font-mono tracking-wider focus:border-gold focus:outline-none focus:ring-1 focus:ring-gold"
+          />
           <Button
             type="submit"
             variant="primary"
+            size="md"
             loading={loading}
             className="px-6 shrink-0"
           >
@@ -109,22 +135,58 @@ export const TrackOrder = ({ onNavigate, queryParams = {} }) => {
             </div>
 
             <div>
-              <span
-                className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wider ${
-                  order.status === 'Delivered'
-                    ? 'bg-emerald-500/20 text-emerald-300 border border-emerald-500/40'
-                    : order.status === 'Cancelled'
-                    ? 'bg-red-500/20 text-red-300 border border-red-500/40'
-                    : 'bg-gold/20 text-gold-light border border-gold/40'
-                }`}
-              >
-                <Clock className="w-3.5 h-3.5" />
-                <span>Status: {order.status}</span>
-              </span>
+              <Badge variant={order.status.toLowerCase()}>{order.status}</Badge>
             </div>
           </div>
 
           <div className="p-6 sm:p-8 space-y-8">
+            {/* Pending Payment Form if awaiting TrxID */}
+            {isPendingPayment && (
+              <div className="bg-amber-50/80 border-2 border-amber-300 rounded-2xl p-5 sm:p-6 text-left space-y-3.5 shadow-sm">
+                <div className="flex items-center gap-2 text-amber-900 font-bold text-sm">
+                  <AlertCircle className="w-5 h-5 text-amber-600 shrink-0" />
+                  <span>Action Needed: Complete Payment & Submit TrxID</span>
+                </div>
+                <p className="text-xs text-amber-800 leading-relaxed">
+                  Your order is awaiting payment confirmation. If you have sent money via {order.paymentMethod?.name}, enter your Transaction ID (TrxID) below:
+                </p>
+
+                <form onSubmit={handleTrxSubmit} className="flex flex-col sm:flex-row gap-3 pt-1">
+                  <input
+                    type="text"
+                    required
+                    placeholder="Enter Transaction ID (e.g. 9G7K21LM88)"
+                    value={trxInput}
+                    onChange={e => setTrxInput(e.target.value)}
+                    className="flex-1 rounded-xl border border-amber-300 bg-white px-3.5 py-2.5 text-sm text-royal-black uppercase placeholder-zinc-400 focus:border-gold focus:outline-none focus:ring-2 focus:ring-gold/30 font-mono"
+                  />
+                  <Button
+                    type="submit"
+                    variant="primary"
+                    size="md"
+                    loading={isSubmittingTrx}
+                    className="flex items-center justify-center gap-2 shrink-0"
+                  >
+                    <Send className="w-4 h-4" />
+                    <span>Submit TrxID</span>
+                  </Button>
+                </form>
+              </div>
+            )}
+
+            {/* Verifying Payment Notice if TrxID is submitted */}
+            {isVerifyingPayment && (
+              <div className="bg-cyan-50/80 border-2 border-cyan-300 rounded-2xl p-5 text-left space-y-2 shadow-sm">
+                <div className="flex items-center gap-2 text-cyan-900 font-bold text-sm">
+                  <Clock className="w-5 h-5 text-cyan-600 shrink-0" />
+                  <span>Payment Under Verification</span>
+                </div>
+                <p className="text-xs text-cyan-800 leading-relaxed">
+                  We received your {order.paymentMethod?.name} TrxID: <span className="font-mono font-bold">{order.paymentMethod?.transactionId}</span>. Our team is verifying the payment and will confirm your order shortly.
+                </p>
+              </div>
+            )}
+
             {/* Step Progress Timeline (if not Cancelled) */}
             {order.status !== 'Cancelled' ? (
               <div className="py-4">
@@ -142,7 +204,7 @@ export const TrackOrder = ({ onNavigate, queryParams = {} }) => {
                   {/* Steps circles */}
                   <div className="relative flex justify-between z-10">
                     {steps.map((st, idx) => {
-                      const isCompleted = idx <= currentStepIdx;
+                      const isCompleted = idx <= currentStepIdx && order.status !== 'Pending Payment' && order.status !== 'Verifying Payment';
                       const isCurrent = idx === currentStepIdx;
                       return (
                         <div key={st} className="flex flex-col items-center text-center">
@@ -209,7 +271,10 @@ export const TrackOrder = ({ onNavigate, queryParams = {} }) => {
                   <p><strong className="text-royal-black">Contact:</strong> {order.customer.phone}</p>
                   <p><strong className="text-royal-black">Address:</strong> {order.customer.address}</p>
                   <p><strong className="text-royal-black">Zone:</strong> {order.customer.deliveryZoneName}</p>
-                  <p><strong className="text-royal-black">Payment:</strong> {order.paymentMethod?.name}</p>
+                  <p>
+                    <strong className="text-royal-black">Payment:</strong> {order.paymentMethod?.name}
+                    {order.paymentMethod?.transactionId ? ` (TrxID: ${order.paymentMethod.transactionId})` : ''}
+                  </p>
                 </div>
               </div>
 

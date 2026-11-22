@@ -63,16 +63,19 @@ export const PaymentMethodSelector = ({
           {selectedMethod.requiresTransactionId && (
             <div className="pt-2">
               <label className="block text-xs font-semibold text-royal-black mb-1">
-                Enter {selectedMethod.name} Transaction ID (TrxID) <span className="text-red-500">*</span>
+                Enter {selectedMethod.name} Transaction ID (TrxID){' '}
+                <span className="text-zinc-500 font-normal">(Optional now — can enter after order)</span>
               </label>
               <input
                 type="text"
                 placeholder="e.g. 9G7K21LM88"
                 value={transactionId}
                 onChange={e => onChangeTransactionId(e.target.value)}
-                required
                 className="w-full rounded-lg border border-zinc-300 bg-white px-3 py-2 text-sm text-royal-black uppercase placeholder-zinc-400 focus:border-gold focus:outline-none focus:ring-1 focus:ring-gold"
               />
+              <p className="text-[11px] text-zinc-500 mt-1">
+                You can pay and enter your TrxID now, or place your order first and submit it anytime.
+              </p>
             </div>
           )}
         </div>

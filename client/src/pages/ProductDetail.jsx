@@ -173,7 +173,7 @@ export const ProductDetail = ({ slug, onNavigate }) => {
                   className="w-full flex items-center justify-center gap-2"
                 >
                   <Zap className="w-5 h-5 text-gold-dark" />
-                  <span>Buy Now (COD)</span>
+                  <span>Buy Now</span>
                 </Button>
 
                 <Button
@@ -184,7 +184,7 @@ export const ProductDetail = ({ slug, onNavigate }) => {
                   className="w-full flex items-center justify-center gap-2"
                 >
                   <ShoppingBag className="w-5 h-5" />
-                  <span>Add to Shopping Bag</span>
+                  <span>Add to Cart</span>
                 </Button>
               </div>
 

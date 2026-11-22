@@ -1,12 +1,16 @@
 import React from 'react';
 
 export const Badge = ({ children, variant = 'gold', className = '', ...props }) => {
+  const normalizedVariant = typeof variant === 'string' ? variant.toLowerCase() : 'gold';
+
   const variants = {
     gold: 'bg-gold/15 text-gold-deep border border-gold/40',
     discount: 'bg-gradient-to-r from-red-600 to-maroon text-white font-bold shadow-sm',
     new: 'bg-royal-black text-gold border border-gold/30',
     stock: 'bg-emerald-50 text-emerald-700 border border-emerald-200',
-    outOfStock: 'bg-zinc-100 text-zinc-500 border border-zinc-200',
+    outofstock: 'bg-zinc-100 text-zinc-500 border border-zinc-200',
+    'pending payment': 'bg-amber-100 text-amber-900 border border-amber-300 font-semibold',
+    'verifying payment': 'bg-cyan-100 text-cyan-900 border border-cyan-300 font-semibold',
     pending: 'bg-amber-50 text-amber-800 border border-amber-200',
     confirmed: 'bg-blue-50 text-blue-800 border border-blue-200',
     processing: 'bg-purple-50 text-purple-800 border border-purple-200',
@@ -18,7 +22,7 @@ export const Badge = ({ children, variant = 'gold', className = '', ...props }) 
   return (
     <span
       className={`inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-xs font-medium tracking-wide uppercase ${
-        variants[variant] || variants.gold
+        variants[normalizedVariant] || variants.gold
       } ${className}`}
       {...props}
     >

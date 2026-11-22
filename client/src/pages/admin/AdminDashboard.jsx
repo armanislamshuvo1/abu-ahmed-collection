@@ -663,7 +663,7 @@ export const AdminDashboard = ({ onNavigate }) => {
 
               {/* Status Tabs */}
               <div className="flex flex-wrap gap-2 text-xs">
-                {['All', 'Pending', 'Confirmed', 'Processing', 'Shipped', 'Delivered', 'Cancelled'].map(st => (
+                {['All', 'Pending Payment', 'Verifying Payment', 'Pending', 'Confirmed', 'Processing', 'Shipped', 'Delivered', 'Cancelled'].map(st => (
                   <button
                     key={st}
                     onClick={() => setOrderStatusFilter(st)}
@@ -728,7 +728,11 @@ export const AdminDashboard = ({ onNavigate }) => {
                               onChange={e => handleStatusChange(order._id, e.target.value)}
                               className="rounded-lg border border-zinc-300 bg-white px-2 py-1 text-xs font-semibold text-royal-black focus:border-gold focus:outline-none"
                             >
-                              <option value="Pending">Pending</option>
+                              <option value="Pending Payment">Pending Payment</option>
+                              <option value="Verifying Payment">Verifying Payment</option>
+                              <option value="Pending Payment">Pending Payment</option>
+                  <option value="Verifying Payment">Verifying Payment</option>
+                  <option value="Pending">Pending</option>
                               <option value="Confirmed">Confirmed</option>
                               <option value="Processing">Processing</option>
                               <option value="Shipped">Shipped</option>

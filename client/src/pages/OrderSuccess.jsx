@@ -1,14 +1,19 @@
 import React, { useEffect, useState } from 'react';
 import confetti from 'canvas-confetti';
-import { CheckCircle2, MessageCircle, Truck, ArrowRight, Copy, Check, Download } from 'lucide-react';
+import { CheckCircle2, MessageCircle, Truck, ArrowRight, Copy, Check, AlertCircle, Send, Clock } from 'lucide-react';
 import { Button } from '../components/ui/Button';
+import { Badge } from '../components/ui/Badge';
+import { submitOrderTransactionId } from '../services/orderService';
+import { useToast } from '../context/ToastContext';
 
 export const OrderSuccess = ({ onNavigate, queryParams = {} }) => {
+  const { addToast } = useToast();
   const [orderData, setOrderData] = useState(null);
   const [copied, setCopied] = useState(false);
+  const [trxInput, setTrxInput] = useState('');
+  const [isSubmittingTrx, setIsSubmittingTrx] = useState(false);
 
   useEffect(() => {
-    // Trigger celebratory confetti
     try {
       confetti({
         particleCount: 80,
@@ -33,10 +38,45 @@ export const OrderSuccess = ({ onNavigate, queryParams = {} }) => {
   const order = orderData?.order;
   const orderId = queryParams.orderId || order?.orderId || 'AAC-2026-ORDER';
 
+  const isPendingPayment = order && order.paymentMethod?.code !== 'cod' && (!order.paymentMethod?.transactionId || order.status === 'Pending Payment');
+  const isVerifyingPayment = order && order.status === 'Verifying Payment';
+
   const copyOrderId = () => {
     navigator.clipboard.writeText(orderId);
     setCopied(true);
     setTimeout(() => setCopied(false), 2000);
+  };
+
+  const handleTrxSubmit = async (e) => {
+    e.preventDefault();
+    if (!trxInput.trim()) {
+      addToast('Please enter your Transaction ID (TrxID).', 'error');
+      return;
+    }
+
+    setIsSubmittingTrx(true);
+    try {
+      const res = await submitOrderTransactionId(orderId, trxInput.trim());
+      addToast('Payment Transaction ID submitted! Payment is now verifying.', 'success');
+
+      // Update local state to Verifying Payment
+      const updatedOrder = {
+        ...order,
+        status: 'Verifying Payment',
+        paymentMethod: {
+          ...order.paymentMethod,
+          transactionId: trxInput.trim()
+        }
+      };
+      const updatedData = { ...orderData, order: updatedOrder };
+      setOrderData(updatedData);
+      sessionStorage.setItem('last_order', JSON.stringify(updatedData));
+      setTrxInput('');
+    } catch (err) {
+      addToast(err.message || 'Failed to submit Transaction ID.', 'error');
+    } finally {
+      setIsSubmittingTrx(false);
+    }
   };
 
   return (
@@ -54,7 +94,11 @@ export const OrderSuccess = ({ onNavigate, queryParams = {} }) => {
             Order Successfully Placed!
           </h1>
           <p className="text-xs sm:text-sm text-zinc-300 mt-2 max-w-md mx-auto">
-            Our team will contact you shortly to confirm your dispatch.
+            {isPendingPayment
+              ? 'Please submit your payment Transaction ID below to begin processing.'
+              : isVerifyingPayment
+              ? 'Your payment Transaction ID has been received and is currently under verification.'
+              : 'Our team will contact you shortly to confirm your dispatch.'}
           </p>
         </div>
 
@@ -77,6 +121,55 @@ export const OrderSuccess = ({ onNavigate, queryParams = {} }) => {
               {copied ? <Check className="w-4 h-4 text-emerald-600" /> : <Copy className="w-4 h-4" />}
             </button>
           </div>
+
+          {/* Pending Payment Action Box (If user hasn't entered TrxID yet) */}
+          {isPendingPayment && (
+            <div className="bg-amber-50/80 border-2 border-amber-300 rounded-2xl p-5 sm:p-6 max-w-md mx-auto text-left space-y-3.5 shadow-sm">
+              <div className="flex items-center gap-2 text-amber-900 font-bold text-sm">
+                <AlertCircle className="w-5 h-5 text-amber-600 shrink-0" />
+                <span>Action Needed: Submit Payment TrxID</span>
+              </div>
+              <p className="text-xs text-amber-800 leading-relaxed">
+                Your order is on <span className="font-bold underline">Pending Payment</span>. Once you complete payment via {order?.paymentMethod?.name || 'mobile banking'}, enter your Transaction ID (TrxID) below:
+              </p>
+
+              <form onSubmit={handleTrxSubmit} className="space-y-3 pt-1">
+                <div>
+                  <input
+                    type="text"
+                    required
+                    placeholder="e.g. 9G7K21LM88"
+                    value={trxInput}
+                    onChange={e => setTrxInput(e.target.value)}
+                    className="w-full rounded-xl border border-amber-300 bg-white px-3.5 py-2.5 text-sm text-royal-black uppercase placeholder-zinc-400 focus:border-gold focus:outline-none focus:ring-2 focus:ring-gold/30 font-mono"
+                  />
+                </div>
+                <Button
+                  type="submit"
+                  variant="primary"
+                  size="md"
+                  loading={isSubmittingTrx}
+                  className="w-full flex items-center justify-center gap-2"
+                >
+                  <Send className="w-4 h-4" />
+                  <span>Submit Payment Transaction ID</span>
+                </Button>
+              </form>
+            </div>
+          )}
+
+          {/* Verifying Payment Notice (If TrxID is submitted and pending admin review) */}
+          {isVerifyingPayment && (
+            <div className="bg-cyan-50/80 border-2 border-cyan-300 rounded-2xl p-5 max-w-md mx-auto text-left space-y-2 shadow-sm">
+              <div className="flex items-center gap-2 text-cyan-900 font-bold text-sm">
+                <Clock className="w-5 h-5 text-cyan-600 shrink-0" />
+                <span>Payment Under Verification</span>
+              </div>
+              <p className="text-xs text-cyan-800 leading-relaxed">
+                Thank you! We received your {order?.paymentMethod?.name} TrxID: <span className="font-mono font-bold">{order?.paymentMethod?.transactionId}</span>. Our team will verify and dispatch your order.
+              </p>
+            </div>
+          )}
 
           {/* Quick Actions: WhatsApp Confirmation + Track Order */}
           <div className="flex flex-col sm:flex-row items-center justify-center gap-3 max-w-md mx-auto">
@@ -106,7 +199,10 @@ export const OrderSuccess = ({ onNavigate, queryParams = {} }) => {
           {/* Order Details Breakdown if available */}
           {order && (
             <div className="text-left pt-6 border-t border-zinc-200 space-y-4">
-              <h3 className="font-serif text-base font-bold text-royal-black">Order Summary</h3>
+              <div className="flex items-center justify-between">
+                <h3 className="font-serif text-base font-bold text-royal-black">Order Summary</h3>
+                <Badge variant={order.status.toLowerCase()}>{order.status}</Badge>
+              </div>
 
               <div className="divide-y divide-zinc-100">
                 {order.items.map((item, idx) => (
@@ -136,7 +232,10 @@ export const OrderSuccess = ({ onNavigate, queryParams = {} }) => {
                 </div>
                 <div className="flex justify-between">
                   <span>Payment Method:</span>
-                  <span className="font-semibold text-royal-black">{order.paymentMethod.name}</span>
+                  <span className="font-semibold text-royal-black">
+                    {order.paymentMethod.name}
+                    {order.paymentMethod.transactionId ? ` (TrxID: ${order.paymentMethod.transactionId})` : ''}
+                  </span>
                 </div>
                 <div className="flex justify-between pt-2 border-t border-zinc-200 text-sm font-bold text-royal-black">
                   <span>Total Payable:</span>

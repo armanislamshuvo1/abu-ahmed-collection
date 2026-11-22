@@ -11,6 +11,13 @@ export const trackOrder = async (orderId) => {
   return request(`/orders/track/${encodeURIComponent(orderId)}`);
 };
 
+export const submitOrderTransactionId = async (orderId, transactionId) => {
+  return request(`/orders/track/${encodeURIComponent(orderId)}/transaction-id`, {
+    method: 'PATCH',
+    body: { transactionId }
+  });
+};
+
 export const getOrdersAdmin = async (params = {}) => {
   const query = new URLSearchParams(params).toString();
   return request(`/orders${query ? `?${query}` : ''}`, {

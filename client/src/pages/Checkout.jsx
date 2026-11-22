@@ -1,11 +1,16 @@
 import React, { useState, useEffect } from 'react';
-import { ShoppingBag, ArrowLeft, ShieldCheck, Truck, Sparkles, Check } from 'lucide-react';
+import { ShoppingBag, ArrowLeft, ShieldCheck, Truck, Sparkles, Check, MapPin, Lock } from 'lucide-react';
 import { useCart } from '../context/CartContext';
 import { useAuth } from '../context/AuthContext';
 import { useToast } from '../context/ToastContext';
 import { createOrder } from '../services/orderService';
 import { PaymentMethodSelector } from '../components/cart/PaymentMethodSelector';
 import { Button } from '../components/ui/Button';
+import {
+  BANGLADESH_LOCATIONS,
+  DIVISIONS,
+  determineDeliveryZoneKey
+} from '../data/bangladeshLocations';
 
 export const Checkout = ({ onNavigate }) => {
   const { cartItems, subtotal, clearCart } = useCart();
@@ -15,7 +20,13 @@ export const Checkout = ({ onNavigate }) => {
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [phone, setPhone] = useState('');
-  const [address, setAddress] = useState('');
+
+  // Cascading Address Fields: Division > District > Thana > Street Address
+  const [division, setDivision] = useState('Dhaka');
+  const [district, setDistrict] = useState('Dhaka');
+  const [thana, setThana] = useState('');
+  const [streetAddress, setStreetAddress] = useState('');
+
   const [deliveryZoneKey, setDeliveryZoneKey] = useState('inside_dhaka');
   const [notes, setNotes] = useState('');
 
@@ -23,12 +34,43 @@ export const Checkout = ({ onNavigate }) => {
   const [transactionId, setTransactionId] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
 
+  // Available districts based on division
+  const availableDistricts = division && BANGLADESH_LOCATIONS[division]
+    ? Object.keys(BANGLADESH_LOCATIONS[division].districts)
+    : [];
+
+  // Available thanas based on division and district
+  const availableThanas = division && district && BANGLADESH_LOCATIONS[division]?.districts[district]
+    ? BANGLADESH_LOCATIONS[division].districts[district].thanas
+    : [];
+
+  // Auto-detect and set delivery zone whenever division, district, or thana changes
+  useEffect(() => {
+    const detectedKey = determineDeliveryZoneKey(division, district, thana);
+    setDeliveryZoneKey(detectedKey);
+  }, [division, district, thana]);
+
+  // Handle Division Change
+  const handleDivisionChange = (newDivision) => {
+    setDivision(newDivision);
+    const districts = Object.keys(BANGLADESH_LOCATIONS[newDivision]?.districts || {});
+    const firstDistrict = districts[0] || '';
+    setDistrict(firstDistrict);
+    setThana('');
+  };
+
+  // Handle District Change
+  const handleDistrictChange = (newDistrict) => {
+    setDistrict(newDistrict);
+    setThana('');
+  };
+
   useEffect(() => {
     if (user) {
       if (user.name) setName(user.name);
       if (user.email) setEmail(user.email);
       if (user.phone) setPhone(user.phone);
-      if (user.address) setAddress(user.address);
+      if (user.address) setStreetAddress(user.address);
     }
   }, [user]);
 
@@ -65,15 +107,17 @@ export const Checkout = ({ onNavigate }) => {
   const handleCheckoutSubmit = async (e) => {
     e.preventDefault();
 
-    if (!name.trim() || !email.trim() || !phone.trim() || !address.trim()) {
-      addToast('Customer Name, Email, Phone Number, and Address are required.', 'error');
+    if (!name.trim() || !email.trim() || !phone.trim()) {
+      addToast('Customer Name, Email, and Phone Number are required.', 'error');
       return;
     }
 
-    if (selectedMethod?.requiresTransactionId && !transactionId.trim()) {
-      addToast(`Please enter the ${selectedMethod.name} Transaction ID (TrxID).`, 'error');
+    if (!division || !district || !thana || !streetAddress.trim()) {
+      addToast('Please select Division, District, Thana and enter your street address.', 'error');
       return;
     }
+
+    const fullAddress = `${streetAddress.trim()}, ${thana}, ${district}, ${division}`;
 
     setIsSubmitting(true);
     try {
@@ -82,7 +126,7 @@ export const Checkout = ({ onNavigate }) => {
           name: name.trim(),
           email: email.toLowerCase().trim(),
           phone: phone.trim(),
-          address: address.trim(),
+          address: fullAddress,
           deliveryZoneKey: activeZone.key,
           deliveryZoneName: activeZone.name,
           notes: notes.trim()
@@ -183,48 +227,108 @@ export const Checkout = ({ onNavigate }) => {
                 />
               </div>
 
+              {/* Cascading Location Dropdowns: Division > District > Thana */}
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                <div>
+                  <label className="block text-xs font-semibold text-royal-black/80 mb-1">
+                    Division <span className="text-red-500">*</span>
+                  </label>
+                  <select
+                    value={division}
+                    onChange={e => handleDivisionChange(e.target.value)}
+                    required
+                    className="w-full rounded-lg border border-zinc-300 bg-white px-3 py-2.5 text-sm text-royal-black focus:border-gold focus:outline-none focus:ring-1 focus:ring-gold"
+                  >
+                    {DIVISIONS.map(div => (
+                      <option key={div} value={div}>{div}</option>
+                    ))}
+                  </select>
+                </div>
+
+                <div>
+                  <label className="block text-xs font-semibold text-royal-black/80 mb-1">
+                    District <span className="text-red-500">*</span>
+                  </label>
+                  <select
+                    value={district}
+                    onChange={e => handleDistrictChange(e.target.value)}
+                    required
+                    className="w-full rounded-lg border border-zinc-300 bg-white px-3 py-2.5 text-sm text-royal-black focus:border-gold focus:outline-none focus:ring-1 focus:ring-gold"
+                  >
+                    {availableDistricts.map(dst => (
+                      <option key={dst} value={dst}>{dst}</option>
+                    ))}
+                  </select>
+                </div>
+
+                <div>
+                  <label className="block text-xs font-semibold text-royal-black/80 mb-1">
+                    Thana / Upazila <span className="text-red-500">*</span>
+                  </label>
+                  <select
+                    value={thana}
+                    onChange={e => setThana(e.target.value)}
+                    required
+                    className="w-full rounded-lg border border-zinc-300 bg-white px-3 py-2.5 text-sm text-royal-black focus:border-gold focus:outline-none focus:ring-1 focus:ring-gold"
+                  >
+                    <option value="">Select Thana / Upazila</option>
+                    {availableThanas.map(th => (
+                  <option key={th} value={th}>{th}</option>
+                    ))}
+                  </select>
+                </div>
+              </div>
+
               <div>
                 <label className="block text-xs font-semibold text-royal-black/80 mb-1">
-                  Complete Delivery Address <span className="text-red-500">*</span>
+                  Street / House / Area Address <span className="text-red-500">*</span>
                 </label>
                 <textarea
                   rows={2}
                   required
-                  placeholder="House number, Road number, Area, Thana / District"
-                  value={address}
-                  onChange={e => setAddress(e.target.value)}
+                  placeholder="House number, Road number, Area, Landmark"
+                  value={streetAddress}
+                  onChange={e => setStreetAddress(e.target.value)}
                   className="w-full rounded-lg border border-zinc-300 px-3.5 py-2.5 text-sm text-royal-black placeholder-zinc-400 focus:border-gold focus:outline-none focus:ring-1 focus:ring-gold resize-none"
                 />
               </div>
 
-              {/* Delivery Zone Selection */}
+              {/* Delivery Zone (LOCKED & AUTO-CALCULATED — User cannot tamper) */}
               <div>
                 <label className="block text-xs font-semibold text-royal-black/80 mb-1.5">
-                  Select Delivery Zone <span className="text-red-500">*</span>
+                  Delivery Charge <span className="text-emerald-700 font-normal">(Auto-calculated from your address)</span>
                 </label>
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                  {zones.map(z => {
-                    const isSelected = deliveryZoneKey === z.key;
-                    return (
-                      <div
-                        key={z.key}
-                        onClick={() => setDeliveryZoneKey(z.key)}
-                        className={`p-3.5 rounded-xl border-2 cursor-pointer transition-all flex items-center justify-between ${
-                          isSelected
-                            ? 'border-gold bg-gold/5 shadow-sm'
-                            : 'border-zinc-200 bg-white hover:border-zinc-300'
-                        }`}
-                      >
-                        <div>
-                          <p className="text-xs sm:text-sm font-bold text-royal-black">{z.name}</p>
-                          <p className="text-[11px] text-zinc-500">Est. delivery: {z.estimatedDays}</p>
-                        </div>
-                        <span className="text-xs font-bold text-gold-deep">
-                          {isFreeDelivery ? 'FREE' : `৳${z.fee}`}
+                <div className="p-3.5 rounded-xl border border-gold/40 bg-gold/5 flex items-center justify-between">
+                  <div className="flex items-center gap-3">
+                    <div className="w-9 h-9 rounded-lg bg-gold/15 text-gold-deep flex items-center justify-center shrink-0">
+                      <Truck className="w-5 h-5" />
+                    </div>
+                    <div>
+                      <div className="flex items-center gap-1.5">
+                        <p className="text-xs sm:text-sm font-bold text-royal-black">{activeZone.name}</p>
+                        <span className="text-[10px] font-semibold text-emerald-700 bg-emerald-50 border border-emerald-200 px-1.5 py-0.5 rounded">
+                          Auto-Assigned
                         </span>
                       </div>
-                    );
-                  })}
+                      <p className="text-[11px] text-zinc-500">
+                        Est. delivery: {activeZone.estimatedDays || (deliveryZoneKey === 'inside_dhaka' ? '1-2 Days' : '3-5 Days')}
+                      </p>
+                    </div>
+                  </div>
+
+                  <div className="text-right">
+                    <span className="text-sm font-bold text-gold-deep">
+                      {isFreeDelivery ? (
+                        <span className="text-emerald-600 font-bold">FREE</span>
+                      ) : (
+                        `৳${deliveryFee}`
+                      )}
+                    </span>
+                    <p className="text-[10px] text-zinc-400 flex items-center gap-0.5 justify-end mt-0.5">
+                      <Lock className="w-3 h-3 text-zinc-400" />
+                      <span>Fixed by address</span>
+                    </p>
+                  </div>
                 </div>
               </div>
 
@@ -263,7 +367,7 @@ export const Checkout = ({ onNavigate }) => {
               loading={isSubmitting}
               className="w-full text-base py-4 font-bold"
             >
-              <span>Place Order (৳{total.toLocaleString()})</span>
+              <span>Confirm Order (৳{total.toLocaleString()})</span>
             </Button>
           </form>
         </div>

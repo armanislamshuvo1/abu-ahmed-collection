@@ -131,10 +131,10 @@ export const ProductCard = ({ product, onNavigate }) => {
             onClick={() => addToCart(product, 1, true)}
             disabled={!product.inStock}
             className="w-full flex items-center justify-center gap-1 bg-gold/15 hover:bg-gold text-royal-black hover:text-black border border-gold/40 text-xs font-semibold py-2 px-2 rounded-lg transition-colors duration-200 active:scale-95 disabled:opacity-50"
-            title="Add to Shopping Bag"
+            title="Add to Cart"
           >
             <ShoppingBag className="w-3.5 h-3.5 shrink-0" />
-            <span>Add Bag</span>
+            <span>Add To Cart</span>
           </button>
         </div>
       </div>
