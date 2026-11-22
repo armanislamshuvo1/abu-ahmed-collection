@@ -183,16 +183,17 @@ const getOrdersAdmin = async (req, res) => {
     const { status, search, limit = 50, page = 1 } = req.query;
     const filter = {};
 
-    if (status && status !== 'All') {
+    if (status && status !== 'All' && status !== 'undefined') {
       filter.status = status;
     }
 
-    if (search) {
+    if (search && search !== 'undefined' && search.trim() !== '') {
+      const searchRegex = { $regex: search.trim(), $options: 'i' };
       filter.$or = [
-        { orderId: { $regex: search, $options: 'i' } },
-        { 'customer.name': { $regex: search, $options: 'i' } },
-        { 'customer.phone': { $regex: search, $options: 'i' } },
-        { 'customer.email': { $regex: search, $options: 'i' } }
+        { orderId: searchRegex },
+        { 'customer.name': searchRegex },
+        { 'customer.phone': searchRegex },
+        { 'customer.email': searchRegex }
       ];
     }
 
@@ -244,7 +245,7 @@ const getOrderByIdAdmin = async (req, res) => {
 const updateOrderStatusAdmin = async (req, res) => {
   try {
     const { status, note } = req.body;
-    const validStatuses = ['Pending', 'Confirmed', 'Processing', 'Shipped', 'Delivered', 'Cancelled'];
+    const validStatuses = ['Pending Payment', 'Verifying Payment', 'Pending', 'Confirmed', 'Processing', 'Shipped', 'Delivered', 'Cancelled'];
 
     if (!validStatuses.includes(status)) {
       return res.status(400).json({ message: `Invalid status. Must be one of: ${validStatuses.join(', ')}` });
