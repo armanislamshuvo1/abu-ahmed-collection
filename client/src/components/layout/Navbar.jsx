@@ -5,7 +5,7 @@ import { useAuth } from '../../context/AuthContext';
 
 export const Navbar = ({ onNavigate, currentPath = '/' }) => {
   const { itemCount, setIsCartOpen } = useCart();
-  const { user, customerLogout, settings, admin } = useAuth();
+  const { user, customerLogout, settings, admin, adminLogout } = useAuth();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
   const [userDropdownOpen, setUserDropdownOpen] = useState(false);
@@ -29,11 +29,11 @@ export const Navbar = ({ onNavigate, currentPath = '/' }) => {
 
   return (
     <header className="sticky top-0 z-40 w-full shadow-md">
-      {/* Top Bar / Announcement */}
-      <div className="bg-royal-black text-gold-light py-2 px-4 text-xs font-medium border-b border-gold/20">
+      {/* Top Bar / Announcement - Hidden on mobile / small devices */}
+      <div className="hidden sm:block bg-royal-black text-gold-light py-1.5 px-4 text-[11px] font-medium border-b border-gold/20">
         <div className="max-w-7xl mx-auto flex items-center justify-between">
-          <div className="flex items-center gap-2">
-            <Crown className="w-3.5 h-3.5 text-gold shrink-0" />
+          <div className="flex items-center gap-2 min-w-0">
+            <Crown className="w-3 h-3 text-gold shrink-0" />
             <span className="truncate">
               Free Express Delivery across Bangladesh on orders over ৳{settings?.freeShippingThreshold || 5000}!
             </span>
@@ -43,7 +43,7 @@ export const Navbar = ({ onNavigate, currentPath = '/' }) => {
               onClick={() => onNavigate('/track-order')}
               className="flex items-center gap-1.5 hover:text-white transition-colors"
             >
-              <Truck className="w-3.5 h-3.5 text-gold" />
+              <Truck className="w-3 h-3 text-gold" />
               <span>Track Order</span>
             </button>
             <a
@@ -52,7 +52,7 @@ export const Navbar = ({ onNavigate, currentPath = '/' }) => {
               rel="noopener noreferrer"
               className="flex items-center gap-1.5 hover:text-white transition-colors"
             >
-              <Phone className="w-3.5 h-3.5 text-gold" />
+              <Phone className="w-3 h-3 text-gold" />
               <span>Helpline: {settings?.storePhone || '+8801700000000'}</span>
             </a>
           </div>
@@ -62,24 +62,24 @@ export const Navbar = ({ onNavigate, currentPath = '/' }) => {
       {/* Main Navigation */}
       <nav className="bg-royal-dark text-white border-b border-gold/15 backdrop-blur-md">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex items-center justify-between h-20 gap-4">
+          <div className="flex items-center justify-between h-14 sm:h-16 gap-4">
             {/* Mobile Menu Button */}
             <div className="flex items-center lg:hidden">
               <button
                 type="button"
                 onClick={() => setMobileMenuOpen(prev => !prev)}
-                className="p-2 rounded-md text-zinc-300 hover:text-white focus:outline-none"
+                className="p-1.5 rounded-md text-zinc-300 hover:text-white focus:outline-none"
               >
-                {mobileMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
+                {mobileMenuOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
               </button>
             </div>
 
             {/* Logo */}
             <button
               onClick={() => onNavigate('/')}
-              className="flex items-center gap-3 text-left focus:outline-none group py-2"
+              className="flex items-center gap-2.5 text-left focus:outline-none group py-1"
             >
-              <div className="w-12 h-12 rounded-full overflow-hidden border-2 border-gold shadow-gold group-hover:scale-105 transition-transform bg-black flex items-center justify-center">
+              <div className="w-9 h-9 sm:w-10 sm:h-10 rounded-full overflow-hidden border-2 border-gold shadow-gold group-hover:scale-105 transition-transform bg-black flex items-center justify-center">
                 <img
                   src="/logo.jpg"
                   alt="Abu Ahmed Collection Logo"
@@ -90,10 +90,10 @@ export const Navbar = ({ onNavigate, currentPath = '/' }) => {
                 />
               </div>
               <div className="flex flex-col">
-                <span className="font-serif text-lg sm:text-xl font-bold tracking-wider text-gold-light group-hover:text-gold transition-colors">
+                <span className="font-serif text-base sm:text-lg font-bold tracking-wider text-gold-light group-hover:text-gold transition-colors leading-tight">
                   Abu Ahmed
                 </span>
-                <span className="text-[10px] sm:text-xs tracking-[0.25em] uppercase text-zinc-400 font-semibold">
+                <span className="text-[9px] sm:text-[10px] tracking-[0.25em] uppercase text-zinc-400 font-semibold leading-tight">
                   Collection
                 </span>
               </div>
@@ -198,26 +198,43 @@ export const Navbar = ({ onNavigate, currentPath = '/' }) => {
                 )}
               </button>
 
-              {/* Admin Portal Indicator (if logged in) */}
+              {/* Admin Portal Indicator & Logout (if logged in) */}
               {admin && (
-                <button
-                  onClick={() => onNavigate('/admin')}
-                  className="hidden sm:inline-flex items-center gap-1 text-[11px] font-bold text-amber-400 bg-amber-950/60 border border-amber-500/40 px-2.5 py-1 rounded-full hover:bg-amber-900/60 transition-colors"
-                >
-                  <Crown className="w-3 h-3" />
-                  <span>Admin</span>
-                </button>
+                <div className="hidden sm:inline-flex items-center gap-1.5 bg-amber-950/70 border border-amber-500/50 px-2.5 py-1 rounded-full shadow-sm">
+                  <button
+                    onClick={() => onNavigate('/admin')}
+                    className="inline-flex items-center gap-1 text-[11px] font-bold text-amber-300 hover:text-white transition-colors"
+                    title="Admin Dashboard"
+                  >
+                    <Crown className="w-3.5 h-3.5 text-gold" />
+                    <span>Admin</span>
+                  </button>
+                  <span className="text-amber-500/50 text-[10px]">|</span>
+                  <button
+                    onClick={() => {
+                      adminLogout();
+                      if (currentPath.startsWith('/admin')) {
+                        onNavigate('/login');
+                      }
+                    }}
+                    className="inline-flex items-center gap-1 text-[11px] text-zinc-400 hover:text-red-400 transition-colors"
+                    title="Sign Out of Admin"
+                  >
+                    <LogOut className="w-3 h-3" />
+                    <span>Logout</span>
+                  </button>
+                </div>
               )}
             </div>
           </div>
 
           {/* Desktop Categories Bar */}
-          <div className="hidden lg:flex items-center justify-center gap-8 py-2.5 border-t border-zinc-800/80 text-xs font-medium uppercase tracking-wider text-zinc-300">
+          <div className="hidden lg:flex items-center justify-center gap-7 py-1.5 border-t border-zinc-800/80 text-[11px] font-medium uppercase tracking-wider text-zinc-300">
             {categories.map(cat => (
               <button
                 key={cat.slug}
                 onClick={() => onNavigate(cat.slug === 'all' ? '/shop' : `/shop?category=${encodeURIComponent(cat.slug)}`)}
-                className="hover:text-gold transition-colors py-1 relative group"
+                className="hover:text-gold transition-colors py-0.5 relative group"
               >
                 <span>{cat.name}</span>
                 <span className="absolute bottom-0 left-0 w-0 h-0.5 bg-gold transition-all duration-300 group-hover:w-full" />
@@ -268,6 +285,33 @@ export const Navbar = ({ onNavigate, currentPath = '/' }) => {
                 <Truck className="w-4 h-4" />
                 <span>Track Your Order</span>
               </button>
+              {admin && (
+                <div className="flex items-center justify-between py-2 px-3 rounded-lg bg-amber-950/40 border border-amber-500/40">
+                  <button
+                    onClick={() => {
+                      setMobileMenuOpen(false);
+                      onNavigate('/admin');
+                    }}
+                    className="flex items-center gap-2 text-sm font-semibold text-amber-300"
+                  >
+                    <Crown className="w-4 h-4 text-gold" />
+                    <span>Admin Dashboard</span>
+                  </button>
+                  <button
+                    onClick={() => {
+                      setMobileMenuOpen(false);
+                      adminLogout();
+                      if (currentPath.startsWith('/admin')) {
+                        onNavigate('/login');
+                      }
+                    }}
+                    className="flex items-center gap-1 text-xs text-red-400 hover:text-red-300 font-medium"
+                  >
+                    <LogOut className="w-3.5 h-3.5" />
+                    <span>Logout</span>
+                  </button>
+                </div>
+              )}
               {user ? (
                 <button
                   onClick={() => {
