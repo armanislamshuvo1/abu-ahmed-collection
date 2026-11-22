@@ -8,6 +8,15 @@ client/dist/
 
 # Environment files
 .env
+.env.*
+.env.local
+*.env
+**/.env
+**/.env.*
+server/.env
+client/.env
+!.env.example
+!**/.env.example
 
 # Logs and cache
 npm-debug.log*
