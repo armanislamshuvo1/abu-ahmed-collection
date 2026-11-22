@@ -72,13 +72,20 @@ export const AuthProvider = ({ children }) => {
     initAdmin();
   }, [adminToken]);
 
-  // Customer Authentication handlers
-  const handleCustomerLogin = async (credentials) => {
+  // Unified login handler (routes according to role)
+  const handleUnifiedLogin = async (credentials) => {
     const data = await loginCustomer(credentials);
-    localStorage.setItem('customer_token', data.token);
-    setUserToken(data.token);
-    setUser(data);
-    addToast(`Welcome back, ${data.name}!`, 'success');
+    if (data.role === 'admin') {
+      localStorage.setItem('admin_token', data.token);
+      setAdminToken(data.token);
+      setAdmin(data);
+      addToast(`Welcome back Admin ${data.name}!`, 'success');
+    } else {
+      localStorage.setItem('customer_token', data.token);
+      setUserToken(data.token);
+      setUser(data);
+      addToast(`Welcome back, ${data.name}!`, 'success');
+    }
     return data;
   };
 
@@ -98,7 +105,7 @@ export const AuthProvider = ({ children }) => {
     addToast('You have been logged out.', 'info');
   };
 
-  // Admin Authentication handlers
+  // Dedicated Admin Authentication handlers
   const handleAdminLogin = async (credentials) => {
     const data = await loginAdmin(credentials);
     localStorage.setItem('admin_token', data.token);
@@ -121,7 +128,8 @@ export const AuthProvider = ({ children }) => {
         user,
         userToken,
         isUserLoading,
-        customerLogin: handleCustomerLogin,
+        login: handleUnifiedLogin,
+        customerLogin: handleUnifiedLogin,
         customerRegister: handleCustomerRegister,
         customerLogout: handleCustomerLogout,
         setUser,
