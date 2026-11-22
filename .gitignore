@@ -8,7 +8,6 @@ client/dist/
 
 # Environment files
 .env
-server/.env
 
 # Logs and cache
 npm-debug.log*
@@ -27,3 +26,4 @@ upload/
 .profile
 .local/
 .npm/
+abu-ahmed-collection.zip
