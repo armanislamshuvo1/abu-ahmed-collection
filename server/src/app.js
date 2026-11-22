@@ -40,6 +40,20 @@ app.use('/api/categories', categoryRoutes);
 app.use('/api/orders', orderRoutes);
 app.use('/api/settings', settingsRoutes);
 
+// 404 for unmatched API routes
+app.all('/api/*', (req, res) => {
+  res.status(404).json({ message: 'API route not found' });
+});
+
+// Serve frontend in production
+if (process.env.NODE_ENV === 'production') {
+  const clientDist = path.join(__dirname, '../../client/dist');
+  app.use(express.static(clientDist));
+  app.get('*', (req, res) => {
+    res.sendFile(path.join(clientDist, 'index.html'));
+  });
+}
+
 // Error Handling Middleware
 app.use((err, req, res, next) => {
   console.error('[API Server Error]', err);
