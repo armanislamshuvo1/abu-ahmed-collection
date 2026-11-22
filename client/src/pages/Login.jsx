@@ -6,7 +6,7 @@ import { PasswordInput } from '../components/ui/PasswordInput';
 import { Button } from '../components/ui/Button';
 
 export const Login = ({ onNavigate }) => {
-  const { customerLogin } = useAuth();
+  const { login } = useAuth();
   const { addToast } = useToast();
 
   const [email, setEmail] = useState('');
@@ -17,8 +17,12 @@ export const Login = ({ onNavigate }) => {
     e.preventDefault();
     setLoading(true);
     try {
-      await customerLogin({ email, password });
-      onNavigate('/profile');
+      const data = await login({ email, password });
+      if (data?.role === 'admin') {
+        onNavigate('/admin');
+      } else {
+        onNavigate('/profile');
+      }
     } catch (err) {
       addToast(err.message || 'Login failed. Please check your email and password.', 'error');
     } finally {
@@ -35,10 +39,10 @@ export const Login = ({ onNavigate }) => {
             <img src="/logo.jpg" alt="Logo" className="w-full h-full object-cover" />
           </div>
           <span className="text-[10px] uppercase tracking-widest text-gold font-bold">
-            Customer Portal
+            Account Portal
           </span>
           <h1 className="font-serif text-2xl font-bold text-white mt-1">Welcome Back</h1>
-          <p className="text-xs text-zinc-400 mt-1">Sign in to track orders and manage your profile</p>
+          <p className="text-xs text-zinc-400 mt-1">Sign in to track orders or manage your store</p>
         </div>
 
         {/* Form */}
@@ -83,9 +87,12 @@ export const Login = ({ onNavigate }) => {
           </Button>
 
           {/* Demo account helper */}
-          <div className="p-3 bg-zinc-50 border border-zinc-200 rounded-xl text-center">
+          <div className="p-3 bg-zinc-50 border border-zinc-200 rounded-xl text-center space-y-1">
             <p className="text-[11px] text-zinc-500">
-              Demo Customer: <span className="font-mono text-royal-black font-semibold">customer@example.com</span> / <span className="font-mono text-royal-black font-semibold">customer123</span>
+              Customer: <span className="font-mono text-royal-black font-semibold">customer@example.com</span> / <span className="font-mono text-royal-black font-semibold">customer123</span>
+            </p>
+            <p className="text-[11px] text-zinc-500">
+              Admin: <span className="font-mono text-royal-black font-semibold">admin@abuahmedcollection.com</span> / <span className="font-mono text-royal-black font-semibold">admin12345</span>
             </p>
           </div>
 
