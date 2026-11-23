@@ -7,6 +7,16 @@ import { PasswordInput } from '../components/ui/PasswordInput';
 import { Button } from '../components/ui/Button';
 import { Badge } from '../components/ui/Badge';
 
+const statusBanglaMap = {
+  'Pending': 'অপেক্ষমাণ',
+  'Processing': 'প্রস্তুত হচ্ছে',
+  'Shipped': 'কুরিয়ারে আছে',
+  'Delivered': 'ডেলিভারি সম্পন্ন',
+  'Cancelled': 'বাতিল',
+  'Pending Payment': 'পেমেন্ট বাকি',
+  'Verifying Payment': 'পেমেন্ট যাচাই চলছে'
+};
+
 export const Profile = ({ onNavigate }) => {
   const { user, customerLogout, setUser } = useAuth();
   const { addToast } = useToast();
@@ -57,7 +67,7 @@ export const Profile = ({ onNavigate }) => {
       const updateData = { name, phone, address, city };
       if (newPassword.trim()) {
         if (newPassword.length < 6) {
-          addToast('New password must be at least 6 characters.', 'error');
+          addToast('নতুন পাসওয়ার্ড কমপক্ষে ৬ অক্ষরের হতে হবে।', 'error');
           setUpdating(false);
           return;
         }
@@ -66,9 +76,9 @@ export const Profile = ({ onNavigate }) => {
       const updatedUser = await updateCustomerProfile(updateData);
       setUser(updatedUser);
       setNewPassword('');
-      addToast('Profile updated successfully!', 'success');
+      addToast('প্রোফাইল সফলভাবে আপডেট করা হয়েছে!', 'success');
     } catch (err) {
-      addToast(err.message || 'Failed to update profile', 'error');
+      addToast(err.message || 'প্রোফাইল আপডেট করতে ব্যর্থ হয়েছে', 'error');
     } finally {
       setUpdating(false);
     }
@@ -84,7 +94,7 @@ export const Profile = ({ onNavigate }) => {
           </div>
           <div>
             <span className="text-[10px] uppercase tracking-widest text-gold-deep font-bold">
-              Customer Account
+              গ্রাহক অ্যাকাউন্ট
             </span>
             <h1 className="font-serif text-2xl font-bold text-royal-black">{user.name}</h1>
             <p className="text-xs text-zinc-500 mt-0.5">{user.email} • {user.phone}</p>
@@ -98,7 +108,7 @@ export const Profile = ({ onNavigate }) => {
           className="self-start sm:self-center text-red-600 border-red-200 hover:bg-red-50 hover:text-red-700"
         >
           <LogOut className="w-3.5 h-3.5" />
-          <span>Sign Out</span>
+          <span>লগআউট</span>
         </Button>
       </div>
 
@@ -111,7 +121,7 @@ export const Profile = ({ onNavigate }) => {
           }`}
         >
           <Package className="w-4 h-4 text-gold" />
-          <span>My Saree Orders ({orders.length})</span>
+          <span>আমার অর্ডারসমূহ ({orders.length})</span>
           {activeTab === 'orders' && (
             <span className="absolute bottom-0 left-0 w-full h-0.5 bg-gold" />
           )}
@@ -124,7 +134,7 @@ export const Profile = ({ onNavigate }) => {
           }`}
         >
           <User className="w-4 h-4 text-gold" />
-          <span>Profile & Address Settings</span>
+          <span>প্রোফাইল ও ঠিকানা সেটিংস</span>
           {activeTab === 'settings' && (
             <span className="absolute bottom-0 left-0 w-full h-0.5 bg-gold" />
           )}
@@ -143,9 +153,9 @@ export const Profile = ({ onNavigate }) => {
           ) : orders.length === 0 ? (
             <div className="bg-white rounded-3xl p-12 text-center border border-zinc-200">
               <Package className="w-12 h-12 text-zinc-300 mx-auto mb-3" />
-              <h3 className="font-serif text-lg font-bold text-royal-black">No Orders Yet</h3>
+              <h3 className="font-serif text-lg font-bold text-royal-black">এখনও কোনো অর্ডার নেই</h3>
               <p className="text-xs text-zinc-500 mt-1 max-w-sm mx-auto">
-                You have not placed any orders yet. Browse our handcrafted collection and place your first royal order!
+                আপনি এখনও কোনো অর্ডার করেননি। আমাদের ঐতিহ্যবাহী তাঁতের শাড়ি কালেকশন ঘুরে দেখুন এবং আপনার প্রথম অর্ডারটি করুন!
               </p>
               <Button
                 variant="primary"
@@ -153,7 +163,7 @@ export const Profile = ({ onNavigate }) => {
                 className="mt-5"
                 onClick={() => onNavigate('/shop')}
               >
-                Explore Saree Catalog
+                শাড়ির কালেকশন দেখুন
               </Button>
             </div>
           ) : (
@@ -181,20 +191,20 @@ export const Profile = ({ onNavigate }) => {
                           : 'pending'
                       }
                     >
-                      {order.status}
+                      {statusBanglaMap[order.status] || order.status}
                     </Badge>
                   </div>
 
                   <div className="flex items-center gap-4 text-xs text-zinc-500">
                     <span>
-                      {new Date(order.createdAt).toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' })}
+                      {new Date(order.createdAt).toLocaleDateString('bn-BD', { day: 'numeric', month: 'short', year: 'numeric' })}
                     </span>
                     <button
                       onClick={() => onNavigate(`/track-order?id=${order.orderId}`)}
                       className="inline-flex items-center gap-1 font-bold text-gold-deep hover:underline"
                     >
                       <Truck className="w-3.5 h-3.5" />
-                      <span>Track Order</span>
+                      <span>ট্র্যাক অর্ডার</span>
                       <ChevronRight className="w-3 h-3" />
                     </button>
                   </div>
@@ -210,7 +220,7 @@ export const Profile = ({ onNavigate }) => {
                         </div>
                         <div>
                           <p className="font-serif font-bold text-royal-black text-sm">{item.name}</p>
-                          <p className="text-zinc-500">Qty: {item.quantity} × ৳{item.price.toLocaleString()}</p>
+                          <p className="text-zinc-500">পরিমাণ: {item.quantity} × ৳{item.price.toLocaleString()}</p>
                         </div>
                       </div>
                       <span className="font-bold text-royal-black">৳{(item.price * item.quantity).toLocaleString()}</span>
@@ -221,10 +231,10 @@ export const Profile = ({ onNavigate }) => {
                 {/* Footer row */}
                 <div className="pt-3 border-t border-zinc-100 flex flex-col sm:flex-row sm:items-center justify-between gap-2 text-xs text-zinc-600">
                   <p>
-                    <strong className="text-royal-black">Delivery To:</strong> {order.customer.address} ({order.customer.deliveryZoneName})
+                    <strong className="text-royal-black">ডেলিভারি ঠিকানা:</strong> {order.customer.address} ({order.customer.deliveryZoneName})
                   </p>
                   <p className="text-sm font-bold text-royal-black">
-                    Total: <span className="text-gold-deep text-base">৳{order.total.toLocaleString()}</span> ({order.paymentMethod?.name})
+                    মোট: <span className="text-gold-deep text-base">৳{order.total.toLocaleString()}</span> ({order.paymentMethod?.name})
                   </p>
                 </div>
               </div>
@@ -238,13 +248,13 @@ export const Profile = ({ onNavigate }) => {
         <div className="max-w-2xl bg-white rounded-3xl border border-zinc-200 p-6 sm:p-8 shadow-soft">
           <form onSubmit={handleProfileUpdate} className="space-y-5">
             <div>
-              <h3 className="font-serif text-lg font-bold text-royal-black">Update Profile Information</h3>
-              <p className="text-xs text-zinc-500 mt-0.5">Manage your shipping address and login credentials.</p>
+              <h3 className="font-serif text-lg font-bold text-royal-black">প্রোফাইল তথ্য আপডেট করুন</h3>
+              <p className="text-xs text-zinc-500 mt-0.5">আপনার ডেলিভারি ঠিকানা এবং অ্যাকাউন্টের তথ্য পরিবর্তন করুন।</p>
             </div>
 
             <div>
               <label className="block text-xs font-semibold uppercase tracking-wider text-royal-black/80 mb-1">
-                Full Name
+                পূর্ণ নাম
               </label>
               <input
                 type="text"
@@ -257,7 +267,7 @@ export const Profile = ({ onNavigate }) => {
 
             <div>
               <label className="block text-xs font-semibold uppercase tracking-wider text-royal-black/80 mb-1">
-                Email Address (Read-only)
+                ইমেইল ঠিকানা (পরিবর্তনযোগ্য নয়)
               </label>
               <input
                 type="email"
@@ -269,7 +279,7 @@ export const Profile = ({ onNavigate }) => {
 
             <div>
               <label className="block text-xs font-semibold uppercase tracking-wider text-royal-black/80 mb-1">
-                Phone Number
+                মোবাইল নম্বর
               </label>
               <input
                 type="tel"
@@ -282,13 +292,13 @@ export const Profile = ({ onNavigate }) => {
 
             <div>
               <label className="block text-xs font-semibold uppercase tracking-wider text-royal-black/80 mb-1">
-                Default Delivery Address
+                স্থায়ী ডেলিভারি ঠিকানা
               </label>
               <textarea
                 rows={2}
                 value={address}
                 onChange={e => setAddress(e.target.value)}
-                placeholder="House, Road, Area, Thana"
+                placeholder="বাসা/হোল্ডিং নম্বর, রোড, এলাকা, থানা"
                 className="w-full rounded-lg border border-zinc-300 px-3.5 py-2.5 text-sm text-royal-black focus:border-gold focus:outline-none focus:ring-1 focus:ring-gold resize-none"
               />
             </div>
@@ -296,10 +306,10 @@ export const Profile = ({ onNavigate }) => {
             {/* Password show/hide input for updates */}
             <div className="pt-2 border-t border-zinc-100">
               <PasswordInput
-                label="Change Password (leave empty to keep current)"
+                label="পাসওয়ার্ড পরিবর্তন (পরিবর্তন না করতে চাইলে খালি রাখুন)"
                 value={newPassword}
                 onChange={e => setNewPassword(e.target.value)}
-                placeholder="Enter new password (optional)"
+                placeholder="নতুন পাসওয়ার্ড লিখুন (ঐচ্ছিক)"
                 required={false}
               />
             </div>
@@ -310,7 +320,7 @@ export const Profile = ({ onNavigate }) => {
               loading={updating}
               className="w-full py-3 font-bold"
             >
-              <span>Save Profile Changes</span>
+              <span>পরিবর্তন সংরক্ষণ করুন</span>
             </Button>
           </form>
         </div>

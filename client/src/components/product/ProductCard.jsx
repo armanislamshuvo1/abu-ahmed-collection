@@ -46,7 +46,7 @@ export const ProductCard = ({ product, onNavigate }) => {
             )}
             {product.isNewArrival && !hasDiscount && (
               <Badge variant="new" className="text-[10px] px-2 py-0.5">
-                New
+                নতুন
               </Badge>
             )}
           </div>
@@ -60,7 +60,7 @@ export const ProductCard = ({ product, onNavigate }) => {
         {!product.inStock && (
           <div className="absolute inset-0 bg-black/60 backdrop-blur-xs flex items-center justify-center p-4">
             <span className="bg-red-950/90 text-red-200 border border-red-500/50 text-xs font-bold uppercase tracking-wider px-3 py-1.5 rounded-full shadow-lg">
-              Stock Finished
+              স্টক শেষ
             </span>
           </div>
         )}
@@ -71,7 +71,7 @@ export const ProductCard = ({ product, onNavigate }) => {
         {/* Colors swatches preview */}
         {product.colors && product.colors.length > 0 && (
           <div className="flex items-center gap-1.5 mb-2">
-            <span className="text-[11px] text-zinc-500 font-medium">Colors:</span>
+            <span className="text-[11px] text-zinc-500 font-medium">রং:</span>
             <div className="flex items-center gap-1">
               {product.colors.slice(0, 3).map((col, idx) => (
                 <span
@@ -112,7 +112,7 @@ export const ProductCard = ({ product, onNavigate }) => {
         {/* Blouse piece badge */}
         <div className="mt-2 text-[11px] text-zinc-500 flex items-center gap-1">
           <Check className="w-3.5 h-3.5 text-emerald-600" />
-          <span>{product.blousePiece ? 'Includes Blouse Piece' : 'Without Blouse Piece'}</span>
+          <span>{product.blousePiece ? 'ব্লাউজ পিস সহ' : 'ব্লাউজ পিস ছাড়া'}</span>
         </div>
 
         {/* Action Buttons */}
@@ -121,20 +121,20 @@ export const ProductCard = ({ product, onNavigate }) => {
             onClick={() => setQuickOrderProduct(product)}
             disabled={!product.inStock}
             className="w-full flex items-center justify-center gap-1 bg-royal-black hover:bg-gold-dark text-white hover:text-royal-black text-xs font-semibold py-2 px-2 rounded-lg transition-colors duration-200 active:scale-95 disabled:opacity-50"
-            title="Express 1-Click Order"
+            title="দ্রুত ১-ক্লিকে সরাসরি অর্ডার"
           >
             <Zap className="w-3.5 h-3.5 text-gold shrink-0" />
-            <span>Buy Now</span>
+            <span>অর্ডার করুন</span>
           </button>
 
           <button
             onClick={() => addToCart(product, 1, true)}
             disabled={!product.inStock}
             className="w-full flex items-center justify-center gap-1 bg-gold/15 hover:bg-gold text-royal-black hover:text-black border border-gold/40 text-xs font-semibold py-2 px-2 rounded-lg transition-colors duration-200 active:scale-95 disabled:opacity-50"
-            title="Add to Cart"
+            title="ব্যাগে যোগ করুন"
           >
             <ShoppingBag className="w-3.5 h-3.5 shrink-0" />
-            <span>Add To Cart</span>
+            <span>কার্টে রাখুন</span>
           </button>
         </div>
       </div>

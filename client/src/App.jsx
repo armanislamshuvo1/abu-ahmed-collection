@@ -119,8 +119,8 @@ function AppContent() {
     return (
       <ErrorPage
         code={404}
-        title="Page Not Found"
-        message="The page you requested could not be found. Please check the URL or return to our homepage."
+        title="পেজটি পাওয়া যায়নি"
+        message="আপনার অনুরোধকৃত পেজটি খুঁজে পাওয়া যায়নি। অনুগ্রহ করে লিংকটি সঠিক কিনা পরীক্ষা করুন অথবা হোমপেজে ফিরে যান।"
         onNavigate={navigate}
       />
     );

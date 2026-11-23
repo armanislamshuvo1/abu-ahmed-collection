@@ -6,7 +6,7 @@ export const ProductGrid = ({
   products = [],
   loading = false,
   onNavigate,
-  emptyMessage = 'No sarees found matching your criteria.'
+  emptyMessage = 'আপনার পছন্দের সাথে মিলে এমন কোনো শাড়ি পাওয়া যায়নি।'
 }) => {
   if (loading) {
     return (
@@ -29,7 +29,7 @@ export const ProductGrid = ({
     return (
       <div className="text-center py-16 px-4 bg-white rounded-2xl border border-zinc-200">
         <Sparkles className="w-12 h-12 text-gold mx-auto mb-3" />
-        <h3 className="font-serif text-lg font-bold text-royal-black">No Sarees Found</h3>
+        <h3 className="font-serif text-lg font-bold text-royal-black">কোনো শাড়ি পাওয়া যায়নি</h3>
         <p className="text-sm text-zinc-500 mt-1 max-w-md mx-auto">{emptyMessage}</p>
       </div>
     );

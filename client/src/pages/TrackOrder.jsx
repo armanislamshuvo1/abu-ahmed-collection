@@ -14,7 +14,24 @@ export const TrackOrder = ({ onNavigate, queryParams = {} }) => {
   const [trxInput, setTrxInput] = useState('');
   const [isSubmittingTrx, setIsSubmittingTrx] = useState(false);
 
-  const steps = ['Pending', 'Confirmed', 'Processing', 'Shipped', 'Delivered'];
+  const steps = [
+    { key: 'Pending', label: 'অপেক্ষমাণ' },
+    { key: 'Confirmed', label: 'নিশ্চিত' },
+    { key: 'Processing', label: 'প্রস্তুত হচ্ছে' },
+    { key: 'Shipped', label: 'কুরিয়ারে আছে' },
+    { key: 'Delivered', label: 'ডেলিভারি সম্পন্ন' }
+  ];
+
+  const statusBanglaMap = {
+    'Pending': 'অপেক্ষমাণ',
+    'Pending Payment': 'পেমেন্ট বাকি',
+    'Verifying Payment': 'পেমেন্ট যাচাই চলছে',
+    'Confirmed': 'নিশ্চিত',
+    'Processing': 'প্রস্তুত হচ্ছে',
+    'Shipped': 'কুরিয়ারে আছে',
+    'Delivered': 'ডেলিভারি সম্পন্ন',
+    'Cancelled': 'বাতিলকৃত'
+  };
 
   const handleTrackSubmit = async (e) => {
     if (e) e.preventDefault();
@@ -28,7 +45,7 @@ export const TrackOrder = ({ onNavigate, queryParams = {} }) => {
       const data = await trackOrder(orderIdInput.trim());
       setOrder(data);
     } catch (err) {
-      setError(err.message || 'No order found with this ID. Please double check and try again.');
+      setError(err.message || 'এই আইডি দিয়ে কোনো অর্ডার পাওয়া যায়নি। অনুগ্রহ করে সঠিক আইডি দিয়ে আবার চেষ্টা করুন।');
     } finally {
       setLoading(false);
     }
@@ -44,7 +61,7 @@ export const TrackOrder = ({ onNavigate, queryParams = {} }) => {
   const getStepIndex = (status) => {
     if (status === 'Cancelled') return -1;
     if (status === 'Pending Payment' || status === 'Verifying Payment') return 0;
-    return steps.indexOf(status);
+    return steps.findIndex(s => s.key === status);
   };
 
   const currentStepIdx = order ? getStepIndex(order.status) : 0;
@@ -55,20 +72,20 @@ export const TrackOrder = ({ onNavigate, queryParams = {} }) => {
   const handleTrxSubmit = async (e) => {
     e.preventDefault();
     if (!trxInput.trim()) {
-      addToast('Please enter your Transaction ID (TrxID).', 'error');
+      addToast('অনুগ্রহ করে ট্রানজেকশন আইডি (TrxID) লিখুন।', 'error');
       return;
     }
 
     setIsSubmittingTrx(true);
     try {
       await submitOrderTransactionId(order.orderId, trxInput.trim());
-      addToast('Payment Transaction ID submitted! Payment is now verifying.', 'success');
+      addToast('পেমেন্ট ট্রানজেকশন আইডি জমা দেওয়া হয়েছে! পেমেন্ট যাচাই করা হচ্ছে।', 'success');
       // Refresh order details
       const refreshed = await trackOrder(order.orderId);
       setOrder(refreshed);
       setTrxInput('');
     } catch (err) {
-      addToast(err.message || 'Failed to submit Transaction ID.', 'error');
+      addToast(err.message || 'ট্রানজেকশন আইডি জমা দিতে ব্যর্থ হয়েছে।', 'error');
     } finally {
       setIsSubmittingTrx(false);
     }
@@ -82,10 +99,10 @@ export const TrackOrder = ({ onNavigate, queryParams = {} }) => {
           <Truck className="w-5 h-5" />
         </div>
         <h1 className="font-serif text-xl sm:text-2xl font-bold text-royal-black">
-          Track Your Artisan Order
+          আপনার শাড়ির অর্ডার ট্র্যাক করুন
         </h1>
         <p className="text-xs sm:text-sm text-zinc-500 mt-1">
-          Enter your unique Order ID (e.g., <span className="font-mono text-royal-black font-semibold">AAC-2026-1001</span>) to see live status updates.
+          লাইভ ডেলিভারি স্ট্যাটাস দেখতে আপনার অর্ডার আইডি (যেমন: <span className="font-mono text-royal-black font-semibold">AAC-2026-1001</span>) লিখুন।
         </p>
 
         {/* Input box */}
@@ -93,7 +110,7 @@ export const TrackOrder = ({ onNavigate, queryParams = {} }) => {
           <input
             type="text"
             required
-            placeholder="e.g. AAC-2026-1001"
+            placeholder="যেমন: AAC-2026-1001"
             value={orderIdInput}
             onChange={e => setOrderIdInput(e.target.value)}
             className="flex-1 rounded-xl border border-zinc-300 px-4 py-2 text-sm uppercase font-mono tracking-wider focus:border-gold focus:outline-none focus:ring-1 focus:ring-gold"
@@ -105,7 +122,7 @@ export const TrackOrder = ({ onNavigate, queryParams = {} }) => {
             loading={loading}
             className="px-6 shrink-0"
           >
-            <span>Track</span>
+            <span>খুঁজুন</span>
           </Button>
         </form>
 
@@ -124,18 +141,18 @@ export const TrackOrder = ({ onNavigate, queryParams = {} }) => {
           <div className="bg-royal-black text-white p-5 sm:p-6 flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-gold/30">
             <div>
               <span className="text-[11px] uppercase tracking-wider text-gold font-bold">
-                Tracking Details
+                অর্ডার ট্র্যাকিং তথ্য
               </span>
               <h2 className="font-serif text-lg sm:text-xl font-bold text-white mt-0.5">
-                Order #{order.orderId}
+                অর্ডার নং #{order.orderId}
               </h2>
               <p className="text-xs text-zinc-400 mt-0.5">
-                Placed on {new Date(order.createdAt).toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' })}
+                অর্ডারের তারিখ: {new Date(order.createdAt).toLocaleDateString('bn-BD', { day: 'numeric', month: 'short', year: 'numeric' })}
               </p>
             </div>
 
             <div>
-              <Badge variant={order.status.toLowerCase()}>{order.status}</Badge>
+              <Badge variant={order.status.toLowerCase()}>{statusBanglaMap[order.status] || order.status}</Badge>
             </div>
           </div>
 
@@ -145,17 +162,17 @@ export const TrackOrder = ({ onNavigate, queryParams = {} }) => {
               <div className="bg-amber-50/80 border-2 border-amber-300 rounded-2xl p-5 sm:p-6 text-left space-y-3.5 shadow-sm">
                 <div className="flex items-center gap-2 text-amber-900 font-bold text-sm">
                   <AlertCircle className="w-5 h-5 text-amber-600 shrink-0" />
-                  <span>Action Needed: Complete Payment & Submit TrxID</span>
+                  <span>জরুরি: পেমেন্ট সম্পন্ন করে TrxID জমা দিন</span>
                 </div>
                 <p className="text-xs text-amber-800 leading-relaxed">
-                  Your order is awaiting payment confirmation. If you have sent money via {order.paymentMethod?.name}, enter your Transaction ID (TrxID) below:
+                  আপনার অর্ডারটি পেমেন্ট নিশ্চিতকরণের অপেক্ষায় রয়েছে। আপনি {order.paymentMethod?.name}-এর মাধ্যমে টাকা পাঠিয়ে থাকলে অনুগ্রহ করে নিচের বক্সে আপনার ট্রানজেকশন আইডি (TrxID) লিখুন:
                 </p>
 
                 <form onSubmit={handleTrxSubmit} className="flex flex-col sm:flex-row gap-3 pt-1">
                   <input
                     type="text"
                     required
-                    placeholder="Enter Transaction ID (e.g. 9G7K21LM88)"
+                    placeholder="ট্রানজেকশন আইডি লিখুন (যেমন: 9G7K21LM88)"
                     value={trxInput}
                     onChange={e => setTrxInput(e.target.value)}
                     className="flex-1 rounded-xl border border-amber-300 bg-white px-3.5 py-2.5 text-sm text-royal-black uppercase placeholder-zinc-400 focus:border-gold focus:outline-none focus:ring-2 focus:ring-gold/30 font-mono"
@@ -168,7 +185,7 @@ export const TrackOrder = ({ onNavigate, queryParams = {} }) => {
                     className="flex items-center justify-center gap-2 shrink-0"
                   >
                     <Send className="w-4 h-4" />
-                    <span>Submit TrxID</span>
+                    <span>TrxID জমা দিন</span>
                   </Button>
                 </form>
               </div>
@@ -179,10 +196,10 @@ export const TrackOrder = ({ onNavigate, queryParams = {} }) => {
               <div className="bg-cyan-50/80 border-2 border-cyan-300 rounded-2xl p-5 text-left space-y-2 shadow-sm">
                 <div className="flex items-center gap-2 text-cyan-900 font-bold text-sm">
                   <Clock className="w-5 h-5 text-cyan-600 shrink-0" />
-                  <span>Payment Under Verification</span>
+                  <span>পেমেন্ট যাচাই করা হচ্ছে</span>
                 </div>
                 <p className="text-xs text-cyan-800 leading-relaxed">
-                  We received your {order.paymentMethod?.name} TrxID: <span className="font-mono font-bold">{order.paymentMethod?.transactionId}</span>. Our team is verifying the payment and will confirm your order shortly.
+                  আপনার {order.paymentMethod?.name} ট্রানজেকশন আইডি (<span className="font-mono font-bold">{order.paymentMethod?.transactionId}</span>) গ্রহণ করা হয়েছে। আমাদের টিম পেমেন্ট ভেরিফাই করছে এবং শীঘ্রই অর্ডারটি কনফার্ম করবে।
                 </p>
               </div>
             )}
@@ -207,7 +224,7 @@ export const TrackOrder = ({ onNavigate, queryParams = {} }) => {
                       const isCompleted = idx <= currentStepIdx && order.status !== 'Pending Payment' && order.status !== 'Verifying Payment';
                       const isCurrent = idx === currentStepIdx;
                       return (
-                        <div key={st} className="flex flex-col items-center text-center">
+                        <div key={st.key} className="flex flex-col items-center text-center">
                           <div
                             className={`w-10 h-10 rounded-full flex items-center justify-center font-bold text-xs transition-all ${
                               isCompleted
@@ -222,7 +239,7 @@ export const TrackOrder = ({ onNavigate, queryParams = {} }) => {
                               isCurrent ? 'text-royal-black font-bold' : isCompleted ? 'text-zinc-700' : 'text-zinc-400'
                             }`}
                           >
-                            {st}
+                            {st.label}
                           </span>
                         </div>
                       );
@@ -232,7 +249,7 @@ export const TrackOrder = ({ onNavigate, queryParams = {} }) => {
               </div>
             ) : (
               <div className="p-4 rounded-xl bg-red-50 border border-red-200 text-xs text-red-700">
-                This order was cancelled. If you believe this was in error, please reach out via our WhatsApp helpline below.
+                এই অর্ডারটি বাতিল করা হয়েছে। কোনো ভুল বোঝাবুঝি থাকলে অনুগ্রহ করে আমাদের হোয়াটসঅ্যাপ হেল্পলাইনে যোগাযোগ করুন।
               </div>
             )}
 
@@ -240,18 +257,18 @@ export const TrackOrder = ({ onNavigate, queryParams = {} }) => {
             {order.timeline && order.timeline.length > 0 && (
               <div className="space-y-3 pt-4 border-t border-zinc-100">
                 <h4 className="text-xs font-bold uppercase tracking-wider text-royal-black">
-                  Activity Timeline
+                  অর্ডারের অগ্রগতি ইতিহাস
                 </h4>
                 <div className="space-y-2">
                   {order.timeline.map((item, idx) => (
                     <div key={idx} className="flex items-start gap-3 text-xs">
                       <div className="w-2 h-2 rounded-full bg-gold shrink-0 mt-1.5" />
                       <div className="flex-1">
-                        <span className="font-semibold text-royal-black">{item.status}:</span>{' '}
+                        <span className="font-semibold text-royal-black">{statusBanglaMap[item.status] || item.status}:</span>{' '}
                         <span className="text-zinc-600">{item.note}</span>
                       </div>
                       <span className="text-[11px] text-zinc-400">
-                        {new Date(item.timestamp).toLocaleString([], { dateStyle: 'short', timeStyle: 'short' })}
+                        {new Date(item.timestamp).toLocaleString('bn-BD', { dateStyle: 'short', timeStyle: 'short' })}
                       </span>
                     </div>
                   ))}
@@ -264,15 +281,15 @@ export const TrackOrder = ({ onNavigate, queryParams = {} }) => {
               {/* Delivery Details */}
               <div className="space-y-2 text-xs">
                 <h4 className="font-bold uppercase tracking-wider text-royal-black">
-                  Delivery Information
+                  ডেলিভারির বিবরণ
                 </h4>
                 <div className="bg-zinc-50 p-4 rounded-xl border border-zinc-200 space-y-1 text-zinc-600">
-                  <p><strong className="text-royal-black">Recipient:</strong> {order.customer.name}</p>
-                  <p><strong className="text-royal-black">Contact:</strong> {order.customer.phone}</p>
-                  <p><strong className="text-royal-black">Address:</strong> {order.customer.address}</p>
-                  <p><strong className="text-royal-black">Zone:</strong> {order.customer.deliveryZoneName}</p>
+                  <p><strong className="text-royal-black">প্রাপক:</strong> {order.customer.name}</p>
+                  <p><strong className="text-royal-black">মোবাইল:</strong> {order.customer.phone}</p>
+                  <p><strong className="text-royal-black">ঠিকানা:</strong> {order.customer.address}</p>
+                  <p><strong className="text-royal-black">ডেলিভারি জোন:</strong> {order.customer.deliveryZoneName}</p>
                   <p>
-                    <strong className="text-royal-black">Payment:</strong> {order.paymentMethod?.name}
+                    <strong className="text-royal-black">পেমেন্ট মেথড:</strong> {order.paymentMethod?.name}
                     {order.paymentMethod?.transactionId ? ` (TrxID: ${order.paymentMethod.transactionId})` : ''}
                   </p>
                 </div>
@@ -281,7 +298,7 @@ export const TrackOrder = ({ onNavigate, queryParams = {} }) => {
               {/* Items summary */}
               <div className="space-y-2 text-xs">
                 <h4 className="font-bold uppercase tracking-wider text-royal-black">
-                  Ordered Sarees ({order.items.length})
+                  অর্ডারকৃত শাড়ি ({order.items.length}টি)
                 </h4>
                 <div className="bg-zinc-50 p-4 rounded-xl border border-zinc-200 divide-y divide-zinc-200">
                   {order.items.map((it, idx) => (
@@ -290,14 +307,14 @@ export const TrackOrder = ({ onNavigate, queryParams = {} }) => {
                         <img src={it.image} alt={it.name} className="w-8 h-10 object-cover rounded bg-white" />
                         <div>
                           <p className="font-semibold text-royal-black">{it.name}</p>
-                          <p className="text-zinc-500">Qty: {it.quantity}</p>
+                          <p className="text-zinc-500">পরিমাণ: {it.quantity}</p>
                         </div>
                       </div>
                       <span className="font-bold text-royal-black">৳{(it.price * it.quantity).toLocaleString()}</span>
                     </div>
                   ))}
                   <div className="pt-2 flex justify-between font-bold text-sm text-royal-black">
-                    <span>Total Amount:</span>
+                    <span>সর্বমোট বিল:</span>
                     <span className="text-gold-deep">৳{order.total?.toLocaleString()}</span>
                   </div>
                 </div>
@@ -314,7 +331,7 @@ export const TrackOrder = ({ onNavigate, queryParams = {} }) => {
                   className="inline-flex items-center gap-2 bg-emerald-600 hover:bg-emerald-500 text-white font-semibold text-xs py-2.5 px-4 rounded-xl transition-colors"
                 >
                   <MessageCircle className="w-4 h-4" />
-                  <span>Inquire with Store Owner on WhatsApp</span>
+                  <span>হোয়াটসঅ্যাপে যোগাযোগ করুন</span>
                 </a>
               </div>
             )}

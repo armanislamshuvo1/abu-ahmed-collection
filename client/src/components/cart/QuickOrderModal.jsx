@@ -118,12 +118,12 @@ export const QuickOrderModal = ({ onNavigate }) => {
     e.preventDefault();
 
     if (!name.trim() || !email.trim() || !phone.trim()) {
-      addToast('Please fill in your Name, Email, and Phone number.', 'error');
+      addToast('অনুগ্রহ করে আপনার নাম, ইমেইল এবং মোবাইল নম্বর পূরণ করুন।', 'error');
       return;
     }
 
     if (!division || !district || !thana || !streetAddress.trim()) {
-      addToast('Please select Division, District, Thana and enter your street address.', 'error');
+      addToast('অনুগ্রহ করে বিভাগ, জেলা, থানা নির্বাচন করুন এবং সঠিক ঠিকানা লিখুন।', 'error');
       return;
     }
 
@@ -162,14 +162,14 @@ export const QuickOrderModal = ({ onNavigate }) => {
       };
 
       const result = await createOrder(orderPayload);
-      addToast(`Order placed successfully! Order ID: ${result.order.orderId}`, 'success');
+      addToast(`অর্ডার সফলভাবে সম্পন্ন হয়েছে! অর্ডার আইডি: ${result.order.orderId}`, 'success');
       setQuickOrderProduct(null);
 
       // Save order info into sessionStorage for the OrderSuccess page
       sessionStorage.setItem('last_order', JSON.stringify(result));
       onNavigate(`/order-success?orderId=${result.order.orderId}`);
     } catch (err) {
-      addToast(err.message || 'Failed to place order. Please try again.', 'error');
+      addToast(err.message || 'অর্ডার করতে ব্যর্থ হয়েছে। অনুগ্রহ করে আবার চেষ্টা করুন।', 'error');
     } finally {
       setIsSubmitting(false);
     }
@@ -179,8 +179,8 @@ export const QuickOrderModal = ({ onNavigate }) => {
     <Modal
       isOpen={!!quickOrderProduct}
       onClose={() => setQuickOrderProduct(null)}
-      title="⚡ 1-Click Fast Checkout"
-      subtitle="Complete your order in 30 seconds with Cash on Delivery or bKash"
+      title="⚡ দ্রুত ১-ক্লিকে সরাসরি অর্ডার"
+      subtitle="ক্যাশ অন ডেলিভারি বা বিকাশে ৩০ সেকেন্ডে অর্ডার সম্পন্ন করুন"
       maxWidth="max-w-2xl"
     >
       <form onSubmit={handleSubmit} className="space-y-6">
@@ -202,9 +202,9 @@ export const QuickOrderModal = ({ onNavigate }) => {
             <p className="text-xs text-zinc-500">{quickOrderProduct.fabric}</p>
 
             <div className="flex items-center justify-between mt-2">
-              <span className="text-sm font-bold text-royal-black">৳{activePrice.toLocaleString()} each</span>
+              <span className="text-sm font-bold text-royal-black">৳{activePrice.toLocaleString()} প্রতি পিস</span>
               <div className="flex items-center gap-2 text-xs">
-                <span className="text-zinc-500 font-medium">Qty:</span>
+                <span className="text-zinc-500 font-medium">পরিমাণ:</span>
                 <select
                   value={quantity}
                   onChange={e => setQuantity(Number(e.target.value))}
@@ -222,17 +222,17 @@ export const QuickOrderModal = ({ onNavigate }) => {
         {/* Customer Details Form */}
         <div className="space-y-3.5">
           <h4 className="text-xs font-bold uppercase tracking-wider text-royal-black border-b pb-1.5 border-zinc-200">
-            Delivery & Contact Details
+            ডেলিভারি ও যোগাযোগের তথ্য
           </h4>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
             <div>
               <label className="block text-xs font-semibold text-royal-black/80 mb-1">
-                Full Name <span className="text-red-500">*</span>
+                আপনার পুরো নাম <span className="text-red-500">*</span>
               </label>
               <input
                 type="text"
-                placeholder="e.g. Farhana Yasmin"
+                placeholder="যেমন: ফারহানা ইয়াসমিন"
                 value={name}
                 onChange={e => setName(e.target.value)}
                 required
@@ -242,7 +242,7 @@ export const QuickOrderModal = ({ onNavigate }) => {
 
             <div>
               <label className="block text-xs font-semibold text-royal-black/80 mb-1">
-                Phone Number <span className="text-red-500">*</span>
+                মোবাইল নম্বর <span className="text-red-500">*</span>
               </label>
               <input
                 type="tel"
@@ -257,7 +257,7 @@ export const QuickOrderModal = ({ onNavigate }) => {
 
           <div>
             <label className="block text-xs font-semibold text-royal-black/80 mb-1">
-              Email Address (For Order Tracking & Invoice) <span className="text-red-500">*</span>
+              ইমেইল ঠিকানা (ট্র্যাকিং ও ইনভয়েসের জন্য) <span className="text-red-500">*</span>
             </label>
             <input
               type="email"
@@ -273,7 +273,7 @@ export const QuickOrderModal = ({ onNavigate }) => {
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
             <div>
               <label className="block text-xs font-semibold text-royal-black/80 mb-1">
-                Division <span className="text-red-500">*</span>
+                বিভাগ <span className="text-red-500">*</span>
               </label>
               <select
                 value={division}
@@ -289,7 +289,7 @@ export const QuickOrderModal = ({ onNavigate }) => {
 
             <div>
               <label className="block text-xs font-semibold text-royal-black/80 mb-1">
-                District <span className="text-red-500">*</span>
+                জেলা <span className="text-red-500">*</span>
               </label>
               <select
                 value={district}
@@ -305,7 +305,7 @@ export const QuickOrderModal = ({ onNavigate }) => {
 
             <div>
               <label className="block text-xs font-semibold text-royal-black/80 mb-1">
-                Thana / Upazila <span className="text-red-500">*</span>
+                থানা / উপজেলা <span className="text-red-500">*</span>
               </label>
               <select
                 value={thana}
@@ -313,7 +313,7 @@ export const QuickOrderModal = ({ onNavigate }) => {
                 required
                 className="w-full rounded-lg border border-zinc-300 bg-white px-3 py-2 text-sm text-royal-black focus:border-gold focus:outline-none focus:ring-1 focus:ring-gold"
               >
-                <option value="">Select Thana / Upazila</option>
+                <option value="">থানা / উপজেলা নির্বাচন করুন</option>
                 {availableThanas.map(th => (
                   <option key={th} value={th}>{th}</option>
                 ))}
@@ -323,11 +323,11 @@ export const QuickOrderModal = ({ onNavigate }) => {
 
           <div>
             <label className="block text-xs font-semibold text-royal-black/80 mb-1">
-              Street / House / Area Address <span className="text-red-500">*</span>
+              বিস্তারিত ঠিকানা (রোড / বাড়ি / এলাকা) <span className="text-red-500">*</span>
             </label>
             <textarea
               rows={2}
-              placeholder="House, Road, Area, Landmark"
+              placeholder="বাড়ি নং, রোড নং, এলাকা বা চেনার উপায়"
               value={streetAddress}
               onChange={e => setStreetAddress(e.target.value)}
               required
@@ -338,7 +338,7 @@ export const QuickOrderModal = ({ onNavigate }) => {
           {/* Delivery Zone (LOCKED & AUTO-CALCULATED — User cannot tamper) */}
           <div>
             <label className="block text-xs font-semibold text-royal-black/80 mb-1.5">
-              Delivery Charge <span className="text-emerald-700 font-normal">(Auto-calculated from your address)</span>
+              ডেলিভারি চার্জ <span className="text-emerald-700 font-normal">(ঠিকানা অনুযায়ী স্বয়ংক্রিয়ভাবে নির্ধারিত)</span>
             </label>
             <div className="p-3.5 rounded-xl border border-gold/40 bg-gold/5 flex items-center justify-between">
               <div className="flex items-center gap-3">
@@ -349,11 +349,11 @@ export const QuickOrderModal = ({ onNavigate }) => {
                   <div className="flex items-center gap-1.5">
                     <p className="text-xs font-bold text-royal-black">{activeZone.name}</p>
                     <span className="text-[10px] font-semibold text-emerald-700 bg-emerald-50 border border-emerald-200 px-1.5 py-0.5 rounded">
-                      Auto-Assigned
+                      স্বয়ংক্রিয় চার্জ
                     </span>
                   </div>
                   <p className="text-[11px] text-zinc-500">
-                    Est. delivery: {activeZone.estimatedDays || (deliveryZoneKey === 'inside_dhaka' ? '1-2 Days' : '3-5 Days')}
+                    সম্ভাব্য ডেলিভারি: {activeZone.estimatedDays || (deliveryZoneKey === 'inside_dhaka' ? '১-২ দিন' : '৩-৫ দিন')}
                   </p>
                 </div>
               </div>
@@ -361,14 +361,14 @@ export const QuickOrderModal = ({ onNavigate }) => {
               <div className="text-right">
                 <span className="text-sm font-bold text-gold-deep">
                   {subtotal >= freeThreshold ? (
-                    <span className="text-emerald-600 font-bold">FREE</span>
+                    <span className="text-emerald-600 font-bold">ফ্রি</span>
                   ) : (
                     `৳${deliveryFee}`
                   )}
                 </span>
                 <p className="text-[10px] text-zinc-400 flex items-center gap-0.5 justify-end mt-0.5">
                   <Lock className="w-3 h-3 text-zinc-400" />
-                  <span>Fixed by address</span>
+                  <span>ঠিকানা দ্বারা নির্ধারিত</span>
                 </p>
               </div>
             </div>
@@ -387,17 +387,17 @@ export const QuickOrderModal = ({ onNavigate }) => {
         {/* Price Breakdown */}
         <div className="rounded-xl bg-zinc-50 p-4 border border-zinc-200 space-y-1.5 text-xs text-zinc-600">
           <div className="flex justify-between">
-            <span>Subtotal ({quantity} item{quantity > 1 ? 's' : ''}):</span>
+            <span>সাবটোটাল ({quantity}টি শাড়ি):</span>
             <span className="font-semibold text-royal-black">৳{subtotal.toLocaleString()}</span>
           </div>
           <div className="flex justify-between">
-            <span>Delivery Fee ({activeZone.name}):</span>
+            <span>ডেলিভারি ফি ({activeZone.name}):</span>
             <span className="font-semibold text-royal-black">
-              {deliveryFee === 0 ? <span className="text-emerald-600 font-bold">FREE</span> : `৳${deliveryFee}`}
+              {deliveryFee === 0 ? <span className="text-emerald-600 font-bold">ফ্রি</span> : `৳${deliveryFee}`}
             </span>
           </div>
           <div className="flex justify-between text-sm font-bold text-royal-black pt-2 border-t border-zinc-200">
-            <span>Total Payable:</span>
+            <span>সর্বমোট প্রদেয় বিল:</span>
             <span className="text-base text-gold-deep">৳{total.toLocaleString()}</span>
           </div>
         </div>
@@ -410,7 +410,7 @@ export const QuickOrderModal = ({ onNavigate }) => {
           loading={isSubmitting}
           className="w-full text-base"
         >
-          <span>Confirm Order (৳{total.toLocaleString()})</span>
+          <span>অর্ডার নিশ্চিত করুন (৳{total.toLocaleString()})</span>
         </Button>
       </form>
     </Modal>

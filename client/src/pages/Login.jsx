@@ -24,7 +24,7 @@ export const Login = ({ onNavigate }) => {
         onNavigate('/profile');
       }
     } catch (err) {
-      addToast(err.message || 'Login failed. Please check your email and password.', 'error');
+      addToast(err.message || 'লগইন ব্যর্থ হয়েছে। অনুগ্রহ করে আপনার ইমেইল ও পাসওয়ার্ড যাচাই করুন।', 'error');
     } finally {
       setLoading(false);
     }
@@ -39,17 +39,17 @@ export const Login = ({ onNavigate }) => {
             <img src="/logo.jpg" alt="Logo" className="w-full h-full object-cover" />
           </div>
           <span className="text-[10px] uppercase tracking-widest text-gold font-bold">
-            Account Portal
+            অ্যাকাউন্ট পোর্টাল
           </span>
-          <h1 className="font-serif text-2xl font-bold text-white mt-1">Welcome Back</h1>
-          <p className="text-xs text-zinc-400 mt-1">Sign in to track orders or manage your store</p>
+          <h1 className="font-serif text-2xl font-bold text-white mt-1">স্বাগতম</h1>
+          <p className="text-xs text-zinc-400 mt-1">অর্ডার ট্র্যাক বা অ্যাকাউন্ট পরিচালনা করতে সাইন ইন করুন</p>
         </div>
 
         {/* Form */}
         <form onSubmit={handleSubmit} className="p-8 space-y-5">
           <div className="space-y-1.5">
             <label className="block text-xs font-semibold uppercase tracking-wider text-royal-black/80">
-              Email Address <span className="text-red-500">*</span>
+              ইমেইল ঠিকানা <span className="text-red-500">*</span>
             </label>
             <div className="relative rounded-lg shadow-sm">
               <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3 text-zinc-400">
@@ -68,7 +68,7 @@ export const Login = ({ onNavigate }) => {
 
           {/* Password with Show/Hide feature */}
           <PasswordInput
-            label="Password"
+            label="পাসওয়ার্ড"
             value={password}
             onChange={e => setPassword(e.target.value)}
             placeholder="••••••••"
@@ -82,29 +82,29 @@ export const Login = ({ onNavigate }) => {
             loading={loading}
             className="w-full py-3 font-bold"
           >
-            <span>Sign In to Account</span>
+            <span>সাইন ইন করুন</span>
             <ArrowRight className="w-4 h-4 ml-1" />
           </Button>
 
           {/* Demo account helper */}
           <div className="p-3 bg-zinc-50 border border-zinc-200 rounded-xl text-center space-y-1">
             <p className="text-[11px] text-zinc-500">
-              Customer: <span className="font-mono text-royal-black font-semibold">customer@example.com</span> / <span className="font-mono text-royal-black font-semibold">customer123</span>
+              কাস্টমার: <span className="font-mono text-royal-black font-semibold">customer@example.com</span> / <span className="font-mono text-royal-black font-semibold">customer123</span>
             </p>
             <p className="text-[11px] text-zinc-500">
-              Admin: <span className="font-mono text-royal-black font-semibold">admin@abuahmedcollection.com</span> / <span className="font-mono text-royal-black font-semibold">admin12345</span>
+              অ্যাডমিন: <span className="font-mono text-royal-black font-semibold">admin@abuahmedcollection.com</span> / <span className="font-mono text-royal-black font-semibold">admin12345</span>
             </p>
           </div>
 
           <div className="pt-4 border-t border-zinc-100 text-center">
             <p className="text-xs text-zinc-600">
-              Don't have an account yet?{' '}
+              এখনও কোনো অ্যাকাউন্ট নেই?{' '}
               <button
                 type="button"
                 onClick={() => onNavigate('/register')}
                 className="font-bold text-gold-deep hover:underline inline-flex items-center gap-1"
               >
-                <span>Register here</span>
+                <span>রেজিস্টার করুন</span>
               </button>
             </p>
           </div>

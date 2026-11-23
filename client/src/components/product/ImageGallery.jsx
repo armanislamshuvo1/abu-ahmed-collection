@@ -44,7 +44,7 @@ export const ImageGallery = ({ images = [], productName = 'Saree' }) => {
           }}
         />
         <div className="absolute bottom-3 right-3 bg-black/60 backdrop-blur-md text-white text-[10px] uppercase tracking-wider font-semibold px-2.5 py-1 rounded-full border border-white/20">
-          Abu Ahmed Authentic
+          আবু আহমেদ অথেনটিক
         </div>
       </div>
     </div>

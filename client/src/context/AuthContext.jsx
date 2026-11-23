@@ -79,12 +79,12 @@ export const AuthProvider = ({ children }) => {
       localStorage.setItem('admin_token', data.token);
       setAdminToken(data.token);
       setAdmin(data);
-      addToast(`Welcome back Admin ${data.name}!`, 'success');
+      addToast(`স্বাগতম অ্যাডমিন ${data.name}!`, 'success');
     } else {
       localStorage.setItem('customer_token', data.token);
       setUserToken(data.token);
       setUser(data);
-      addToast(`Welcome back, ${data.name}!`, 'success');
+      addToast(`স্বাগতম, ${data.name}!`, 'success');
     }
     return data;
   };
@@ -94,7 +94,7 @@ export const AuthProvider = ({ children }) => {
     localStorage.setItem('customer_token', data.token);
     setUserToken(data.token);
     setUser(data);
-    addToast('Account created successfully! Welcome to Abu Ahmed Collection.', 'success');
+    addToast('অ্যাকাউন্ট সফলভাবে তৈরি হয়েছে! আবু আহমেদ কালেকশনে আপনাকে স্বাগতম।', 'success');
     return data;
   };
 
@@ -102,7 +102,7 @@ export const AuthProvider = ({ children }) => {
     localStorage.removeItem('customer_token');
     setUserToken(null);
     setUser(null);
-    addToast('You have been logged out.', 'info');
+    addToast('আপনি সফলভাবে লগআউট হয়েছেন।', 'info');
   };
 
   // Dedicated Admin Authentication handlers
@@ -111,7 +111,7 @@ export const AuthProvider = ({ children }) => {
     localStorage.setItem('admin_token', data.token);
     setAdminToken(data.token);
     setAdmin(data);
-    addToast(`Welcome Admin ${data.name}!`, 'success');
+    addToast(`স্বাগতম অ্যাডমিন ${data.name}!`, 'success');
     return data;
   };
 
@@ -119,7 +119,7 @@ export const AuthProvider = ({ children }) => {
     localStorage.removeItem('admin_token');
     setAdminToken(null);
     setAdmin(null);
-    addToast('Admin logged out safely.', 'info');
+    addToast('অ্যাডমিন সফলভাবে লগআউট হয়েছেন।', 'info');
   };
 
   return (

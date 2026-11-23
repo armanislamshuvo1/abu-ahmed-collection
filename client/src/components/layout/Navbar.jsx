@@ -11,12 +11,12 @@ export const Navbar = ({ onNavigate, currentPath = '/' }) => {
   const [userDropdownOpen, setUserDropdownOpen] = useState(false);
 
   const categories = [
-    { name: 'All Sarees', slug: 'all' },
-    { name: 'Dhakai Jamdani', slug: 'Dhakai Jamdani' },
-    { name: 'Handloom Silk', slug: 'Handloom Silk' },
-    { name: 'Banarasi Katan', slug: 'Banarasi Katan' },
-    { name: 'Tangail Cotton', slug: 'Tangail Cotton' },
-    { name: 'Royal Muslin', slug: 'Royal Muslin' }
+    { name: 'সব শাড়ি', slug: 'all' },
+    { name: 'ঢাকাই জামদানি', slug: 'Dhakai Jamdani' },
+    { name: 'হ্যান্ডলুম সিল্ক', slug: 'Handloom Silk' },
+    { name: 'বেনারসি কাতান', slug: 'Banarasi Katan' },
+    { name: 'টাঙ্গাইল সুতি', slug: 'Tangail Cotton' },
+    { name: 'রয়েল মসলিন', slug: 'Royal Muslin' }
   ];
 
   const handleSearchSubmit = (e) => {
@@ -35,7 +35,7 @@ export const Navbar = ({ onNavigate, currentPath = '/' }) => {
           <div className="flex items-center gap-2 min-w-0">
             <Crown className="w-3 h-3 text-gold shrink-0" />
             <span className="truncate">
-              Free Express Delivery across Bangladesh on orders over ৳{settings?.freeShippingThreshold || 5000}!
+              সারা বাংলাদেশে ৳{settings?.freeShippingThreshold || 5000} বা তার বেশি অর্ডারে ফ্রি ডেলিভারি!
             </span>
           </div>
           <div className="hidden sm:flex items-center gap-6">
@@ -44,7 +44,7 @@ export const Navbar = ({ onNavigate, currentPath = '/' }) => {
               className="flex items-center gap-1.5 hover:text-white transition-colors"
             >
               <Truck className="w-3 h-3 text-gold" />
-              <span>Track Order</span>
+              <span>অর্ডার ট্র্যাক</span>
             </button>
             <a
               href={`https://wa.me/${settings?.whatsappNumber || '8801806732097'}`}
@@ -53,19 +53,19 @@ export const Navbar = ({ onNavigate, currentPath = '/' }) => {
               className="flex items-center gap-1.5 hover:text-white transition-colors"
             >
               <Phone className="w-3 h-3 text-gold" />
-              <span>Helpline: {settings?.storePhone || '+880 1806-732097'}</span>
+              <span>হেল্পলাইন: {settings?.storePhone || '+880 1806-732097'}</span>
             </a>
             <a
               href={settings?.facebookUrl || 'https://www.facebook.com/people/Abu-Ahmed-Collection/61586448518021/'}
               target="_blank"
               rel="noopener noreferrer"
               className="flex items-center gap-1 hover:text-gold transition-colors"
-              title="Official Facebook Page"
+              title="অফিসিয়াল ফেসবুক পেজ"
             >
               <svg className="w-3 h-3 fill-current text-blue-400" viewBox="0 0 24 24">
                 <path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/>
               </svg>
-              <span>Facebook</span>
+              <span>ফেসবুক</span>
             </a>
           </div>
         </div>
@@ -94,7 +94,7 @@ export const Navbar = ({ onNavigate, currentPath = '/' }) => {
               <div className="w-9 h-9 sm:w-10 sm:h-10 rounded-full overflow-hidden border-2 border-gold shadow-gold group-hover:scale-105 transition-transform bg-black flex items-center justify-center">
                 <img
                   src="/logo.jpg"
-                  alt="Abu Ahmed Collection Logo"
+                  alt="আবু আহমেদ কালেকশন লোগো"
                   className="w-full h-full object-cover"
                   onError={(e) => {
                     e.target.style.display = 'none';
@@ -103,10 +103,10 @@ export const Navbar = ({ onNavigate, currentPath = '/' }) => {
               </div>
               <div className="flex flex-col">
                 <span className="font-serif text-base sm:text-lg font-bold tracking-wider text-gold-light group-hover:text-gold transition-colors leading-tight">
-                  Abu Ahmed
+                  আবু আহমেদ
                 </span>
                 <span className="text-[9px] sm:text-[10px] tracking-[0.25em] uppercase text-zinc-400 font-semibold leading-tight">
-                  Collection
+                  কালেকশন
                 </span>
               </div>
             </button>
@@ -116,7 +116,7 @@ export const Navbar = ({ onNavigate, currentPath = '/' }) => {
               <div className="relative w-full">
                 <input
                   type="text"
-                  placeholder="Search Jamdani, Katan, Silk sarees..."
+                  placeholder="জামদানি, কাতান, সিল্ক শাড়ি খুঁজুন..."
                   value={searchQuery}
                   onChange={e => setSearchQuery(e.target.value)}
                   className="w-full bg-royal-card border border-zinc-700/80 rounded-full pl-10 pr-4 py-2 text-sm text-cream placeholder-zinc-400 focus:outline-none focus:border-gold focus:ring-1 focus:ring-gold transition-all"
@@ -137,7 +137,7 @@ export const Navbar = ({ onNavigate, currentPath = '/' }) => {
                 }`}
               >
                 <Truck className="w-3.5 h-3.5 text-gold" />
-                <span>Track Order</span>
+                <span>অর্ডার ট্র্যাক</span>
               </button>
 
               {/* Customer Account / Profile Dropdown */}
@@ -158,7 +158,7 @@ export const Navbar = ({ onNavigate, currentPath = '/' }) => {
                     {userDropdownOpen && (
                       <div className="absolute right-0 mt-2 w-48 rounded-xl bg-royal-card border border-gold/20 shadow-2xl py-2 z-50 animate-in fade-in zoom-in-95">
                         <div className="px-4 py-2 border-b border-zinc-800">
-                          <p className="text-xs text-zinc-400">Signed in as</p>
+                          <p className="text-xs text-zinc-400">লগইনকৃত অ্যাকাউন্ট</p>
                           <p className="text-sm font-semibold text-white truncate">{user.email}</p>
                         </div>
                         <button
@@ -169,7 +169,7 @@ export const Navbar = ({ onNavigate, currentPath = '/' }) => {
                           className="w-full text-left px-4 py-2 text-sm text-zinc-300 hover:text-gold hover:bg-zinc-800/60 flex items-center gap-2"
                         >
                           <User className="w-4 h-4 text-gold" />
-                          <span>My Profile & Orders</span>
+                          <span>আমার প্রোফাইল ও অর্ডার</span>
                         </button>
                         <button
                           onClick={() => {
@@ -179,7 +179,7 @@ export const Navbar = ({ onNavigate, currentPath = '/' }) => {
                           className="w-full text-left px-4 py-2 text-sm text-red-400 hover:text-red-300 hover:bg-zinc-800/60 flex items-center gap-2"
                         >
                           <LogOut className="w-4 h-4" />
-                          <span>Sign Out</span>
+                          <span>লগআউট</span>
                         </button>
                       </div>
                     )}
@@ -188,10 +188,10 @@ export const Navbar = ({ onNavigate, currentPath = '/' }) => {
                   <button
                     onClick={() => onNavigate('/login')}
                     className="flex items-center gap-1.5 text-xs font-semibold uppercase tracking-wider text-cream hover:text-gold transition-colors p-2"
-                    title="Sign In / Register"
+                    title="লগইন / রেজিস্টার"
                   >
                     <User className="w-5 h-5 text-gold" />
-                    <span className="hidden sm:inline-block">Account</span>
+                    <span className="hidden sm:inline-block">অ্যাকাউন্ট</span>
                   </button>
                 )}
               </div>
@@ -200,7 +200,7 @@ export const Navbar = ({ onNavigate, currentPath = '/' }) => {
               <button
                 onClick={() => setIsCartOpen(true)}
                 className="relative p-2.5 rounded-full bg-royal-card border border-gold/30 hover:border-gold hover:bg-zinc-800 text-gold transition-all duration-200 active:scale-95 shadow-sm"
-                aria-label="Shopping Bag"
+                aria-label="শপিং ব্যাগ"
               >
                 <ShoppingBag className="w-5 h-5 text-gold-light" />
                 {itemCount > 0 && (
@@ -216,10 +216,10 @@ export const Navbar = ({ onNavigate, currentPath = '/' }) => {
                   <button
                     onClick={() => onNavigate('/admin')}
                     className="inline-flex items-center gap-1 text-[11px] font-bold text-amber-300 hover:text-white transition-colors"
-                    title="Admin Dashboard"
+                    title="অ্যাডমিন ড্যাশবোর্ড"
                   >
                     <Crown className="w-3.5 h-3.5 text-gold" />
-                    <span>Admin</span>
+                    <span>অ্যাডমিন</span>
                   </button>
                   <span className="text-amber-500/50 text-[10px]">|</span>
                   <button
@@ -230,10 +230,10 @@ export const Navbar = ({ onNavigate, currentPath = '/' }) => {
                       }
                     }}
                     className="inline-flex items-center gap-1 text-[11px] text-zinc-400 hover:text-red-400 transition-colors"
-                    title="Sign Out of Admin"
+                    title="অ্যাডমিন থেকে লগআউট"
                   >
                     <LogOut className="w-3 h-3" />
-                    <span>Logout</span>
+                    <span>লগআউট</span>
                   </button>
                 </div>
               )}
@@ -262,7 +262,7 @@ export const Navbar = ({ onNavigate, currentPath = '/' }) => {
               <div className="relative">
                 <input
                   type="text"
-                  placeholder="Search sarees..."
+                  placeholder="শাড়ি খুঁজুন..."
                   value={searchQuery}
                   onChange={e => setSearchQuery(e.target.value)}
                   className="w-full bg-royal-card border border-zinc-700 rounded-lg pl-10 pr-4 py-2.5 text-sm text-cream placeholder-zinc-400 focus:outline-none focus:border-gold"
@@ -295,7 +295,7 @@ export const Navbar = ({ onNavigate, currentPath = '/' }) => {
                 className="flex items-center gap-2 py-2 text-sm text-gold hover:text-white"
               >
                 <Truck className="w-4 h-4" />
-                <span>Track Your Order</span>
+                <span>আপনার অর্ডার ট্র্যাক করুন</span>
               </button>
               {admin && (
                 <div className="flex items-center justify-between py-2 px-3 rounded-lg bg-amber-950/40 border border-amber-500/40">
@@ -307,7 +307,7 @@ export const Navbar = ({ onNavigate, currentPath = '/' }) => {
                     className="flex items-center gap-2 text-sm font-semibold text-amber-300"
                   >
                     <Crown className="w-4 h-4 text-gold" />
-                    <span>Admin Dashboard</span>
+                    <span>অ্যাডমিন ড্যাশবোর্ড</span>
                   </button>
                   <button
                     onClick={() => {
@@ -320,7 +320,7 @@ export const Navbar = ({ onNavigate, currentPath = '/' }) => {
                     className="flex items-center gap-1 text-xs text-red-400 hover:text-red-300 font-medium"
                   >
                     <LogOut className="w-3.5 h-3.5" />
-                    <span>Logout</span>
+                    <span>লগআউট</span>
                   </button>
                 </div>
               )}
@@ -333,7 +333,7 @@ export const Navbar = ({ onNavigate, currentPath = '/' }) => {
                   className="flex items-center gap-2 py-2 text-sm text-zinc-200 hover:text-gold"
                 >
                   <User className="w-4 h-4" />
-                  <span>My Profile & Orders ({user.name})</span>
+                  <span>আমার প্রোফাইল ও অর্ডার ({user.name})</span>
                 </button>
               ) : (
                 <button
@@ -344,7 +344,7 @@ export const Navbar = ({ onNavigate, currentPath = '/' }) => {
                   className="flex items-center gap-2 py-2 text-sm text-gold"
                 >
                   <User className="w-4 h-4" />
-                  <span>Customer Login / Register</span>
+                  <span>কাস্টমার লগইন / রেজিস্টার</span>
                 </button>
               )}
             </div>

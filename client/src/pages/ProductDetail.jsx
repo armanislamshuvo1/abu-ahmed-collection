@@ -49,10 +49,10 @@ export const ProductDetail = ({ slug, onNavigate }) => {
     return (
       <div className="max-w-7xl mx-auto px-4 py-20 text-center">
         <AlertCircle className="w-12 h-12 text-zinc-400 mx-auto mb-3" />
-        <h2 className="font-serif text-2xl font-bold text-royal-black">Saree Not Found</h2>
-        <p className="text-sm text-zinc-500 mt-2">The product you are looking for may have been moved or updated.</p>
+        <h2 className="font-serif text-2xl font-bold text-royal-black">শাড়িটি খুঁজে পাওয়া যায়নি</h2>
+        <p className="text-sm text-zinc-500 mt-2">আপনি যে শাড়িটি খুঁজছেন তা সরানো হয়েছে অথবা আপডেট করা হয়েছে।</p>
         <Button variant="primary" className="mt-6" onClick={() => onNavigate('/shop')}>
-          Return to Saree Collection
+          শাড়ির কালেকশনে ফিরে যান
         </Button>
       </div>
     );
@@ -66,7 +66,7 @@ export const ProductDetail = ({ slug, onNavigate }) => {
 
   const whatsAppPhone = settings?.whatsappNumber || '8801806732097';
   const whatsAppInquiryUrl = `https://wa.me/${whatsAppPhone}?text=${encodeURIComponent(
-    `Hello Abu Ahmed Collection, I want to inquire about: ${product.name} (Price: ৳${currentPrice}). Is it available for delivery?`
+    `আসসালামু আলাইকুম আবু আহমেদ কালেকশন, আমি "${product.name}" (মূল্য: ৳${currentPrice}) শাড়িটি সম্পর্কে জানতে চাই। এটি কি বর্তমানে ডেলিভারির জন্য পাওয়া যাবে?`
   )}`;
 
   return (
@@ -85,13 +85,13 @@ export const ProductDetail = ({ slug, onNavigate }) => {
             <div className="flex items-center gap-2 flex-wrap">
               <Badge variant="gold">{product.category}</Badge>
               <Badge variant="stock">{product.fabric}</Badge>
-              {hasDiscount && <Badge variant="discount">−{discountPercent}% OFF</Badge>}
+              {hasDiscount && <Badge variant="discount">−{discountPercent}% ছাড়</Badge>}
               {product.inStock ? (
                 <span className="text-xs text-emerald-600 font-semibold flex items-center gap-1">
-                  <Check className="w-3.5 h-3.5" /> In Stock & Ready to Ship
+                  <Check className="w-3.5 h-3.5" /> স্টকে আছে ও ডেলিভারির জন্য প্রস্তুত
                 </span>
               ) : (
-                <span className="text-xs text-red-500 font-semibold">Out of Stock</span>
+                <span className="text-xs text-red-500 font-semibold">স্টক শেষ</span>
               )}
             </div>
 
@@ -110,13 +110,13 @@ export const ProductDetail = ({ slug, onNavigate }) => {
                   ৳{product.regularPrice?.toLocaleString()}
                 </span>
               )}
-              <span className="text-xs text-zinc-500 font-medium">VAT & Taxes included</span>
+              <span className="text-xs text-zinc-500 font-medium">ভ্যাট অন্তর্ভুক্ত</span>
             </div>
 
             {/* Color tags */}
             {product.colors && product.colors.length > 0 && (
               <div className="pt-2">
-                <span className="text-xs font-semibold text-zinc-700 block mb-1.5">Color Palette:</span>
+                <span className="text-xs font-semibold text-zinc-700 block mb-1.5">রং:</span>
                 <div className="flex flex-wrap gap-2">
                   {product.colors.map((c, idx) => (
                     <span
@@ -134,15 +134,15 @@ export const ProductDetail = ({ slug, onNavigate }) => {
             <div className="p-3 rounded-xl bg-gold/5 border border-gold/20 flex flex-col sm:flex-row sm:items-center justify-between gap-1 sm:gap-2 text-xs">
               <div className="flex items-center gap-2">
                 <Sparkles className="w-4 h-4 text-gold shrink-0" />
-                <span className="font-semibold text-royal-black">Blouse Piece:</span>
-                <span className="text-zinc-700">{product.blousePiece ? 'Included with Saree' : 'Not Included'}</span>
+                <span className="font-semibold text-royal-black">ব্লাউজ পিস:</span>
+                <span className="text-zinc-700">{product.blousePiece ? 'শাড়ির সাথে যুক্ত আছে' : 'যুক্ত নেই'}</span>
               </div>
-              <span className="text-zinc-500">Length: 12 Haat (approx 5.5m)</span>
+              <span className="text-zinc-500">দৈর্ঘ্য: ১২ হাত (প্রায় ৫.৫ মিটার)</span>
             </div>
 
             {/* Quantity Selector */}
             <div className="flex items-center gap-4 pt-2">
-              <span className="text-xs font-semibold text-zinc-700">Quantity:</span>
+              <span className="text-xs font-semibold text-zinc-700">পরিমাণ:</span>
               <div className="flex items-center border border-zinc-300 rounded-lg bg-white">
                 <button
                   type="button"
@@ -173,7 +173,7 @@ export const ProductDetail = ({ slug, onNavigate }) => {
                   className="w-full flex items-center justify-center gap-2"
                 >
                   <Zap className="w-5 h-5 text-gold-dark" />
-                  <span>Buy Now</span>
+                  <span>অর্ডার করুন</span>
                 </Button>
 
                 <Button
@@ -184,7 +184,7 @@ export const ProductDetail = ({ slug, onNavigate }) => {
                   className="w-full flex items-center justify-center gap-2"
                 >
                   <ShoppingBag className="w-5 h-5" />
-                  <span>Add to Cart</span>
+                  <span>কার্টে রাখুন</span>
                 </Button>
               </div>
 
@@ -196,7 +196,7 @@ export const ProductDetail = ({ slug, onNavigate }) => {
                 className="w-full inline-flex items-center justify-center gap-2 py-3 px-4 rounded-xl border border-emerald-500/40 bg-emerald-50 hover:bg-emerald-100 text-emerald-800 text-xs font-bold transition-colors"
               >
                 <MessageCircle className="w-4 h-4 text-emerald-600" />
-                <span>Order or Inquire Directly on WhatsApp</span>
+                <span>হোয়াটসঅ্যাপে সরাসরি অর্ডার বা অনুসন্ধান করুন</span>
               </a>
             </div>
 
@@ -204,11 +204,11 @@ export const ProductDetail = ({ slug, onNavigate }) => {
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5 pt-4 border-t border-zinc-200 text-xs text-zinc-600">
               <div className="flex items-center gap-2">
                 <Truck className="w-4 h-4 text-gold shrink-0" />
-                <span>Inside Dhaka: ৳80 | Outside: ৳150</span>
+                <span>ঢাকার ভেতরে: ৳৮০ | বাইরে: ৳১৫০</span>
               </div>
               <div className="flex items-center gap-2">
                 <ShieldCheck className="w-4 h-4 text-gold shrink-0" />
-                <span>Cash on Delivery Available</span>
+                <span>ক্যাশ অন ডেলিভারি সুবিধা</span>
               </div>
             </div>
           </div>
@@ -219,7 +219,7 @@ export const ProductDetail = ({ slug, onNavigate }) => {
       <div className="rounded-3xl bg-white border border-zinc-200 p-6 sm:p-10 shadow-soft space-y-8">
         <div>
           <h3 className="font-serif text-xl sm:text-2xl font-bold text-royal-black mb-3">
-            About This Artisan Saree
+            এই ঐতিহ্যবাহী শাড়ি সম্পর্কে বিস্তারিত
           </h3>
           <p className="text-sm text-zinc-700 leading-relaxed whitespace-pre-line font-light">
             {product.description}
@@ -228,16 +228,16 @@ export const ProductDetail = ({ slug, onNavigate }) => {
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6 pt-6 border-t border-zinc-100">
           <div className="space-y-1">
-            <h4 className="text-xs uppercase tracking-wider font-bold text-royal-black">Fabric Composition</h4>
+            <h4 className="text-xs uppercase tracking-wider font-bold text-royal-black">ফেব্রিক ও উপাদান</h4>
             <p className="text-xs text-zinc-600">{product.fabric}</p>
           </div>
           <div className="space-y-1">
-            <h4 className="text-xs uppercase tracking-wider font-bold text-royal-black">Blouse Piece</h4>
-            <p className="text-xs text-zinc-600">{product.blousePiece ? 'Matching Unstitched Blouse Piece Included' : 'No Blouse Piece'}</p>
+            <h4 className="text-xs uppercase tracking-wider font-bold text-royal-black">ব্লাউজ পিস</h4>
+            <p className="text-xs text-zinc-600">{product.blousePiece ? 'ম্যাচিং আনস্টিচড ব্লাউজ পিস অন্তর্ভুক্ত' : 'ব্লাউজ পিস অন্তর্ভুক্ত নেই'}</p>
           </div>
           <div className="space-y-1">
-            <h4 className="text-xs uppercase tracking-wider font-bold text-royal-black">Care Guidelines</h4>
-            <p className="text-xs text-zinc-600">{product.careInstructions || 'Dry clean recommended. Wrap in cotton muslin.'}</p>
+            <h4 className="text-xs uppercase tracking-wider font-bold text-royal-black">যত্ন ও ধোয়ার নিয়ম</h4>
+            <p className="text-xs text-zinc-600">{product.careInstructions || 'ড্রাই ওয়াশ করার পরামর্শ দেওয়া হচ্ছে। সুতি কাপড়ে মুড়িয়ে রাখুন।'}</p>
           </div>
         </div>
       </div>
@@ -247,7 +247,7 @@ export const ProductDetail = ({ slug, onNavigate }) => {
         <div className="space-y-6">
           <div className="border-b border-zinc-200 pb-3">
             <h3 className="font-serif text-xl sm:text-2xl font-bold text-royal-black">
-              You May Also Admire
+              আপনার আরও পছন্দ হতে পারে
             </h3>
           </div>
           <ProductGrid products={related} onNavigate={onNavigate} />

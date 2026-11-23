@@ -32,8 +32,8 @@ export default {
         }
       },
       fontFamily: {
-        serif: ['"Playfair Display"', 'Georgia', 'serif'],
-        sans: ['"Inter"', 'system-ui', '-apple-system', 'sans-serif'],
+        serif: ['"Playfair Display"', '"Hind Siliguri"', 'Georgia', 'serif'],
+        sans: ['"Hind Siliguri"', '"Inter"', 'system-ui', '-apple-system', 'sans-serif'],
       },
       boxShadow: {
         gold: '0 4px 20px -2px rgba(212, 175, 55, 0.25)',

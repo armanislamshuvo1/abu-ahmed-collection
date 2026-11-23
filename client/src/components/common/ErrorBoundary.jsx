@@ -40,8 +40,8 @@ export class ErrorBoundary extends React.Component {
       return (
         <ErrorPage
           code={500}
-          title="Unexpected Application Error"
-          message="An error occurred while loading this section of the website. You can reload or return to the homepage."
+          title="একটি অপ্রত্যাশিত সমস্যা হয়েছে"
+          message="ওয়েবসাইটের এই অংশটি লোড করতে একটি ত্রুটি ঘটেছে। অনুগ্রহ করে পেজটি রিলোড করুন বা হোমপেজে ফিরে যান।"
           error={this.state.error}
           resetErrorBoundary={this.resetErrorBoundary}
           onNavigate={this.props.onNavigate}

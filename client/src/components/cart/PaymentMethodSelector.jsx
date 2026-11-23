@@ -11,7 +11,7 @@ export const PaymentMethodSelector = ({
   return (
     <div className="space-y-3">
       <label className="block text-xs font-semibold uppercase tracking-wider text-royal-black/80">
-        Select Payment Method <span className="text-red-500">*</span>
+        পেমেন্ট পদ্ধতি নির্বাচন করুন <span className="text-red-500">*</span>
       </label>
 
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
@@ -40,7 +40,7 @@ export const PaymentMethodSelector = ({
               <div className="flex-1 min-w-0">
                 <p className="text-xs sm:text-sm font-semibold text-royal-black truncate">{method.name}</p>
                 {method.accountNumber && (
-                  <p className="text-[11px] text-zinc-500">No: {method.accountNumber}</p>
+                  <p className="text-[11px] text-zinc-500">নম্বর: {method.accountNumber}</p>
                 )}
               </div>
 
@@ -57,24 +57,24 @@ export const PaymentMethodSelector = ({
       {/* Instructions & Transaction ID Input if applicable */}
       {selectedMethod && selectedMethod.instructions && (
         <div className="p-3.5 rounded-xl bg-zinc-50 border border-zinc-200 text-xs text-zinc-600 space-y-2">
-          <p className="font-medium text-royal-black">Payment Instructions:</p>
+          <p className="font-medium text-royal-black">পেমেন্টের নিয়মাবলী:</p>
           <p className="leading-relaxed whitespace-pre-line">{selectedMethod.instructions}</p>
 
           {selectedMethod.requiresTransactionId && (
             <div className="pt-2">
               <label className="block text-xs font-semibold text-royal-black mb-1">
-                Enter {selectedMethod.name} Transaction ID (TrxID){' '}
-                <span className="text-zinc-500 font-normal">(Optional now — can enter after order)</span>
+                {selectedMethod.name} ট্রানজেকশন আইডি (TrxID) লিখুন{' '}
+                <span className="text-zinc-500 font-normal">(ঐচ্ছিক — অর্ডারের পরেও দেওয়া যাবে)</span>
               </label>
               <input
                 type="text"
-                placeholder="e.g. 9G7K21LM88"
+                placeholder="যেমন: 9G7K21LM88"
                 value={transactionId}
                 onChange={e => onChangeTransactionId(e.target.value)}
                 className="w-full rounded-lg border border-zinc-300 bg-white px-3 py-2 text-sm text-royal-black uppercase placeholder-zinc-400 focus:border-gold focus:outline-none focus:ring-1 focus:ring-gold"
               />
               <p className="text-[11px] text-zinc-500 mt-1">
-                You can pay and enter your TrxID now, or place your order first and submit it anytime.
+                আপনি এখনই পেমেন্ট করে TrxID দিতে পারেন, অথবা আগে অর্ডার সম্পন্ন করে পরবর্তীতে যেকোনো সময় ট্র্যাকিং পেজ থেকে TrxID দিতে পারবেন।
               </p>
             </div>
           )}

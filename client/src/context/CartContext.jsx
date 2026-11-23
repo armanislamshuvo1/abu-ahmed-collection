@@ -54,7 +54,7 @@ export const CartProvider = ({ children }) => {
       ];
     });
 
-    addToast(`Added "${product.name.slice(0, 30)}..." to your bag!`, 'success');
+    addToast(`"${product.name.slice(0, 30)}..." ব্যাগে যোগ করা হয়েছে!`, 'success');
 
     if (openDrawer) {
       setIsCartOpen(true);
@@ -63,7 +63,7 @@ export const CartProvider = ({ children }) => {
 
   const removeFromCart = (productId) => {
     setCartItems(prev => prev.filter(item => item.product !== productId));
-    addToast('Item removed from shopping bag', 'info');
+    addToast('পণ্যটি ব্যাগ থেকে সরানো হয়েছে', 'info');
   };
 
   const updateQuantity = (productId, delta) => {

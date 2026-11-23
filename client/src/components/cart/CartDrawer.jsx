@@ -29,7 +29,7 @@ export const CartDrawer = ({ onNavigate }) => {
             <div className="flex items-center gap-2.5">
               <ShoppingBag className="w-5 h-5 text-gold" />
               <h2 className="font-serif text-lg font-bold text-gold-light tracking-wide">
-                Shopping Bag ({itemCount})
+                শপিং ব্যাগ ({itemCount}টি)
               </h2>
             </div>
             <button
@@ -44,12 +44,12 @@ export const CartDrawer = ({ onNavigate }) => {
           <div className="bg-zinc-50 px-6 py-3 border-b border-zinc-100 text-xs">
             {remainingForFreeShipping > 0 ? (
               <p className="text-zinc-600 mb-1.5">
-                Add <span className="font-bold text-royal-black">৳{remainingForFreeShipping.toLocaleString()}</span> more to unlock <span className="text-emerald-700 font-semibold">Free Delivery</span>!
+                আর মাত্র <span className="font-bold text-royal-black">৳{remainingForFreeShipping.toLocaleString()}</span> টাকার কেনাকাটা করলেই পাচ্ছেন <span className="text-emerald-700 font-semibold">ফ্রি ডেলিভারি</span>!
               </p>
             ) : (
               <p className="text-emerald-700 font-semibold flex items-center gap-1.5 mb-1.5">
                 <Sparkles className="w-3.5 h-3.5 text-gold" />
-                Congratulations! You qualified for Free Delivery!
+                অভিনন্দন! আপনি ফ্রি ডেলিভারি সুবিধা পেয়েছেন!
               </p>
             )}
             <div className="w-full bg-zinc-200 h-1.5 rounded-full overflow-hidden">
@@ -65,9 +65,9 @@ export const CartDrawer = ({ onNavigate }) => {
             {cartItems.length === 0 ? (
               <div className="h-full flex flex-col items-center justify-center text-center p-6 text-zinc-400">
                 <ShoppingBag className="w-16 h-16 text-zinc-300 mb-3 stroke-[1.2]" />
-                <p className="font-serif text-base font-semibold text-royal-black">Your bag is empty</p>
+                <p className="font-serif text-base font-semibold text-royal-black">আপনার শপিং ব্যাগ খালি</p>
                 <p className="text-xs text-zinc-500 mt-1 max-w-[200px]">
-                  Explore our luxury handloom Jamdani & Silk sarees.
+                  আমাদের ঐতিহ্যবাহী প্রিমিয়াম জামদানি ও সিল্ক শাড়ির কালেকশন দেখুন।
                 </p>
                 <Button
                   variant="primary"
@@ -78,7 +78,7 @@ export const CartDrawer = ({ onNavigate }) => {
                     onNavigate('/shop');
                   }}
                 >
-                  Browse Sarees
+                  শাড়ির কালেকশন দেখুন
                 </Button>
               </div>
             ) : (
@@ -143,13 +143,13 @@ export const CartDrawer = ({ onNavigate }) => {
           {cartItems.length > 0 && (
             <div className="border-t border-zinc-200 bg-white p-6 space-y-4">
               <div className="flex items-center justify-between text-sm">
-                <span className="text-zinc-500">Subtotal</span>
+                <span className="text-zinc-500">সাবটোটাল</span>
                 <span className="font-serif text-lg font-bold text-royal-black">
                   ৳{subtotal.toLocaleString()}
                 </span>
               </div>
               <p className="text-[11px] text-zinc-400">
-                Delivery charges (Inside Dhaka ৳80 / Outside Dhaka ৳150) calculated at next step.
+                ডেলিভারি চার্জ (ঢাকার ভেতরে ৳৮০ / ঢাকার বাইরে ৳১৫০) পরবর্তী ধাপে যুক্ত হবে।
               </p>
               <Button
                 variant="primary"
@@ -160,7 +160,7 @@ export const CartDrawer = ({ onNavigate }) => {
                   onNavigate('/checkout');
                 }}
               >
-                <span>Proceed to Checkout</span>
+                <span>অর্ডার সম্পন্ন করতে এগিয়ে যান</span>
                 <ArrowRight className="w-4 h-4" />
               </Button>
             </div>

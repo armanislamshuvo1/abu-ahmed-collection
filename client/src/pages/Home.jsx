@@ -43,16 +43,16 @@ export const Home = ({ onNavigate }) => {
             <div className="lg:col-span-7 space-y-6 text-center lg:text-left">
               <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-gold/10 border border-gold/40 text-gold-light text-xs font-semibold uppercase tracking-widest shadow-sm">
                 <Crown className="w-3.5 h-3.5 text-gold" />
-                <span>Abu Ahmed Collection • Royal Heritage</span>
+                <span>আবু আহমেদ কালেকশন • ঐতিহ্যবাহী রাজকীয় সম্ভার</span>
               </div>
 
               <h1 className="font-serif text-3xl sm:text-5xl lg:text-6xl font-extrabold tracking-tight leading-[1.15]">
-                Timeless Elegance in <br />
-                <span className="gold-text-gradient">Every Royal Drape</span>
+                বাংলার ঐতিহ্য ও আভিজাত্য <br />
+                <span className="gold-text-gradient">প্রতিটি শাড়ির পরতে পরতে</span>
               </h1>
 
               <p className="text-sm sm:text-base text-zinc-300 max-w-xl mx-auto lg:mx-0 leading-relaxed font-light">
-                Discover Bengal's most coveted handloom creations. From intricate masterwork Dhakai Jamdani and bridal Banarasi katan to featherweight Tangail cottons — crafted for women who appreciate royal dignity.
+                বাঙালি নারীর রূপ আর রাজকীয় আভিজাত্য ফুটিয়ে তুলতে সরাসরি তাঁতিদের হাতে বোনা আদি ঢাকাই জামদানি, বিয়ের বেনারসি কাতান ও আরামদায়ক টাঙ্গাইল সুতি শাড়ির অনন্য কালেকশন।
               </p>
 
               <div className="pt-2 flex flex-col sm:flex-row items-center justify-center lg:justify-start gap-3.5">
@@ -62,7 +62,7 @@ export const Home = ({ onNavigate }) => {
                   onClick={() => onNavigate('/shop')}
                   className="w-full sm:w-auto"
                 >
-                  <span>Explore Saree Collection</span>
+                  <span>শাড়ির কালেকশন দেখুন</span>
                   <ArrowRight className="w-4 h-4 ml-1" />
                 </Button>
                 <Button
@@ -71,23 +71,23 @@ export const Home = ({ onNavigate }) => {
                   onClick={() => onNavigate('/shop?category=Dhakai+Jamdani')}
                   className="w-full sm:w-auto"
                 >
-                  <span>Dhakai Jamdani</span>
+                  <span>ঢাকাই জামদানি</span>
                 </Button>
               </div>
 
               {/* Highlights row */}
               <div className="pt-6 grid grid-cols-3 gap-4 border-t border-zinc-800 text-left">
                 <div>
-                  <span className="block font-serif text-lg sm:text-2xl font-bold text-gold">100%</span>
-                  <span className="text-[11px] text-zinc-400">Authentic Handloom</span>
+                  <span className="block font-serif text-lg sm:text-2xl font-bold text-gold">১০০%</span>
+                  <span className="text-[11px] text-zinc-400">খাঁটি তাঁতের শাড়ি</span>
                 </div>
                 <div>
-                  <span className="block font-serif text-lg sm:text-2xl font-bold text-gold">COD</span>
-                  <span className="text-[11px] text-zinc-400">All 64 Districts</span>
+                  <span className="block font-serif text-lg sm:text-2xl font-bold text-gold">ক্যাশ অন</span>
+                  <span className="text-[11px] text-zinc-400">৬৪ জেলায় হোম ডেলিভারি</span>
                 </div>
                 <div>
-                  <span className="block font-serif text-lg sm:text-2xl font-bold text-gold">Fast</span>
-                  <span className="text-[11px] text-zinc-400">Nationwide Shipping</span>
+                  <span className="block font-serif text-lg sm:text-2xl font-bold text-gold">দ্রুত</span>
+                  <span className="text-[11px] text-zinc-400">সারাদেশে ডেলিভারি</span>
                 </div>
               </div>
             </div>
@@ -97,22 +97,22 @@ export const Home = ({ onNavigate }) => {
               <div className="relative w-full max-w-sm sm:max-w-md aspect-[3/4] rounded-3xl overflow-hidden border-2 border-gold/40 shadow-2xl p-2 bg-royal-dark/80 group">
                 <img
                   src="https://images.unsplash.com/photo-1610030469983-98e550d6193c?auto=format&fit=crop&w=1000&q=85"
-                  alt="Abu Ahmed Collection Masterpiece"
+                  alt="আবু আহমেদ কালেকশন স্পেশাল শাড়ি"
                   className="w-full h-full object-cover rounded-2xl group-hover:scale-105 transition-transform duration-700"
                 />
                 <div className="absolute inset-0 rounded-2xl bg-gradient-to-t from-royal-black/90 via-transparent to-transparent flex flex-col justify-end p-6">
                   <span className="text-gold text-xs font-semibold uppercase tracking-widest">
-                    Heritage Masterpiece
+                    ঐতিহ্যবাহী সেরা সৃষ্টি
                   </span>
                   <h3 className="font-serif text-lg sm:text-xl font-bold text-white mt-1">
-                    Royal Black & Gold Dhakai Jamdani
+                    রয়েল ব্ল্যাক অ্যান্ড গোল্ড ঢাকাই জামদানি
                   </h3>
-                  <p className="text-xs text-zinc-300 mt-1">Starting from ৳3,850 • Cash on Delivery</p>
+                  <p className="text-xs text-zinc-300 mt-1">শুরু মাত্র ৳৩,৮৫০ থেকে • ক্যাশ অন ডেলিভারি</p>
                   <button
                     onClick={() => onNavigate('/product/royal-black-gold-heritage-dhakai-jamdani')}
                     className="mt-3 inline-flex items-center gap-1.5 text-xs font-bold text-gold hover:text-white transition-colors"
                   >
-                    <span>View Product Details</span>
+                    <span>বিস্তারিত দেখুন</span>
                     <ArrowRight className="w-3.5 h-3.5" />
                   </button>
                 </div>
@@ -126,13 +126,13 @@ export const Home = ({ onNavigate }) => {
       <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="text-center max-w-2xl mx-auto mb-10 space-y-2">
           <p className="text-xs uppercase tracking-[0.2em] font-semibold text-gold-deep">
-            Artisan Weaving Traditions
+            ঐতিহ্যবাহী তাঁত শিল্প
           </p>
           <h2 className="font-serif text-2xl sm:text-3xl font-bold text-royal-black">
-            Shop by Saree Category
+            পছন্দের ক্যাটাগরি অনুযায়ী শাড়ি
           </h2>
           <p className="text-xs sm:text-sm text-zinc-500 font-light">
-            Each piece is woven with devotion and curated directly from the traditional handloom belts of Bangladesh.
+            বাংলাদেশের বিখ্যাত তাঁতপল্লী থেকে পরম ভালোবাসায় বোনা প্রতিটি শাড়ি সংগৃহীত সরাসরি আপনাদের জন্য।
           </p>
         </div>
 
@@ -153,7 +153,7 @@ export const Home = ({ onNavigate }) => {
                   {cat.name}
                 </h3>
                 <span className="text-[10px] text-zinc-300 uppercase tracking-wider mt-0.5">
-                  Explore Designs →
+                  ডিজাইন দেখুন →
                 </span>
               </div>
             </div>
@@ -168,10 +168,10 @@ export const Home = ({ onNavigate }) => {
             <div>
               <div className="inline-flex items-center gap-1.5 text-xs uppercase tracking-widest text-gold-deep font-semibold mb-1">
                 <Sparkles className="w-3.5 h-3.5 text-gold" />
-                <span>Handpicked Exclusives</span>
+                <span>নির্বাচিত এক্সক্লুসিভ শাড়ি</span>
               </div>
               <h2 className="font-serif text-2xl sm:text-3xl font-bold text-royal-black">
-                Featured Heritage Sarees
+                স্পেশাল ফিচারড শাড়ি কালেকশন
               </h2>
             </div>
             <Button
@@ -179,7 +179,7 @@ export const Home = ({ onNavigate }) => {
               size="sm"
               onClick={() => onNavigate('/shop?featured=true')}
             >
-              <span>View All Featured</span>
+              <span>সব ফিচারড শাড়ি দেখুন</span>
               <ArrowRight className="w-3.5 h-3.5" />
             </Button>
           </div>
@@ -197,20 +197,20 @@ export const Home = ({ onNavigate }) => {
         <div className="rounded-3xl bg-gradient-to-r from-royal-black via-zinc-900 to-royal-black text-white p-8 sm:p-12 border border-gold/30 shadow-2xl relative overflow-hidden">
           <div className="relative z-10 max-w-xl space-y-4">
             <span className="inline-block bg-gold/20 text-gold-light border border-gold/40 text-[10px] uppercase tracking-widest font-bold px-3 py-1 rounded-full">
-              Eid & Wedding Season Collection
+              ঈদ ও বিয়ে স্পেশাল কালেকশন
             </span>
             <h3 className="font-serif text-2xl sm:text-4xl font-bold text-white">
-              Royal Bridal Banarasi & Pure Katan Silk
+              রয়েল ব্রাইডাল বেনারসি ও পিওর কাতান সিল্ক
             </h3>
             <p className="text-xs sm:text-sm text-zinc-300 font-light leading-relaxed">
-              Every bride deserves a drape that echoes queenly grace. Our handwoven Katans feature rich all-over metallic zari weaving that glistens under wedding lights.
+              বিয়ের সাজে অনন্য রাজকীয় রূপ এনে দিতে আমাদের জরি কাজের বেনারসি ও কাতান শাড়ির জুড়ি নেই। প্রতিটি শাড়ি ঐতিহ্যের ছোঁয়ায় তৈরি।
             </p>
             <div className="pt-2">
               <Button
                 variant="primary"
                 onClick={() => onNavigate('/shop?category=Banarasi+Katan')}
               >
-                <span>Shop Bridal Collection</span>
+                <span>ব্রাইডাল কালেকশন দেখুন</span>
                 <ArrowRight className="w-4 h-4 ml-1" />
               </Button>
             </div>
@@ -224,10 +224,10 @@ export const Home = ({ onNavigate }) => {
           <div>
             <div className="inline-flex items-center gap-1.5 text-xs uppercase tracking-widest text-gold-deep font-semibold mb-1">
               <Crown className="w-3.5 h-3.5 text-gold" />
-              <span>Fresh Off The Weaving Loom</span>
+              <span>নতুন তাঁত থেকে সদ্য আসা</span>
             </div>
             <h2 className="font-serif text-2xl sm:text-3xl font-bold text-royal-black">
-              New Arrivals & Trending Drape
+              নতুন ডিজাইনের ট্রেন্ডিং শাড়ি
             </h2>
           </div>
           <Button
@@ -235,7 +235,7 @@ export const Home = ({ onNavigate }) => {
             size="sm"
             onClick={() => onNavigate('/shop')}
           >
-            <span>Explore Entire Catalog</span>
+            <span>সম্পূর্ণ শাড়ির ক্যাটালগ দেখুন</span>
             <ArrowRight className="w-3.5 h-3.5" />
           </Button>
         </div>

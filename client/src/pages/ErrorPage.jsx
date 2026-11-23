@@ -14,10 +14,10 @@ export const ErrorPage = ({
 
   const is404 = code === 404;
 
-  const defaultTitle = is404 ? 'Page Not Found' : 'Something Went Wrong';
+  const defaultTitle = is404 ? 'পেজটি পাওয়া যায়নি' : 'একটি সমস্যা দেখা দিয়েছে';
   const defaultMessage = is404
-    ? "The page you are looking for doesn't exist, has been removed, or is temporarily unavailable."
-    : 'An unexpected error occurred while rendering this page. Our team has been notified.';
+    ? 'আপনি যে পেজটি খুঁজছেন তা সরানো হয়েছে, ঠিকানা পরিবর্তন হয়েছে অথবা সাময়িকভাবে অনুপলব্ধ।'
+    : 'পেজটি রেন্ডার করার সময় একটি অপ্রত্যাশিত ত্রুটি ঘটেছে। আমাদের টিমকে জানানো হয়েছে।';
 
   const handleHomeClick = () => {
     if (resetErrorBoundary) {
@@ -67,7 +67,7 @@ export const ErrorPage = ({
             className="w-full sm:w-auto flex items-center justify-center gap-2"
           >
             <Home className="w-4 h-4" />
-            Back to Homepage
+            হোমপেজে ফিরে যান
           </Button>
 
           {!is404 && (
@@ -77,7 +77,7 @@ export const ErrorPage = ({
               className="w-full sm:w-auto flex items-center justify-center gap-2 border-maroon text-maroon hover:bg-maroon/5"
             >
               <RefreshCw className="w-4 h-4" />
-              Reload Page
+              পেজ রিলোড করুন
             </Button>
           )}
         </div>
@@ -88,7 +88,7 @@ export const ErrorPage = ({
               onClick={() => setShowDetails(!showDetails)}
               className="flex items-center justify-between w-full text-xs text-charcoal/60 hover:text-charcoal font-medium py-1"
             >
-              <span>Technical details</span>
+              <span>প্রযুক্তিগত বিবরণ</span>
               {showDetails ? <ChevronUp className="w-3.5 h-3.5" /> : <ChevronDown className="w-3.5 h-3.5" />}
             </button>
 

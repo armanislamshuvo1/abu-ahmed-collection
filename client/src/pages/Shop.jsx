@@ -70,13 +70,13 @@ export const Shop = ({ onNavigate, queryParams = {} }) => {
       <div className="border-b border-zinc-200 pb-6 flex flex-col md:flex-row md:items-end justify-between gap-4">
         <div>
           <span className="text-xs uppercase tracking-widest font-semibold text-gold-deep">
-            Abu Ahmed Catalog
+            আবু আহমেদ কালেকশন
           </span>
           <h1 className="font-serif text-2xl sm:text-3xl font-bold text-royal-black">
-            {selectedCategory !== 'All' ? selectedCategory : 'All Handloom Sarees'}
+            {selectedCategory !== 'All' ? selectedCategory : 'সকল ঐতিহ্যবাহী শাড়ি'}
           </h1>
           <p className="text-xs sm:text-sm text-zinc-500 mt-1">
-            Showing {products.length} authentic handcrafted sarees available for nationwide delivery.
+            সারাদেশে ক্যাশ অন ডেলিভারির জন্য মোট {products.length}টি খাঁটি তাঁতের শাড়ি উপলব্ধ রয়েছে।
           </p>
         </div>
 
@@ -85,7 +85,7 @@ export const Shop = ({ onNavigate, queryParams = {} }) => {
           <div className="relative">
             <input
               type="text"
-              placeholder="Filter by name..."
+              placeholder="শাড়ির নাম দিয়ে খুঁজুন..."
               value={search}
               onChange={e => setSearch(e.target.value)}
               className="bg-white border border-zinc-300 rounded-lg pl-8 pr-3 py-1.5 text-xs text-royal-black focus:outline-none focus:border-gold"
@@ -98,9 +98,9 @@ export const Shop = ({ onNavigate, queryParams = {} }) => {
             onChange={e => setSortBy(e.target.value)}
             className="rounded-lg border border-zinc-300 bg-white px-3 py-1.5 text-xs font-medium text-royal-black focus:border-gold focus:outline-none"
           >
-            <option value="newest">Sort: Newest First</option>
-            <option value="price_asc">Price: Low to High</option>
-            <option value="price_desc">Price: High to Low</option>
+            <option value="newest">সাজান: নতুন কালেকশন আগে</option>
+            <option value="price_asc">দাম: কম থেকে বেশি</option>
+            <option value="price_desc">দাম: বেশি থেকে কম</option>
           </select>
         </div>
       </div>
@@ -108,7 +108,7 @@ export const Shop = ({ onNavigate, queryParams = {} }) => {
       {/* Filter Chips Bar */}
       <div className="flex flex-wrap items-center gap-2 pb-2">
         <span className="text-xs font-semibold text-zinc-500 mr-2 flex items-center gap-1">
-          <Filter className="w-3.5 h-3.5" /> Categories:
+          <Filter className="w-3.5 h-3.5" /> ক্যাটাগরি:
         </span>
         <button
           onClick={() => setSelectedCategory('All')}
@@ -118,7 +118,7 @@ export const Shop = ({ onNavigate, queryParams = {} }) => {
               : 'bg-zinc-100 text-zinc-700 hover:bg-zinc-200'
           }`}
         >
-          All
+          সবগুলো
         </button>
         {categories.map(cat => (
           <button
@@ -142,7 +142,7 @@ export const Shop = ({ onNavigate, queryParams = {} }) => {
             onChange={e => setInStockOnly(e.target.checked)}
             className="rounded border-zinc-300 text-gold focus:ring-gold"
           />
-          <span>In Stock Only</span>
+          <span>শুধু স্টকে থাকা শাড়ি</span>
         </label>
       </div>
 
@@ -151,7 +151,7 @@ export const Shop = ({ onNavigate, queryParams = {} }) => {
         products={products}
         loading={loading}
         onNavigate={onNavigate}
-        emptyMessage="No sarees found matching your active filters. Try resetting the category or search query."
+        emptyMessage="আপনার ফিল্টারের সাথে মিলে এমন কোনো শাড়ি পাওয়া যায়নি। অনুগ্রহ করে ক্যাটাগরি বা সার্চ পরিবর্তন করে চেষ্টা করুন।"
       />
     </div>
   );

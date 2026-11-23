@@ -5,7 +5,7 @@ import { useAuth } from '../../context/AuthContext';
 export const WhatsAppFloatingBtn = () => {
   const { settings } = useAuth();
   const phone = settings?.whatsappNumber || '8801806732097';
-  const text = encodeURIComponent('Assalamu Alaikum Abu Ahmed Collection! I want to inquire about your saree collections.');
+  const text = encodeURIComponent('আসসালামু আলাইকুম আবু আহমেদ কালেকশন! আমি আপনাদের শাড়ির কালেকশন সম্পর্কে জানতে চাই।');
 
   return (
     <a
@@ -13,8 +13,8 @@ export const WhatsAppFloatingBtn = () => {
       target="_blank"
       rel="noopener noreferrer"
       className="fixed bottom-6 left-6 z-40 group flex items-center gap-2.5 bg-emerald-600 hover:bg-emerald-500 text-white px-3.5 py-3 rounded-full shadow-2xl transition-all duration-300 hover:scale-105 active:scale-95 border-2 border-white/20"
-      aria-label="Chat on WhatsApp"
-      title="Chat on WhatsApp"
+      aria-label="হোয়াটসঅ্যাপে চ্যাট করুন"
+      title="হোয়াটসঅ্যাপে যোগাযোগ করুন"
     >
       <div className="relative">
         <MessageCircle className="w-6 h-6 fill-white" />
@@ -22,7 +22,7 @@ export const WhatsAppFloatingBtn = () => {
         <span className="absolute -top-1 -right-1 w-2.5 h-2.5 bg-gold rounded-full" />
       </div>
       <span className="hidden sm:inline-block font-semibold text-xs tracking-wide pr-1">
-        Order via WhatsApp
+        হোয়াটসঅ্যাপে অর্ডার
       </span>
     </a>
   );

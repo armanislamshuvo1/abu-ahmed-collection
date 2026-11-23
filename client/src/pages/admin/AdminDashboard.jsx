@@ -20,6 +20,18 @@ import { Button } from '../../components/ui/Button';
 import { Badge } from '../../components/ui/Badge';
 import { Modal } from '../../components/ui/Modal';
 
+const statusBanglaMap = {
+  'All': 'সবগুলো',
+  'Pending Payment': 'পেমেন্ট বাকি',
+  'Verifying Payment': 'পেমেন্ট যাচাই চলছে',
+  'Pending': 'অপেক্ষমাণ',
+  'Confirmed': 'নিশ্চিত',
+  'Processing': 'প্রস্তুত হচ্ছে',
+  'Shipped': 'কুরিয়ারে আছে',
+  'Delivered': 'ডেলিভারি সম্পন্ন',
+  'Cancelled': 'বাতিল'
+};
+
 export const AdminDashboard = ({ onNavigate }) => {
   const { admin, adminLogout, refreshSettings } = useAuth();
   const { addToast } = useToast();
@@ -194,7 +206,7 @@ export const AdminDashboard = ({ onNavigate }) => {
   const handleStatusChange = async (orderId, newStatus) => {
     try {
       await updateOrderStatusAdmin(orderId, newStatus, `Status updated to ${newStatus}`);
-      addToast(`Order #${orderId} updated to ${newStatus}`, 'success');
+      addToast(`অর্ডার #${orderId}-এর স্ট্যাটাস পরিবর্তন: ${statusBanglaMap[newStatus] || newStatus}`, 'success');
       loadOrders();
       loadStats();
       if (selectedOrderDetails?.order?._id === orderId) {
@@ -202,14 +214,14 @@ export const AdminDashboard = ({ onNavigate }) => {
         setSelectedOrderDetails(refreshed);
       }
     } catch (err) {
-      addToast(err.message || 'Failed to update status', 'error');
+      addToast(err.message || 'স্ট্যাটাস আপডেট করতে ব্যর্থ হয়েছে', 'error');
     }
   };
 
   const handleToggleProductStock = async (id) => {
     try {
       await toggleStock(id);
-      addToast('Product stock status updated', 'success');
+      addToast('পণ্যের স্টক স্ট্যাটাস সফলভাবে আপডেট করা হয়েছে', 'success');
       loadProducts();
     } catch (err) {
       addToast(err.message, 'error');
@@ -217,10 +229,10 @@ export const AdminDashboard = ({ onNavigate }) => {
   };
 
   const handleDeleteProduct = async (id, name) => {
-    if (!window.confirm(`Are you sure you want to delete saree: "${name}"?`)) return;
+    if (!window.confirm(`আপনি কি নিশ্চিতভাবে এই শাড়িটি মুছে ফেলতে চান: "${name}"?`)) return;
     try {
       await deleteProduct(id);
-      addToast('Product deleted', 'info');
+      addToast('শাড়িটি মুছে ফেলা হয়েছে', 'info');
       loadProducts();
       loadStats();
     } catch (err) {
@@ -285,17 +297,17 @@ export const AdminDashboard = ({ onNavigate }) => {
           editingProduct.images.forEach(img => formData.append('keptImages', img));
         }
         await updateProduct(editingProduct._id, formData);
-        addToast('Saree details updated successfully!', 'success');
+        addToast('শাড়ির তথ্য সফলভাবে আপডেট করা হয়েছে!', 'success');
       } else {
         await createProduct(formData);
-        addToast('New saree created and added to storefront!', 'success');
+        addToast('নতুন শাড়ি তৈরি হয়েছে এবং ওয়েবসাইটে যোগ করা হয়েছে!', 'success');
       }
 
       setProductModalOpen(false);
       loadProducts();
       loadStats();
     } catch (err) {
-      addToast(err.message || 'Failed to save product', 'error');
+      addToast(err.message || 'শাড়ি সংরক্ষণ করতে ব্যর্থ হয়েছে', 'error');
     } finally {
       setSavingProduct(false);
     }
@@ -305,7 +317,7 @@ export const AdminDashboard = ({ onNavigate }) => {
     e?.preventDefault();
     if (!newDistrictName) return;
     if (districtOverrides.some(d => d.district.toLowerCase() === newDistrictName.toLowerCase())) {
-      addToast(`${newDistrictName} is already configured in district overrides.`, 'error');
+      addToast(`${newDistrictName} জেলাটি ইতিমধ্যে জেলাভিত্তিক ডেলিভারি তালিকায় যোগ করা আছে।`, 'error');
       return;
     }
     setDistrictOverrides(prev => [
@@ -317,7 +329,7 @@ export const AdminDashboard = ({ onNavigate }) => {
         isActive: true
       }
     ]);
-    addToast(`Added ${newDistrictName} delivery fee (৳${newDistrictFee}). Click "Save All Settings" below to persist.`, 'success');
+    addToast(`${newDistrictName} জেলার ডেলিভারি চার্জ (৳${newDistrictFee}) যোগ করা হয়েছে। সংরক্ষণ করতে নিচের বাটনে ক্লিক করুন।`, 'success');
   };
 
   const handleRemoveDistrictOverride = (districtName) => {
@@ -360,9 +372,9 @@ export const AdminDashboard = ({ onNavigate }) => {
       });
 
       refreshSettings();
-      addToast('Delivery rates and store contacts updated successfully!', 'success');
+      addToast('ডেলিভারি চার্জ ও যোগাযোগের তথ্য সফলভাবে আপডেট করা হয়েছে!', 'success');
     } catch (err) {
-      addToast(err.message || 'Failed to update delivery settings', 'error');
+      addToast(err.message || 'ডেলিভারি সেটিংস আপডেট করতে ব্যর্থ হয়েছে', 'error');
     } finally {
       setSavingDelivery(false);
     }
@@ -372,7 +384,7 @@ export const AdminDashboard = ({ onNavigate }) => {
     e.preventDefault();
     try {
       await createPaymentMethod(newPayMethod);
-      addToast(`Payment method "${newPayMethod.name}" created!`, 'success');
+      addToast(`পেমেন্ট পদ্ধতি "${newPayMethod.name}" তৈরি হয়েছে!`, 'success');
       setPaymentModalOpen(false);
       setNewPayMethod({
         name: '',
@@ -386,14 +398,14 @@ export const AdminDashboard = ({ onNavigate }) => {
       });
       loadSettingsData();
     } catch (err) {
-      addToast(err.message || 'Failed to create payment method', 'error');
+      addToast(err.message || 'পেমেন্ট পদ্ধতি তৈরি করতে ব্যর্থ হয়েছে', 'error');
     }
   };
 
   const handleTogglePaymentMethod = async (method) => {
     try {
       await updatePaymentMethod(method._id, { isActive: !method.isActive });
-      addToast(`Status changed for ${method.name}`, 'info');
+      addToast(`${method.name}-এর স্ট্যাটাস পরিবর্তন করা হয়েছে`, 'info');
       loadSettingsData();
     } catch (err) {
       addToast(err.message, 'error');
@@ -401,10 +413,10 @@ export const AdminDashboard = ({ onNavigate }) => {
   };
 
   const handleDeletePaymentMethod = async (id, name) => {
-    if (!window.confirm(`Delete payment method "${name}"?`)) return;
+    if (!window.confirm(`আপনি কি "${name}" পেমেন্ট পদ্ধতিটি মুছে ফেলতে চান?`)) return;
     try {
       await deletePaymentMethod(id);
-      addToast('Payment method deleted', 'info');
+      addToast('পেমেন্ট পদ্ধতিটি মুছে ফেলা হয়েছে', 'info');
       loadSettingsData();
     } catch (err) {
       addToast(err.message, 'error');
@@ -420,21 +432,21 @@ export const AdminDashboard = ({ onNavigate }) => {
         description: newCatDesc.trim(),
         image: newCatImg.trim() || 'https://images.unsplash.com/photo-1610030469983-98e550d6193c?auto=format&fit=crop&w=800&q=80'
       });
-      addToast(`Category "${newCatName}" created!`, 'success');
+      addToast(`ক্যাটাগরি "${newCatName}" তৈরি হয়েছে!`, 'success');
       setNewCatName('');
       setNewCatDesc('');
       setNewCatImg('');
       loadCategories();
     } catch (err) {
-      addToast(err.message || 'Failed to create category', 'error');
+      addToast(err.message || 'ক্যাটাগরি তৈরি করতে ব্যর্থ হয়েছে', 'error');
     }
   };
 
   const handleDeleteCategory = async (id, name) => {
-    if (!window.confirm(`Delete category "${name}"?`)) return;
+    if (!window.confirm(`আপনি কি ক্যাটাগরি "${name}" মুছে ফেলতে চান?`)) return;
     try {
       await deleteCategory(id);
-      addToast('Category deleted', 'info');
+      addToast('ক্যাটাগরি মুছে ফেলা হয়েছে', 'info');
       loadCategories();
     } catch (err) {
       addToast(err.message, 'error');
@@ -453,10 +465,10 @@ export const AdminDashboard = ({ onNavigate }) => {
             <div className="flex items-center gap-2">
               <Crown className="w-4 h-4 text-gold" />
               <h1 className="font-serif font-bold text-base text-gold-light">
-                Abu Ahmed Collection • Admin
+                আবু আহমেদ কালেকশন • অ্যাডমিন
               </h1>
             </div>
-            <p className="text-[11px] text-zinc-400">Signed in as {admin.email}</p>
+            <p className="text-[11px] text-zinc-400">লগইন আছেন: {admin.email}</p>
           </div>
         </div>
 
@@ -466,7 +478,7 @@ export const AdminDashboard = ({ onNavigate }) => {
             className="text-xs text-zinc-300 hover:text-gold flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-zinc-700 hover:border-gold transition-colors"
           >
             <ExternalLink className="w-3.5 h-3.5" />
-            <span>View Website</span>
+            <span>ওয়েবসাইট দেখুন</span>
           </button>
           <Button
             variant="outline"
@@ -474,7 +486,7 @@ export const AdminDashboard = ({ onNavigate }) => {
             onClick={adminLogout}
             className="text-xs text-red-400 border-red-500/30 hover:bg-red-950/40"
           >
-            Sign Out
+            লগআউট
           </Button>
         </div>
       </header>
@@ -493,7 +505,7 @@ export const AdminDashboard = ({ onNavigate }) => {
               }`}
             >
               <LayoutDashboard className="w-4 h-4" />
-              <span>Overview & Analytics</span>
+              <span>ওভারভিউ ও অ্যানালিটিক্স</span>
             </button>
 
             <button
@@ -506,7 +518,7 @@ export const AdminDashboard = ({ onNavigate }) => {
             >
               <div className="flex items-center gap-3">
                 <Truck className="w-4 h-4" />
-                <span>Orders & Deliveries</span>
+                <span>অর্ডার ও ডেলিভারি</span>
               </div>
               {stats?.pendingOrders > 0 && (
                 <span className="bg-amber-500 text-white text-[10px] px-2 py-0.5 rounded-full font-bold">
@@ -524,7 +536,7 @@ export const AdminDashboard = ({ onNavigate }) => {
               }`}
             >
               <ShoppingBag className="w-4 h-4" />
-              <span>Saree Inventory</span>
+              <span>শাড়ির ইনভেন্টরি</span>
             </button>
 
             <button
@@ -536,7 +548,7 @@ export const AdminDashboard = ({ onNavigate }) => {
               }`}
             >
               <Layers className="w-4 h-4" />
-              <span>Saree Categories</span>
+              <span>শাড়ির ক্যাটাগরি</span>
             </button>
 
             <button
@@ -548,7 +560,7 @@ export const AdminDashboard = ({ onNavigate }) => {
               }`}
             >
               <Settings className="w-4 h-4" />
-              <span>Delivery Fee Settings</span>
+              <span>ডেলিভারি চার্জ ও সেটিংস</span>
             </button>
 
             <button
@@ -560,7 +572,7 @@ export const AdminDashboard = ({ onNavigate }) => {
               }`}
             >
               <CreditCard className="w-4 h-4" />
-              <span>Payment Methods</span>
+              <span>পেমেন্ট মেথড</span>
             </button>
           </div>
         </div>
@@ -574,54 +586,54 @@ export const AdminDashboard = ({ onNavigate }) => {
               <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
                 <div className="bg-white p-5 rounded-2xl border border-zinc-200 shadow-soft">
                   <span className="text-[11px] font-semibold text-zinc-500 uppercase tracking-wider block">
-                    Total Revenue
+                    মোট বিক্রি
                   </span>
                   <span className="font-serif text-2xl font-bold text-royal-black mt-1 block">
                     ৳{stats?.totalRevenue?.toLocaleString() || 0}
                   </span>
-                  <span className="text-[11px] text-emerald-600 mt-1 block">From confirmed sales</span>
+                  <span className="text-[11px] text-emerald-600 mt-1 block">নিশ্চিতকৃত অর্ডার থেকে</span>
                 </div>
 
                 <div className="bg-white p-5 rounded-2xl border border-zinc-200 shadow-soft">
                   <span className="text-[11px] font-semibold text-zinc-500 uppercase tracking-wider block">
-                    Total Orders
+                    মোট অর্ডার
                   </span>
                   <span className="font-serif text-2xl font-bold text-royal-black mt-1 block">
                     {stats?.totalOrders || 0}
                   </span>
-                  <span className="text-[11px] text-zinc-500 mt-1 block">{stats?.deliveredOrders || 0} delivered</span>
+                  <span className="text-[11px] text-zinc-500 mt-1 block">{stats?.deliveredOrders || 0}টি ডেলিভারি সম্পন্ন</span>
                 </div>
 
                 <div className="bg-white p-5 rounded-2xl border border-zinc-200 shadow-soft">
                   <span className="text-[11px] font-semibold text-zinc-500 uppercase tracking-wider block">
-                    Pending Orders
+                    অপেক্ষমাণ অর্ডার
                   </span>
                   <span className="font-serif text-2xl font-bold text-amber-600 mt-1 block">
                     {stats?.pendingOrders || 0}
                   </span>
-                  <span className="text-[11px] text-amber-700 mt-1 block">Requires phone call</span>
+                  <span className="text-[11px] text-amber-700 mt-1 block">কল করে নিশ্চিতকরণ প্রয়োজন</span>
                 </div>
 
                 <div className="bg-white p-5 rounded-2xl border border-zinc-200 shadow-soft">
                   <span className="text-[11px] font-semibold text-zinc-500 uppercase tracking-wider block">
-                    Sarees in Catalog
+                    ক্যাটালগে মোট শাড়ি
                   </span>
                   <span className="font-serif text-2xl font-bold text-royal-black mt-1 block">
                     {stats?.totalProducts || 0}
                   </span>
-                  <span className="text-[11px] text-zinc-500 mt-1 block">Active online</span>
+                  <span className="text-[11px] text-zinc-500 mt-1 block">ওয়েবসাইটে সক্রিয়</span>
                 </div>
               </div>
 
               {/* Recent Orders Overview */}
               <div className="bg-white rounded-2xl border border-zinc-200 shadow-soft p-6 space-y-4">
                 <div className="flex items-center justify-between">
-                  <h3 className="font-serif text-lg font-bold text-royal-black">Recent Orders</h3>
+                  <h3 className="font-serif text-lg font-bold text-royal-black">সাম্প্রতিক অর্ডারসমূহ</h3>
                   <button
                     onClick={() => setActiveTab('orders')}
                     className="text-xs font-bold text-gold-deep hover:underline"
                   >
-                    View All Orders →
+                    সব অর্ডার দেখুন →
                   </button>
                 </div>
 
@@ -629,12 +641,12 @@ export const AdminDashboard = ({ onNavigate }) => {
                   <table className="w-full text-left text-xs">
                     <thead>
                       <tr className="border-b border-zinc-200 text-zinc-500 uppercase tracking-wider">
-                        <th className="py-2.5">Order ID</th>
-                        <th className="py-2.5">Customer</th>
-                        <th className="py-2.5">Phone</th>
-                        <th className="py-2.5">Amount</th>
-                        <th className="py-2.5">Status</th>
-                        <th className="py-2.5 text-right">Actions</th>
+                        <th className="py-2.5">অর্ডার আইডি</th>
+                        <th className="py-2.5">গ্রাহক</th>
+                        <th className="py-2.5">মোবাইল</th>
+                        <th className="py-2.5">মূল্য</th>
+                        <th className="py-2.5">স্ট্যাটাস</th>
+                        <th className="py-2.5 text-right">অ্যাকশন</th>
                       </tr>
                     </thead>
                     <tbody className="divide-y divide-zinc-100">
@@ -645,7 +657,7 @@ export const AdminDashboard = ({ onNavigate }) => {
                           <td className="py-3 text-zinc-600">{ord.customer.phone}</td>
                           <td className="py-3 font-bold text-royal-black">৳{ord.total.toLocaleString()}</td>
                           <td className="py-3">
-                            <Badge variant={ord.status.toLowerCase()}>{ord.status}</Badge>
+                            <Badge variant={ord.status.toLowerCase()}>{statusBanglaMap[ord.status] || ord.status}</Badge>
                           </td>
                           <td className="py-3 text-right">
                             <button
@@ -654,7 +666,7 @@ export const AdminDashboard = ({ onNavigate }) => {
                               }}
                               className="text-gold-deep hover:underline font-bold"
                             >
-                              Inspect
+                              বিস্তারিত
                             </button>
                           </td>
                         </tr>
@@ -672,10 +684,10 @@ export const AdminDashboard = ({ onNavigate }) => {
               <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-zinc-100 pb-4">
                 <div>
                   <h2 className="font-serif text-xl font-bold text-royal-black">
-                    Customer Orders Management
+                    গ্রাহকদের অর্ডার ব্যবস্থাপনা
                   </h2>
                   <p className="text-xs text-zinc-500 mt-0.5">
-                    View full customer contact details, delivery addresses, update statuses & send WhatsApp invoices.
+                    গ্রাহকের যোগাযোগের তথ্য ও ডেলিভারি ঠিকানা দেখুন, স্ট্যাটাস আপডেট করুন এবং সরাসরি হোয়াটসঅ্যাপ ইনভয়েস পাঠান।
                   </p>
                 </div>
 
@@ -683,7 +695,7 @@ export const AdminDashboard = ({ onNavigate }) => {
                   <div className="relative">
                     <input
                       type="text"
-                      placeholder="Search ID, phone, name..."
+                      placeholder="আইডি, মোবাইল বা নাম খুঁজুন..."
                       value={orderSearch}
                       onChange={e => setOrderSearch(e.target.value)}
                       className="bg-zinc-50 border border-zinc-300 rounded-lg pl-8 pr-3 py-1.5 text-xs text-royal-black focus:border-gold focus:outline-none"
@@ -693,7 +705,7 @@ export const AdminDashboard = ({ onNavigate }) => {
                   <button
                     onClick={loadOrders}
                     className="p-2 rounded-lg bg-zinc-100 hover:bg-zinc-200 text-zinc-600"
-                    title="Refresh Orders"
+                    title="অর্ডার রিফ্রেশ করুন"
                   >
                     <RefreshCw className="w-4 h-4" />
                   </button>
@@ -712,28 +724,28 @@ export const AdminDashboard = ({ onNavigate }) => {
                         : 'bg-zinc-100 text-zinc-600 hover:bg-zinc-200'
                     }`}
                   >
-                    {st}
+                    {statusBanglaMap[st] || st}
                   </button>
                 ))}
               </div>
 
               {/* Orders Table */}
               {loadingOrders ? (
-                <div className="py-12 text-center text-zinc-400 animate-pulse">Loading orders...</div>
+                <div className="py-12 text-center text-zinc-400 animate-pulse">অর্ডার লোড হচ্ছে...</div>
               ) : orders.length === 0 ? (
-                <div className="py-12 text-center text-zinc-400">No orders found matching criteria.</div>
+                <div className="py-12 text-center text-zinc-400">কোনো অর্ডার পাওয়া যায়নি।</div>
               ) : (
                 <div className="overflow-x-auto">
                   <table className="w-full text-left text-xs">
                     <thead>
                       <tr className="border-b border-zinc-200 text-zinc-500 uppercase tracking-wider">
-                        <th className="py-3">Order ID</th>
-                        <th className="py-3">Customer & Contact</th>
-                        <th className="py-3">Delivery Zone</th>
-                        <th className="py-3">Payment</th>
-                        <th className="py-3">Total</th>
-                        <th className="py-3">Status</th>
-                        <th className="py-3 text-right">Actions</th>
+                        <th className="py-3">অর্ডার আইডি</th>
+                        <th className="py-3">গ্রাহকের নাম ও যোগাযোগ</th>
+                        <th className="py-3">ডেলিভারি এলাকা</th>
+                        <th className="py-3">পেমেন্ট মাধ্যম</th>
+                        <th className="py-3">মোট</th>
+                        <th className="py-3">স্ট্যাটাস</th>
+                        <th className="py-3 text-right">অ্যাকশন</th>
                       </tr>
                     </thead>
                     <tbody className="divide-y divide-zinc-100">
@@ -767,14 +779,14 @@ export const AdminDashboard = ({ onNavigate }) => {
                               onChange={e => handleStatusChange(order._id, e.target.value)}
                               className="rounded-lg border border-zinc-300 bg-white px-2 py-1 text-xs font-semibold text-royal-black focus:border-gold focus:outline-none"
                             >
-                              <option value="Pending Payment">Pending Payment</option>
-                              <option value="Verifying Payment">Verifying Payment</option>
-                              <option value="Pending">Pending</option>
-                              <option value="Confirmed">Confirmed</option>
-                              <option value="Processing">Processing</option>
-                              <option value="Shipped">Shipped</option>
-                              <option value="Delivered">Delivered</option>
-                              <option value="Cancelled">Cancelled</option>
+                              <option value="Pending Payment">{statusBanglaMap['Pending Payment']}</option>
+                              <option value="Verifying Payment">{statusBanglaMap['Verifying Payment']}</option>
+                              <option value="Pending">{statusBanglaMap['Pending']}</option>
+                              <option value="Confirmed">{statusBanglaMap['Confirmed']}</option>
+                              <option value="Processing">{statusBanglaMap['Processing']}</option>
+                              <option value="Shipped">{statusBanglaMap['Shipped']}</option>
+                              <option value="Delivered">{statusBanglaMap['Delivered']}</option>
+                              <option value="Cancelled">{statusBanglaMap['Cancelled']}</option>
                             </select>
                           </td>
                           <td className="py-3.5 text-right space-x-2">
@@ -783,10 +795,10 @@ export const AdminDashboard = ({ onNavigate }) => {
                                 getOrderByIdAdmin(order._id).then(setSelectedOrderDetails);
                               }}
                               className="inline-flex items-center gap-1 p-1.5 rounded-lg bg-zinc-100 hover:bg-zinc-200 text-royal-black font-semibold"
-                              title="View Full Order Details"
+                              title="অর্ডারের পূর্ণ বিবরণ দেখুন"
                             >
                               <Eye className="w-3.5 h-3.5" />
-                              <span>Details</span>
+                              <span>বিস্তারিত</span>
                             </button>
                           </td>
                         </tr>
@@ -804,10 +816,10 @@ export const AdminDashboard = ({ onNavigate }) => {
               <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-zinc-100 pb-4">
                 <div>
                   <h2 className="font-serif text-xl font-bold text-royal-black">
-                    Saree Catalog & Stock Manager
+                    শাড়ির ক্যাটালগ ও স্টক ম্যানেজার
                   </h2>
                   <p className="text-xs text-zinc-500 mt-0.5">
-                    Add new sarees with multiple photos, set prices, discount deals, and toggle stock.
+                    একাধিক ছবি সহ নতুন শাড়ি যোগ করুন, মূল্য ও ছাড় নির্ধারণ করুন এবং স্টক নিয়ন্ত্রণ করুন।
                   </p>
                 </div>
 
@@ -818,7 +830,7 @@ export const AdminDashboard = ({ onNavigate }) => {
                   className="flex items-center gap-1.5"
                 >
                   <Plus className="w-4 h-4" />
-                  <span>Add New Saree</span>
+                  <span>নতুন শাড়ি যোগ করুন</span>
                 </Button>
               </div>
 
@@ -827,12 +839,12 @@ export const AdminDashboard = ({ onNavigate }) => {
                 <table className="w-full text-left text-xs">
                   <thead>
                     <tr className="border-b border-zinc-200 text-zinc-500 uppercase tracking-wider">
-                      <th className="py-3">Photo</th>
-                      <th className="py-3">Saree Title</th>
-                      <th className="py-3">Category / Fabric</th>
-                      <th className="py-3">Regular / Discount</th>
-                      <th className="py-3">Stock Status</th>
-                      <th className="py-3 text-right">Actions</th>
+                      <th className="py-3">ছবি</th>
+                      <th className="py-3">শাড়ির নাম</th>
+                      <th className="py-3">ক্যাটাগরি / ফেব্রিক</th>
+                      <th className="py-3">নিয়মিত / ছাড় মূল্য</th>
+                      <th className="py-3">স্টক স্ট্যাটাস</th>
+                      <th className="py-3 text-right">অ্যাকশন</th>
                     </tr>
                   </thead>
                   <tbody className="divide-y divide-zinc-100">
@@ -848,7 +860,7 @@ export const AdminDashboard = ({ onNavigate }) => {
                         </td>
                         <td className="py-3 max-w-xs">
                           <p className="font-serif font-bold text-royal-black truncate">{product.name}</p>
-                          <p className="text-[11px] text-zinc-400">Slug: {product.slug}</p>
+                          <p className="text-[11px] text-zinc-400">স্লাগ: {product.slug}</p>
                         </td>
                         <td className="py-3">
                           <span className="font-medium text-royal-black block">{product.category}</span>
@@ -858,7 +870,7 @@ export const AdminDashboard = ({ onNavigate }) => {
                           <span className="font-bold text-royal-black block">৳{product.regularPrice.toLocaleString()}</span>
                           {product.discountPrice && (
                             <span className="text-emerald-700 font-semibold text-[11px]">
-                              Discount: ৳{product.discountPrice.toLocaleString()}
+                              ছাড় মূল্য: ৳{product.discountPrice.toLocaleString()}
                             </span>
                           )}
                         </td>
@@ -871,21 +883,21 @@ export const AdminDashboard = ({ onNavigate }) => {
                                 : 'bg-red-100 text-red-800'
                             }`}
                           >
-                            {product.inStock ? 'In Stock' : 'Out of Stock'}
+                            {product.inStock ? 'স্টকে আছে' : 'স্টক শেষ'}
                           </button>
                         </td>
                         <td className="py-3 text-right space-x-2">
                           <button
                             onClick={() => openProductModal(product)}
                             className="p-1.5 rounded-lg bg-zinc-100 hover:bg-zinc-200 text-zinc-700"
-                            title="Edit Saree"
+                            title="শাড়ি এডিট করুন"
                           >
                             <Edit className="w-3.5 h-3.5" />
                           </button>
                           <button
                             onClick={() => handleDeleteProduct(product._id, product.name)}
                             className="p-1.5 rounded-lg bg-red-50 hover:bg-red-100 text-red-600"
-                            title="Delete Saree"
+                            title="শাড়ি মুছুন"
                           >
                             <Trash2 className="w-3.5 h-3.5" />
                           </button>
@@ -903,35 +915,35 @@ export const AdminDashboard = ({ onNavigate }) => {
             <div className="bg-white rounded-2xl border border-zinc-200 shadow-soft p-6 space-y-6">
               <div>
                 <h2 className="font-serif text-xl font-bold text-royal-black">
-                  Saree Categories Management
+                  শাড়ির ক্যাটাগরি ব্যবস্থাপনা
                 </h2>
                 <p className="text-xs text-zinc-500 mt-0.5">
-                  Organize sarees by weaving region and design types (Jamdani, Silk, Cotton, etc.).
+                  তাঁতের অঞ্চল ও ডিজাইনের ধরন অনুযায়ী শাড়ি সাজান (যেমন: ঢাকাই জামদানি, কাতান, তসর সিল্ক ইত্যাদি)।
                 </p>
               </div>
 
               {/* Add category form */}
               <form onSubmit={handleCreateCategory} className="p-4 bg-zinc-50 rounded-xl border border-zinc-200 space-y-3">
-                <h4 className="text-xs font-bold uppercase tracking-wider text-royal-black">Create New Category</h4>
+                <h4 className="text-xs font-bold uppercase tracking-wider text-royal-black">নতুন ক্যাটাগরি তৈরি করুন</h4>
                 <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
                   <input
                     type="text"
                     required
-                    placeholder="Category Name (e.g. Dhakai Jamdani)"
+                    placeholder="ক্যাটাগরির নাম (যেমন: ঢাকাই জামদানি)"
                     value={newCatName}
                     onChange={e => setNewCatName(e.target.value)}
                     className="rounded-lg border border-zinc-300 px-3 py-2 text-xs bg-white text-royal-black focus:border-gold focus:outline-none"
                   />
                   <input
                     type="text"
-                    placeholder="Short Description"
+                    placeholder="সংক্ষিপ্ত বিবরণ"
                     value={newCatDesc}
                     onChange={e => setNewCatDesc(e.target.value)}
                     className="rounded-lg border border-zinc-300 px-3 py-2 text-xs bg-white text-royal-black focus:border-gold focus:outline-none"
                   />
                   <input
                     type="text"
-                    placeholder="Cover Photo URL (optional)"
+                    placeholder="কভার ছবির লিংক (ঐচ্ছিক)"
                     value={newCatImg}
                     onChange={e => setNewCatImg(e.target.value)}
                     className="rounded-lg border border-zinc-300 px-3 py-2 text-xs bg-white text-royal-black focus:border-gold focus:outline-none"
@@ -939,7 +951,7 @@ export const AdminDashboard = ({ onNavigate }) => {
                 </div>
                 <Button type="submit" variant="primary" size="sm">
                   <Plus className="w-3.5 h-3.5 mr-1" />
-                  <span>Save Category</span>
+                  <span>ক্যাটাগরি সংরক্ষণ করুন</span>
                 </Button>
               </form>
 
@@ -968,10 +980,10 @@ export const AdminDashboard = ({ onNavigate }) => {
             <div className="bg-white rounded-2xl border border-zinc-200 shadow-soft p-6 space-y-6">
               <div>
                 <h2 className="font-serif text-xl font-bold text-royal-black">
-                  Delivery Charges & Store Settings
+                  ডেলিভারি চার্জ ও স্টোর সেটিংস
                 </h2>
                 <p className="text-xs text-zinc-500 mt-0.5">
-                  Update shipping fees for Inside Dhaka, Outside Dhaka, and free delivery thresholds as you wish.
+                  ঢাকার ভেতরে ও বাইরের ডেলিভারি চার্জ এবং ফ্রি ডেলিভারির সীমা আপনার সুবিধাজনকভাবে নির্ধারণ করুন।
                 </p>
               </div>
 
@@ -979,7 +991,7 @@ export const AdminDashboard = ({ onNavigate }) => {
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                   <div>
                     <label className="block text-xs font-semibold text-royal-black/80 mb-1">
-                      Inside Dhaka Delivery Fee (৳)
+                      ঢাকার ভেতরের ডেলিভারি চার্জ (৳)
                     </label>
                     <input
                       type="number"
@@ -989,12 +1001,12 @@ export const AdminDashboard = ({ onNavigate }) => {
                       onChange={e => setInsideDhakaFee(e.target.value)}
                       className="w-full rounded-lg border border-zinc-300 px-3.5 py-2 text-sm text-royal-black focus:border-gold focus:outline-none"
                     />
-                    <span className="text-[10px] text-zinc-400">Standard ৳80</span>
+                    <span className="text-[10px] text-zinc-400">সাধারণত ৳৮০</span>
                   </div>
 
                   <div>
                     <label className="block text-xs font-semibold text-royal-black/80 mb-1">
-                      Outside Dhaka Delivery Fee (৳)
+                      ঢাকার বাইরের ডেলিভারি চার্জ (৳)
                     </label>
                     <input
                       type="number"
@@ -1004,13 +1016,13 @@ export const AdminDashboard = ({ onNavigate }) => {
                       onChange={e => setOutsideDhakaFee(e.target.value)}
                       className="w-full rounded-lg border border-zinc-300 px-3.5 py-2 text-sm text-royal-black focus:border-gold focus:outline-none"
                     />
-                    <span className="text-[10px] text-zinc-400">Standard ৳150</span>
+                    <span className="text-[10px] text-zinc-400">সাধারণত ৳১৫০</span>
                   </div>
                 </div>
 
                 <div>
                   <label className="block text-xs font-semibold text-royal-black/80 mb-1">
-                    Free Delivery Threshold (৳)
+                    ফ্রি ডেলিভারির সর্বনিম্ন অর্ডার মূল্য (৳)
                   </label>
                   <input
                     type="number"
@@ -1020,7 +1032,7 @@ export const AdminDashboard = ({ onNavigate }) => {
                     className="w-full rounded-lg border border-zinc-300 px-3.5 py-2 text-sm text-royal-black focus:border-gold focus:outline-none"
                   />
                   <span className="text-[10px] text-zinc-400">
-                    Orders with subtotal at or above this amount receive 100% Free Shipping.
+                    এই মূল্যের সমান বা বেশি অর্ডারে গ্রাহক সম্পূর্ণ ফ্রি ডেলিভারি পাবেন।
                   </span>
                 </div>
 
@@ -1029,18 +1041,18 @@ export const AdminDashboard = ({ onNavigate }) => {
                   <div className="flex items-center gap-2 mb-2">
                     <MapPin className="w-4 h-4 text-gold-dark" />
                     <h3 className="text-sm font-bold text-royal-black">
-                      District-Specific Delivery Rates (e.g. Chattogram)
+                      জেলাভিত্তিক ডেলিভারি চার্জ নির্ধারণ (যেমন: চট্টগ্রাম)
                     </h3>
                   </div>
                   <p className="text-xs text-zinc-500 mb-3">
-                    Add custom delivery charges for specific districts. When customers select this district, this rate applies instead of the generic Outside Dhaka fee.
+                    নির্দিষ্ট জেলার জন্য আলাদা ডেলিভারি চার্জ নির্ধারণ করুন। গ্রাহক জেলাটি সিলেক্ট করলে সাধারণ বাইরের চার্জের বদলে এই চার্জ প্রযোজ্য হবে।
                   </p>
 
                   {/* Add District Override Row */}
                   <div className="p-3 bg-zinc-50 border border-zinc-200 rounded-xl space-y-3">
                     <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
                       <div>
-                        <label className="block text-[11px] font-semibold text-zinc-600 mb-1">District</label>
+                        <label className="block text-[11px] font-semibold text-zinc-600 mb-1">জেলা</label>
                         <select
                           value={newDistrictName}
                           onChange={e => setNewDistrictName(e.target.value)}
@@ -1053,24 +1065,24 @@ export const AdminDashboard = ({ onNavigate }) => {
                       </div>
 
                       <div>
-                        <label className="block text-[11px] font-semibold text-zinc-600 mb-1">Fee (৳)</label>
+                        <label className="block text-[11px] font-semibold text-zinc-600 mb-1">চার্জ (৳)</label>
                         <input
                           type="number"
                           min={0}
                           value={newDistrictFee}
                           onChange={e => setNewDistrictFee(e.target.value)}
-                          placeholder="e.g. 100"
+                          placeholder="যেমন: ১০০"
                           className="w-full rounded-lg border border-zinc-300 px-3 py-1.5 text-xs text-royal-black bg-white focus:border-gold focus:outline-none"
                         />
                       </div>
 
                       <div>
-                        <label className="block text-[11px] font-semibold text-zinc-600 mb-1">Est. Transit Time</label>
+                        <label className="block text-[11px] font-semibold text-zinc-600 mb-1">আনুমানিক সময়</label>
                         <input
                           type="text"
                           value={newDistrictDays}
                           onChange={e => setNewDistrictDays(e.target.value)}
-                          placeholder="e.g. 2-3 Days"
+                          placeholder="যেমন: ২-৩ দিন"
                           className="w-full rounded-lg border border-zinc-300 px-3 py-1.5 text-xs text-royal-black bg-white focus:border-gold focus:outline-none"
                         />
                       </div>
@@ -1083,7 +1095,7 @@ export const AdminDashboard = ({ onNavigate }) => {
                         className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-royal-black text-gold text-xs font-bold rounded-lg hover:bg-zinc-800 transition-colors shadow-sm"
                       >
                         <Plus className="w-3.5 h-3.5" />
-                        Add District Rate
+                        জেলা চার্জ যোগ করুন
                       </button>
                     </div>
                   </div>
@@ -1092,7 +1104,7 @@ export const AdminDashboard = ({ onNavigate }) => {
                   {districtOverrides.length > 0 ? (
                     <div className="mt-3 space-y-2">
                       <span className="text-[11px] font-semibold text-zinc-500 uppercase tracking-wider">
-                        Active District Overrides ({districtOverrides.length})
+                        সক্রিয় জেলাভিত্তিক চার্জ ({districtOverrides.length})
                       </span>
                       <div className="divide-y divide-zinc-200 border border-zinc-200 rounded-xl overflow-hidden bg-white">
                         {districtOverrides.map((item) => (
@@ -1101,13 +1113,13 @@ export const AdminDashboard = ({ onNavigate }) => {
                               <span className="font-bold text-royal-black">{item.district}</span>
                               <span className="text-zinc-400">|</span>
                               <span className="font-semibold text-emerald-700">৳{item.fee}</span>
-                              <span className="text-zinc-400 text-[11px]">({item.estimatedDays || '2-3 Days'})</span>
+                              <span className="text-zinc-400 text-[11px]">({item.estimatedDays || '২-৩ দিন'})</span>
                             </div>
                             <button
                               type="button"
                               onClick={() => handleRemoveDistrictOverride(item.district)}
                               className="text-rose-600 hover:text-rose-800 p-1 rounded hover:bg-rose-50 transition-colors"
-                              title="Remove override"
+                              title="চার্জ মুছুন"
                             >
                               <Trash2 className="w-3.5 h-3.5" />
                             </button>
@@ -1117,7 +1129,7 @@ export const AdminDashboard = ({ onNavigate }) => {
                     </div>
                   ) : (
                     <p className="mt-2 text-[11px] text-zinc-400 italic">
-                      No custom district rates added yet. All districts outside Dhaka will default to ৳{outsideDhakaFee}.
+                      এখনও কোনো বিশেষ জেলা চার্জ যোগ করা হয়নি। ঢাকার বাইরের সব জেলায় সাধারণ ৳{outsideDhakaFee} প্রযোজ্য হবে।
                     </p>
                   )}
                 </div>
@@ -1125,7 +1137,7 @@ export const AdminDashboard = ({ onNavigate }) => {
                 <div className="pt-4 border-t border-zinc-200 grid grid-cols-1 sm:grid-cols-2 gap-4">
                   <div>
                     <label className="block text-xs font-semibold text-royal-black/80 mb-1">
-                      Store Helpline Phone Number
+                      স্টোর হেল্পলাইন মোবাইল নম্বর
                     </label>
                     <input
                       type="text"
@@ -1138,7 +1150,7 @@ export const AdminDashboard = ({ onNavigate }) => {
 
                   <div>
                     <label className="block text-xs font-semibold text-royal-black/80 mb-1">
-                      Store Owner WhatsApp Number (e.g. 8801806732097)
+                      স্টোর মালিকের হোয়াটসঅ্যাপ নম্বর (যেমন: 8801806732097)
                     </label>
                     <input
                       type="text"
@@ -1151,7 +1163,7 @@ export const AdminDashboard = ({ onNavigate }) => {
 
                   <div>
                     <label className="block text-xs font-semibold text-royal-black/80 mb-1">
-                      Store Email
+                      স্টোর ইমেইল
                     </label>
                     <input
                       type="email"
@@ -1164,7 +1176,7 @@ export const AdminDashboard = ({ onNavigate }) => {
 
                   <div>
                     <label className="block text-xs font-semibold text-royal-black/80 mb-1">
-                      Official Facebook Page URL
+                      অফিসিয়াল ফেসবুক পেজের লিংক
                     </label>
                     <input
                       type="url"
@@ -1177,13 +1189,13 @@ export const AdminDashboard = ({ onNavigate }) => {
 
                   <div className="sm:col-span-2">
                     <label className="block text-xs font-semibold text-royal-black/80 mb-1">
-                      Store Physical Address
+                      শোরুম/দোকানের ঠিকানা
                     </label>
                     <input
                       type="text"
                       value={storeAddress}
                       onChange={e => setStoreAddress(e.target.value)}
-                      placeholder="Shop No. 106, RS Road, Reazuddin Bazar, Chittagong, Bangladesh"
+                      placeholder="দোকান নং ১০৬, আর এস রোড, রিয়াজউদ্দিন বাজার, চট্টগ্রাম, বাংলাদেশ"
                       className="w-full rounded-lg border border-zinc-300 px-3.5 py-2 text-sm text-royal-black focus:border-gold focus:outline-none"
                     />
                   </div>
@@ -1195,7 +1207,7 @@ export const AdminDashboard = ({ onNavigate }) => {
                   loading={savingDelivery}
                   className="py-2.5 px-6"
                 >
-                  Save Delivery Settings
+                  ডেলিভারি সেটিংস সংরক্ষণ করুন
                 </Button>
               </form>
             </div>
@@ -1207,10 +1219,10 @@ export const AdminDashboard = ({ onNavigate }) => {
               <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-zinc-100 pb-4">
                 <div>
                   <h2 className="font-serif text-xl font-bold text-royal-black">
-                    Payment Methods Configuration
+                    পেমেন্ট মাধ্যম কনফিগারেশন
                   </h2>
                   <p className="text-xs text-zinc-500 mt-0.5">
-                    Create and manage payment options (Cash on Delivery, bKash, Nagad, Rocket, Bank Transfer).
+                    পেমেন্ট অপশন তৈরি ও পরিচালনা করুন (ক্যাশ অন ডেলিভারি, বিকাশ, নগদ, রকেট, ব্যাংক ট্রান্সফার)।
                   </p>
                 </div>
 
@@ -1221,7 +1233,7 @@ export const AdminDashboard = ({ onNavigate }) => {
                   className="flex items-center gap-1.5"
                 >
                   <Plus className="w-4 h-4" />
-                  <span>Create Payment Method</span>
+                  <span>নতুন পেমেন্ট মাধ্যম যোগ করুন</span>
                 </Button>
               </div>
 
@@ -1240,12 +1252,12 @@ export const AdminDashboard = ({ onNavigate }) => {
                             method.isActive ? 'bg-emerald-100 text-emerald-800' : 'bg-zinc-100 text-zinc-500'
                           }`}
                         >
-                          {method.isActive ? 'Active' : 'Disabled'}
+                          {method.isActive ? 'সক্রিয়' : 'নিষ্ক্রিয়'}
                         </span>
                       </div>
                       {method.accountNumber && (
                         <p className="text-xs text-zinc-600 mt-1">
-                          Account: <strong>{method.accountNumber}</strong> ({method.accountType})
+                          অ্যাকাউন্ট: <strong>{method.accountNumber}</strong> ({method.accountType})
                         </p>
                       )}
                       {method.instructions && (
@@ -1262,7 +1274,7 @@ export const AdminDashboard = ({ onNavigate }) => {
                             : 'border-emerald-500 text-emerald-700 bg-emerald-50'
                         }`}
                       >
-                        {method.isActive ? 'Disable' : 'Enable'}
+                        {method.isActive ? 'নিষ্ক্রিয় করুন' : 'সক্রিয় করুন'}
                       </button>
                       <button
                         onClick={() => handleDeletePaymentMethod(method._id, method.name)}
@@ -1283,28 +1295,28 @@ export const AdminDashboard = ({ onNavigate }) => {
       <Modal
         isOpen={productModalOpen}
         onClose={() => setProductModalOpen(false)}
-        title={editingProduct ? 'Edit Saree' : 'Add New Saree to Catalog'}
-        subtitle="Upload saree images, set regular & discount price, category & stock"
+        title={editingProduct ? 'শাড়ির তথ্য পরিবর্তন' : 'ক্যাটালগে নতুন শাড়ি যোগ করুন'}
+        subtitle="শাড়ির ছবি আপলোড করুন, নিয়মিত ও ছাড় মূল্য, ক্যাটাগরি ও স্টক নির্ধারণ করুন"
         maxWidth="max-w-3xl"
       >
         <form onSubmit={handleProductSubmit} className="space-y-4">
           <div>
             <label className="block text-xs font-semibold text-royal-black mb-1">
-              Saree Title <span className="text-red-500">*</span>
+              শাড়ির নাম <span className="text-red-500">*</span>
             </label>
             <input
               type="text"
               required
               value={productForm.name}
               onChange={e => setProductForm({ ...productForm, name: e.target.value })}
-              placeholder="e.g. Royal Maroon & Gold Zari Dhakai Jamdani"
+              placeholder="যেমন: রয়েল মেরুন ও গোল্ডেন জরি ঢাকাই জামদানি"
               className="w-full rounded-lg border border-zinc-300 px-3 py-2 text-sm text-royal-black focus:border-gold focus:outline-none"
             />
           </div>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div>
-              <label className="block text-xs font-semibold text-royal-black mb-1">Category</label>
+              <label className="block text-xs font-semibold text-royal-black mb-1">ক্যাটাগরি</label>
               <select
                 value={productForm.category}
                 onChange={e => setProductForm({ ...productForm, category: e.target.value })}
@@ -1317,13 +1329,13 @@ export const AdminDashboard = ({ onNavigate }) => {
             </div>
 
             <div>
-              <label className="block text-xs font-semibold text-royal-black mb-1">Fabric Type</label>
+              <label className="block text-xs font-semibold text-royal-black mb-1">ফেব্রিকের ধরন</label>
               <input
                 type="text"
                 required
                 value={productForm.fabric}
                 onChange={e => setProductForm({ ...productForm, fabric: e.target.value })}
-                placeholder="e.g. Dhakai Jamdani Cotton"
+                placeholder="যেমন: ঢাকাই জামদানি কটন"
                 className="w-full rounded-lg border border-zinc-300 px-3 py-2 text-sm text-royal-black focus:border-gold focus:outline-none"
               />
             </div>
@@ -1332,7 +1344,7 @@ export const AdminDashboard = ({ onNavigate }) => {
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
             <div>
               <label className="block text-xs font-semibold text-royal-black mb-1">
-                Regular Price (৳) <span className="text-red-500">*</span>
+                নিয়মিত মূল্য (৳) <span className="text-red-500">*</span>
               </label>
               <input
                 type="number"
@@ -1347,20 +1359,20 @@ export const AdminDashboard = ({ onNavigate }) => {
 
             <div>
               <label className="block text-xs font-semibold text-royal-black mb-1">
-                Discount Price (৳)
+                ছাড় মূল্য (৳)
               </label>
               <input
                 type="number"
                 min={0}
                 value={productForm.discountPrice}
                 onChange={e => setProductForm({ ...productForm, discountPrice: e.target.value })}
-                placeholder="2950 (optional)"
+                placeholder="2950 (ঐচ্ছিক)"
                 className="w-full rounded-lg border border-zinc-300 px-3 py-2 text-sm text-royal-black focus:border-gold focus:outline-none"
               />
             </div>
 
             <div>
-              <label className="block text-xs font-semibold text-royal-black mb-1">Stock Quantity</label>
+              <label className="block text-xs font-semibold text-royal-black mb-1">স্টক সংখ্যা</label>
               <input
                 type="number"
                 min={0}
@@ -1374,7 +1386,7 @@ export const AdminDashboard = ({ onNavigate }) => {
           {/* Multiple Image Uploads */}
           <div>
             <label className="block text-xs font-semibold text-royal-black mb-1">
-              Upload Saree Photos (Multiple allowed)
+              শাড়ির ছবি আপলোড করুন (একাধিক দেওয়া যাবে)
             </label>
             <div className="border-2 border-dashed border-zinc-300 rounded-xl p-4 text-center hover:border-gold transition-colors">
               <Upload className="w-8 h-8 text-zinc-400 mx-auto mb-2" />
@@ -1385,18 +1397,18 @@ export const AdminDashboard = ({ onNavigate }) => {
                 onChange={e => setUploadedFiles(e.target.files)}
                 className="text-xs text-zinc-600 file:mr-4 file:py-1 file:px-3 file:rounded-full file:border-0 file:text-xs file:font-semibold file:bg-royal-black file:text-gold"
               />
-              <p className="text-[11px] text-zinc-400 mt-1">JPEG, PNG, WEBP up to 10MB each.</p>
+              <p className="text-[11px] text-zinc-400 mt-1">JPEG, PNG, WEBP প্রতি ফাইল সর্বোচ্চ ১০ মেগাবাইট।</p>
             </div>
           </div>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div>
-              <label className="block text-xs font-semibold text-royal-black mb-1">Colors (comma separated)</label>
+              <label className="block text-xs font-semibold text-royal-black mb-1">রং (কমা দিয়ে লিখুন)</label>
               <input
                 type="text"
                 value={productForm.colors}
                 onChange={e => setProductForm({ ...productForm, colors: e.target.value })}
-                placeholder="Gold, Black, Maroon"
+                placeholder="সোনালী, কালো, মেরুন"
                 className="w-full rounded-lg border border-zinc-300 px-3 py-2 text-sm text-royal-black focus:border-gold focus:outline-none"
               />
             </div>
@@ -1409,7 +1421,7 @@ export const AdminDashboard = ({ onNavigate }) => {
                   onChange={e => setProductForm({ ...productForm, blousePiece: e.target.checked })}
                   className="rounded border-zinc-300 text-gold focus:ring-gold"
                 />
-                <span>Includes Blouse Piece</span>
+                <span>ব্লাউজ পিস সহ</span>
               </label>
 
               <label className="flex items-center gap-2 text-xs font-medium text-royal-black cursor-pointer">
@@ -1419,25 +1431,25 @@ export const AdminDashboard = ({ onNavigate }) => {
                   onChange={e => setProductForm({ ...productForm, isFeatured: e.target.checked })}
                   className="rounded border-zinc-300 text-gold focus:ring-gold"
                 />
-                <span>Featured Saree</span>
+                <span>ফিচার্ড শাড়ি</span>
               </label>
             </div>
           </div>
 
           <div>
-            <label className="block text-xs font-semibold text-royal-black mb-1">Saree Craft Description</label>
+            <label className="block text-xs font-semibold text-royal-black mb-1">শাড়ির বিস্তারিত বর্ণনা</label>
             <textarea
               rows={3}
               required
               value={productForm.description}
               onChange={e => setProductForm({ ...productForm, description: e.target.value })}
-              placeholder="Describe the weaving technique, anchol details, and aesthetics..."
+              placeholder="শাড়ির বুনন শৈলী, আঁচল ও পাড়ের কারুকাজ এবং আভিজাত্যের বর্ণনা দিন..."
               className="w-full rounded-lg border border-zinc-300 px-3 py-2 text-sm text-royal-black focus:border-gold focus:outline-none resize-none"
             />
           </div>
 
           <Button type="submit" variant="primary" loading={savingProduct} className="w-full py-3">
-            <span>{editingProduct ? 'Save Saree Changes' : 'Publish Saree to Website'}</span>
+            <span>{editingProduct ? 'পরিবর্তন সংরক্ষণ করুন' : 'ওয়েবসাইটে শাড়িটি প্রকাশ করুন'}</span>
           </Button>
         </form>
       </Modal>
@@ -1446,17 +1458,17 @@ export const AdminDashboard = ({ onNavigate }) => {
       <Modal
         isOpen={paymentModalOpen}
         onClose={() => setPaymentModalOpen(false)}
-        title="Create New Payment Method"
-        subtitle="Add bKash, Nagad, Rocket, Bank Transfer, or Custom option"
+        title="নতুন পেমেন্ট মাধ্যম তৈরি করুন"
+        subtitle="বিকাশ, নগদ, রকেট, ব্যাংক ট্রান্সফার বা কাস্টম অপশন যোগ করুন"
         maxWidth="max-w-lg"
       >
         <form onSubmit={handleCreatePaymentMethod} className="space-y-4">
           <div>
-            <label className="block text-xs font-semibold text-royal-black mb-1">Method Name</label>
+            <label className="block text-xs font-semibold text-royal-black mb-1">পদ্ধতির নাম</label>
             <input
               type="text"
               required
-              placeholder="e.g. bKash Merchant or Rocket Personal"
+              placeholder="যেমন: বিকাশ মার্চেন্ট বা রকেট পার্সোনাল"
               value={newPayMethod.name}
               onChange={e => setNewPayMethod({ ...newPayMethod, name: e.target.value })}
               className="w-full rounded-lg border border-zinc-300 px-3 py-2 text-sm text-royal-black focus:border-gold focus:outline-none"
@@ -1465,7 +1477,7 @@ export const AdminDashboard = ({ onNavigate }) => {
 
           <div className="grid grid-cols-2 gap-3">
             <div>
-              <label className="block text-xs font-semibold text-royal-black mb-1">Unique Code</label>
+              <label className="block text-xs font-semibold text-royal-black mb-1">ইউনিক কোড</label>
               <input
                 type="text"
                 required
@@ -1477,22 +1489,22 @@ export const AdminDashboard = ({ onNavigate }) => {
             </div>
 
             <div>
-              <label className="block text-xs font-semibold text-royal-black mb-1">Payment Type</label>
+              <label className="block text-xs font-semibold text-royal-black mb-1">পেমেন্টের ধরন</label>
               <select
                 value={newPayMethod.type}
                 onChange={e => setNewPayMethod({ ...newPayMethod, type: e.target.value })}
                 className="w-full rounded-lg border border-zinc-300 px-3 py-2 text-sm text-royal-black focus:border-gold focus:outline-none"
               >
-                <option value="mobile_banking">Mobile Banking (bKash/Nagad/Rocket)</option>
-                <option value="cod">Cash on Delivery</option>
-                <option value="bank_transfer">Bank Transfer</option>
+                <option value="mobile_banking">মোবাইল ব্যাংকিং (বিকাশ/নগদ/রকেট)</option>
+                <option value="cod">ক্যাশ অন ডেলিভারি</option>
+                <option value="bank_transfer">ব্যাংক ট্রান্সফার</option>
               </select>
             </div>
           </div>
 
           <div className="grid grid-cols-2 gap-3">
             <div>
-              <label className="block text-xs font-semibold text-royal-black mb-1">Account Number</label>
+              <label className="block text-xs font-semibold text-royal-black mb-1">অ্যাকাউন্ট নম্বর</label>
               <input
                 type="text"
                 placeholder="01XXXXXXXXX"
@@ -1503,10 +1515,10 @@ export const AdminDashboard = ({ onNavigate }) => {
             </div>
 
             <div>
-              <label className="block text-xs font-semibold text-royal-black mb-1">Account Type</label>
+              <label className="block text-xs font-semibold text-royal-black mb-1">অ্যাকাউন্টের ধরন</label>
               <input
                 type="text"
-                placeholder="Personal / Merchant"
+                placeholder="পার্সোনাল / মার্চেন্ট"
                 value={newPayMethod.accountType}
                 onChange={e => setNewPayMethod({ ...newPayMethod, accountType: e.target.value })}
                 className="w-full rounded-lg border border-zinc-300 px-3 py-2 text-sm text-royal-black focus:border-gold focus:outline-none"
@@ -1515,18 +1527,18 @@ export const AdminDashboard = ({ onNavigate }) => {
           </div>
 
           <div>
-            <label className="block text-xs font-semibold text-royal-black mb-1">Instructions for Customer</label>
+            <label className="block text-xs font-semibold text-royal-black mb-1">গ্রাহকের জন্য নির্দেশনা</label>
             <textarea
               rows={2}
               value={newPayMethod.instructions}
               onChange={e => setNewPayMethod({ ...newPayMethod, instructions: e.target.value })}
-              placeholder="e.g. Send Money to this number and provide TrxID"
+              placeholder="যেমন: এই নম্বরে সেন্ড মানি করে TrxID প্রদান করুন"
               className="w-full rounded-lg border border-zinc-300 px-3 py-2 text-sm text-royal-black focus:border-gold focus:outline-none resize-none"
             />
           </div>
 
           <Button type="submit" variant="primary" className="w-full py-2.5">
-            <span>Save Payment Method</span>
+            <span>পেমেন্ট মাধ্যম সংরক্ষণ করুন</span>
           </Button>
         </form>
       </Modal>
@@ -1536,8 +1548,8 @@ export const AdminDashboard = ({ onNavigate }) => {
         <Modal
           isOpen={!!selectedOrderDetails}
           onClose={() => setSelectedOrderDetails(null)}
-          title={`Order #${selectedOrderDetails.order.orderId}`}
-          subtitle={`Placed on ${new Date(selectedOrderDetails.order.createdAt).toLocaleString()}`}
+          title={`অর্ডার #${selectedOrderDetails.order.orderId}`}
+          subtitle={`অর্ডার দেওয়ার সময়: ${new Date(selectedOrderDetails.order.createdAt).toLocaleString('bn-BD')}`}
           maxWidth="max-w-2xl"
         >
           <div className="space-y-6 text-xs">
@@ -1545,7 +1557,7 @@ export const AdminDashboard = ({ onNavigate }) => {
             <div className="bg-zinc-50 p-4 rounded-xl border border-zinc-200 space-y-1 text-zinc-600">
               <div className="flex justify-between items-center mb-2">
                 <span className="font-bold text-royal-black uppercase tracking-wider text-[11px]">
-                  Customer Contact
+                  গ্রাহকের যোগাযোগের তথ্য
                 </span>
                 {selectedOrderDetails.customerWhatsAppUrl && (
                   <a
@@ -1555,23 +1567,23 @@ export const AdminDashboard = ({ onNavigate }) => {
                     className="inline-flex items-center gap-1.5 bg-emerald-600 hover:bg-emerald-500 text-white font-bold px-3 py-1 rounded-lg text-[11px]"
                   >
                     <MessageCircle className="w-3.5 h-3.5" />
-                    <span>WhatsApp Invoice</span>
+                    <span>হোয়াটসঅ্যাপ ইনভয়েস</span>
                   </a>
                 )}
               </div>
-              <p><strong className="text-royal-black">Name:</strong> {selectedOrderDetails.order.customer.name}</p>
-              <p><strong className="text-royal-black">Phone:</strong> {selectedOrderDetails.order.customer.phone}</p>
-              <p><strong className="text-royal-black">Email:</strong> {selectedOrderDetails.order.customer.email}</p>
-              <p><strong className="text-royal-black">Delivery Address:</strong> {selectedOrderDetails.order.customer.address}</p>
-              <p><strong className="text-royal-black">Zone:</strong> {selectedOrderDetails.order.customer.deliveryZoneName}</p>
+              <p><strong className="text-royal-black">নাম:</strong> {selectedOrderDetails.order.customer.name}</p>
+              <p><strong className="text-royal-black">মোবাইল:</strong> {selectedOrderDetails.order.customer.phone}</p>
+              <p><strong className="text-royal-black">ইমেইল:</strong> {selectedOrderDetails.order.customer.email}</p>
+              <p><strong className="text-royal-black">ডেলিভারি ঠিকানা:</strong> {selectedOrderDetails.order.customer.address}</p>
+              <p><strong className="text-royal-black">ডেলিভারি এলাকা:</strong> {selectedOrderDetails.order.customer.deliveryZoneName}</p>
               {selectedOrderDetails.order.customer.notes && (
-                <p><strong className="text-royal-black">Notes:</strong> {selectedOrderDetails.order.customer.notes}</p>
+                <p><strong className="text-royal-black">বিশেষ নোট:</strong> {selectedOrderDetails.order.customer.notes}</p>
               )}
             </div>
 
             {/* Saree items */}
             <div className="space-y-2">
-              <h4 className="font-bold uppercase tracking-wider text-royal-black">Ordered Sarees</h4>
+              <h4 className="font-bold uppercase tracking-wider text-royal-black">অর্ডারকৃত শাড়িসমূহ</h4>
               <div className="divide-y divide-zinc-200 border border-zinc-200 rounded-xl overflow-hidden bg-white">
                 {selectedOrderDetails.order.items.map((it, idx) => (
                   <div key={idx} className="p-3 flex items-center justify-between">
@@ -1579,7 +1591,7 @@ export const AdminDashboard = ({ onNavigate }) => {
                       <img src={it.image} alt={it.name} className="w-10 h-12 object-cover rounded bg-zinc-100" />
                       <div>
                         <p className="font-semibold text-royal-black">{it.name}</p>
-                        <p className="text-zinc-500">Qty: {it.quantity} × ৳{it.price.toLocaleString()}</p>
+                        <p className="text-zinc-500">পরিমাণ: {it.quantity} × ৳{it.price.toLocaleString()}</p>
                       </div>
                     </div>
                     <span className="font-bold text-royal-black">৳{(it.price * it.quantity).toLocaleString()}</span>
@@ -1590,27 +1602,27 @@ export const AdminDashboard = ({ onNavigate }) => {
 
             {/* Total */}
             <div className="flex justify-between font-bold text-sm text-royal-black pt-2 border-t">
-              <span>Total Payable:</span>
+              <span>সর্বমোট প্রদেয়:</span>
               <span className="text-gold-deep text-base">৳{selectedOrderDetails.order.total.toLocaleString()}</span>
             </div>
 
             {/* Quick Status Update */}
             <div className="pt-2 border-t">
-              <label className="block font-bold text-royal-black mb-1">Update Status</label>
+              <label className="block font-bold text-royal-black mb-1">স্ট্যাটাস পরিবর্তন করুন</label>
               <div className="flex gap-2">
                 <select
                   defaultValue={selectedOrderDetails.order.status}
                   onChange={e => handleStatusChange(selectedOrderDetails.order._id, e.target.value)}
                   className="rounded-lg border border-zinc-300 px-3 py-1.5 text-xs font-semibold"
                 >
-                  <option value="Pending Payment">Pending Payment</option>
-                  <option value="Verifying Payment">Verifying Payment</option>
-                  <option value="Pending">Pending</option>
-                  <option value="Confirmed">Confirmed</option>
-                  <option value="Processing">Processing</option>
-                  <option value="Shipped">Shipped</option>
-                  <option value="Delivered">Delivered</option>
-                  <option value="Cancelled">Cancelled</option>
+                  <option value="Pending Payment">{statusBanglaMap['Pending Payment']}</option>
+                  <option value="Verifying Payment">{statusBanglaMap['Verifying Payment']}</option>
+                  <option value="Pending">{statusBanglaMap['Pending']}</option>
+                  <option value="Confirmed">{statusBanglaMap['Confirmed']}</option>
+                  <option value="Processing">{statusBanglaMap['Processing']}</option>
+                  <option value="Shipped">{statusBanglaMap['Shipped']}</option>
+                  <option value="Delivered">{statusBanglaMap['Delivered']}</option>
+                  <option value="Cancelled">{statusBanglaMap['Cancelled']}</option>
                 </select>
               </div>
             </div>

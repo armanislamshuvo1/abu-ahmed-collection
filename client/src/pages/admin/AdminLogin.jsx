@@ -20,7 +20,7 @@ export const AdminLogin = ({ onNavigate }) => {
       await adminLogin({ email, password });
       onNavigate('/admin');
     } catch (err) {
-      addToast(err.message || 'Invalid admin credentials.', 'error');
+      addToast(err.message || 'ভুল অ্যাডমিন ইমেইল বা পাসওয়ার্ড।', 'error');
     } finally {
       setLoading(false);
     }
@@ -35,17 +35,17 @@ export const AdminLogin = ({ onNavigate }) => {
             <img src="/logo.jpg" alt="Logo" className="w-full h-full object-cover" />
           </div>
           <span className="text-[10px] uppercase tracking-widest text-gold font-bold flex items-center justify-center gap-1">
-            <ShieldCheck className="w-3.5 h-3.5" /> Store Management
+            <ShieldCheck className="w-3.5 h-3.5" /> স্টোর ম্যানেজমেন্ট
           </span>
-          <h1 className="font-serif text-2xl font-bold text-white mt-1">Admin Portal</h1>
-          <p className="text-xs text-zinc-400 mt-1">Secure access to products, orders & settings</p>
+          <h1 className="font-serif text-2xl font-bold text-white mt-1">অ্যাডমিন পোর্টাল</h1>
+          <p className="text-xs text-zinc-400 mt-1">পণ্য, অর্ডার ও স্টোর সেটিংস ব্যবস্থাপনা</p>
         </div>
 
         {/* Form */}
         <form onSubmit={handleSubmit} className="p-8 space-y-5">
           <div className="space-y-1.5">
             <label className="block text-xs font-semibold uppercase tracking-wider text-royal-black/80">
-              Admin Email <span className="text-red-500">*</span>
+              অ্যাডমিন ইমেইল <span className="text-red-500">*</span>
             </label>
             <div className="relative rounded-lg shadow-sm">
               <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3 text-zinc-400">
@@ -64,7 +64,7 @@ export const AdminLogin = ({ onNavigate }) => {
 
           {/* Password with Show/Hide feature */}
           <PasswordInput
-            label="Admin Password"
+            label="অ্যাডমিন পাসওয়ার্ড"
             value={password}
             onChange={e => setPassword(e.target.value)}
             placeholder="••••••••"
@@ -79,12 +79,12 @@ export const AdminLogin = ({ onNavigate }) => {
             className="w-full py-3 font-bold mt-2"
           >
             <Crown className="w-4 h-4 text-royal-black mr-1" />
-            <span>Sign In to Admin Panel</span>
+            <span>অ্যাডমিন প্যানেলে প্রবেশ করুন</span>
           </Button>
 
           <div className="p-3 bg-zinc-50 border border-zinc-200 rounded-xl text-center">
             <p className="text-[11px] text-zinc-500">
-              Default Credentials: <br />
+              ডিফল্ট লগইন তথ্য: <br />
               <span className="font-mono text-royal-black font-semibold">admin@abuahmedcollection.com</span> / <span className="font-mono text-royal-black font-semibold">admin12345</span>
             </p>
           </div>
@@ -95,7 +95,7 @@ export const AdminLogin = ({ onNavigate }) => {
               onClick={() => onNavigate('/')}
               className="text-xs text-zinc-500 hover:text-royal-black underline"
             >
-              Return to Customer Website
+              গ্রাহক ওয়েবসাইটে ফিরে যান
             </button>
           </div>
         </form>

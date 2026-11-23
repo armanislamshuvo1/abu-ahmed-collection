@@ -20,7 +20,7 @@ export const Register = ({ onNavigate }) => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (password.length < 6) {
-      addToast('Password must be at least 6 characters long.', 'error');
+      addToast('পাসওয়ার্ড কমপক্ষে ৬ অক্ষরের হতে হবে।', 'error');
       return;
     }
 
@@ -36,7 +36,7 @@ export const Register = ({ onNavigate }) => {
       });
       onNavigate('/profile');
     } catch (err) {
-      addToast(err.message || 'Registration failed. Please check your details.', 'error');
+      addToast(err.message || 'রেজিস্ট্রেশন ব্যর্থ হয়েছে। তথ্য যাচাই করুন।', 'error');
     } finally {
       setLoading(false);
     }
@@ -51,17 +51,17 @@ export const Register = ({ onNavigate }) => {
             <img src="/logo.jpg" alt="Logo" className="w-full h-full object-cover" />
           </div>
           <span className="text-[10px] uppercase tracking-widest text-gold font-bold">
-            Abu Ahmed Member
+            আবু আহমেদ মেম্বার
           </span>
-          <h1 className="font-serif text-2xl font-bold text-white mt-1">Create Account</h1>
-          <p className="text-xs text-zinc-400 mt-1">Register for express checkout and live order history</p>
+          <h1 className="font-serif text-2xl font-bold text-white mt-1">নতুন অ্যাকাউন্ট তৈরি করুন</h1>
+          <p className="text-xs text-zinc-400 mt-1">দ্রুত চেকআউট ও অর্ডার হিস্ট্রির জন্য রেজিস্টার করুন</p>
         </div>
 
         {/* Form */}
         <form onSubmit={handleSubmit} className="p-8 space-y-4">
           <div>
             <label className="block text-xs font-semibold uppercase tracking-wider text-royal-black/80 mb-1">
-              Full Name <span className="text-red-500">*</span>
+              পুরো নাম <span className="text-red-500">*</span>
             </label>
             <div className="relative rounded-lg shadow-sm">
               <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3 text-zinc-400">
@@ -70,7 +70,7 @@ export const Register = ({ onNavigate }) => {
               <input
                 type="text"
                 required
-                placeholder="e.g. Farhana Yasmin"
+                placeholder="যেমন: ফারহানা ইয়াসমিন"
                 value={name}
                 onChange={e => setName(e.target.value)}
                 className="block w-full rounded-lg border border-zinc-300 pl-10 pr-3 py-2 text-sm text-royal-black placeholder-zinc-400 focus:border-gold focus:outline-none focus:ring-1 focus:ring-gold"
@@ -80,7 +80,7 @@ export const Register = ({ onNavigate }) => {
 
           <div>
             <label className="block text-xs font-semibold uppercase tracking-wider text-royal-black/80 mb-1">
-              Email Address <span className="text-red-500">*</span>
+              ইমেইল ঠিকানা <span className="text-red-500">*</span>
             </label>
             <div className="relative rounded-lg shadow-sm">
               <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3 text-zinc-400">
@@ -99,7 +99,7 @@ export const Register = ({ onNavigate }) => {
 
           <div>
             <label className="block text-xs font-semibold uppercase tracking-wider text-royal-black/80 mb-1">
-              Phone Number <span className="text-red-500">*</span>
+              মোবাইল নম্বর <span className="text-red-500">*</span>
             </label>
             <div className="relative rounded-lg shadow-sm">
               <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3 text-zinc-400">
@@ -118,16 +118,16 @@ export const Register = ({ onNavigate }) => {
 
           {/* Password with Show/Hide feature */}
           <PasswordInput
-            label="Password"
+            label="পাসওয়ার্ড"
             value={password}
             onChange={e => setPassword(e.target.value)}
-            placeholder="At least 6 characters"
+            placeholder="কমপক্ষে ৬ অক্ষর"
             required
           />
 
           <div>
             <label className="block text-xs font-semibold uppercase tracking-wider text-royal-black/80 mb-1">
-              Delivery Address (Optional)
+              ডেলিভারি ঠিকানা (ঐচ্ছিক)
             </label>
             <div className="relative rounded-lg shadow-sm">
               <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3 text-zinc-400">
@@ -135,7 +135,7 @@ export const Register = ({ onNavigate }) => {
               </div>
               <input
                 type="text"
-                placeholder="House, Road, Area, Thana"
+                placeholder="বাড়ি নং, রোড নং, এলাকা, থানা"
                 value={address}
                 onChange={e => setAddress(e.target.value)}
                 className="block w-full rounded-lg border border-zinc-300 pl-10 pr-3 py-2 text-sm text-royal-black placeholder-zinc-400 focus:border-gold focus:outline-none focus:ring-1 focus:ring-gold"
@@ -150,19 +150,19 @@ export const Register = ({ onNavigate }) => {
             loading={loading}
             className="w-full py-3 font-bold mt-2"
           >
-            <span>Create Account</span>
+            <span>অ্যাকাউন্ট তৈরি করুন</span>
             <ArrowRight className="w-4 h-4 ml-1" />
           </Button>
 
           <div className="pt-4 border-t border-zinc-100 text-center">
             <p className="text-xs text-zinc-600">
-              Already have an account?{' '}
+              ইতিমধ্যে অ্যাকাউন্ট আছে?{' '}
               <button
                 type="button"
                 onClick={() => onNavigate('/login')}
                 className="font-bold text-gold-deep hover:underline"
               >
-                Sign in
+                সাইন ইন করুন
               </button>
             </p>
           </div>
